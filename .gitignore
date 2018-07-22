@@ -1,5 +1,6 @@
 # Compile output
 *.o
+*.d
 *.ko
 *.obj
 *.elf
@@ -10,6 +11,9 @@
 *.dylib
 *.exe
 *.app
+*.xcoff
+*.lib
+*.fat
 
 # Archive files
 *.7z
@@ -29,6 +33,7 @@ ehthumbs.db
 Thumbs.db
 
 # IDE-specific files and editor files
+*.proj*
 *.cbp
 *.layout
 .vs
