@@ -5,8 +5,13 @@
 # Marathon Infinity source files to be compatible with modern editors.
 
 while [ "${1}" != "" ]; do
-	echo "Converting ${1}..."
-	iconv -f mac -t utf-8 "${1}" | sed 's/\r/\n/g' > ${1}
+	# convert CR to LF
+	mac2unix "${1}"
+	# convert Mac OS Roman to UTF-8
+	iconv -f mac -t utf-8 < "${1}" > "${1}.bak"
+	sed -i 's#[[:space:]]*$##' "${1}.bak"
+	sed -i '$a\' "${1}.bak"
+	mv "${1}.bak" "${1}"
 	shift # move to the next argument
 done
 
