@@ -6,7 +6,7 @@
 
 while [ "${1}" != "" ]; do
 	echo "Converting ${1}..."
-	iconv -f mac -t utf8 "${1}" | sed 's//\n/g' > ${1}
-  shift # move to the next argument
+	iconv -f mac -t utf-8 "${1}" | sed 's/\r/\n/g' > ${1}
+	shift # move to the next argument
 done
 
