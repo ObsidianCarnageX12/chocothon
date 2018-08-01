@@ -183,7 +183,7 @@ static void enable_input_sprocket_device_class(OSType deviceClass, boolean enabl
 
 void main(
 	void)
-{	
+{
 	initialize_application_heap();
 	main_event_loop();
 	exit(0);
@@ -195,7 +195,7 @@ void free_and_unlock_memory(
 	void)
 {
 	stop_all_sounds();
-	
+
 	return;
 }
 
@@ -206,16 +206,16 @@ void *level_transition_malloc(
 	if (!ptr)
 	{
 		unload_all_sounds();
-		
+
 		ptr= malloc(size);
 		if (!ptr)
 		{
 			unload_all_collections();
-			
+
 			ptr= malloc(size);
 		}
 	}
-	
+
 	return ptr;
 }
 
@@ -225,9 +225,9 @@ static void draw_sprocket_handler(
 	void)
 {
 	OSStatus err= noErr;
-	
+
 	err= DSpShutdown();
-	
+
 	return;
 }
 #endif
@@ -237,11 +237,11 @@ static void input_sprocket_handler(
 	void)
 {
 	OSStatus err= noErr;
-	
+
 	err= ISpStop();
 	ISpElement_DisposeVirtual(NUMBER_OF_INPUT_SPROCKET_NEEDS, input_sprocket_elements);
 	free(input_sprocket_elements);
-	
+
 	return;
 }
 #endif
@@ -274,7 +274,7 @@ static void initialize_application_heap(
 #ifdef PERFORMANCE
 	{
 		Boolean succeeded;
-		
+
 		succeeded = InitPerf(&perf_globals, 4, 8, TRUE, TRUE, "\pCODE", 0, "", 0, 0, 0, 0);
 		assert(succeeded);
 	}
@@ -292,7 +292,7 @@ static void initialize_application_heap(
 	{
 		Handle         some_resource;
 		unsigned long  current_time;
-		
+
 		// we’re assuming that beta copies are all fat versions
 		some_resource = GetResource('SOCK', 128); // the socket listener
 		if (!some_resource)
@@ -326,16 +326,16 @@ static void initialize_application_heap(
 		ISpDevices_ActivateClass(kISpDeviceClass_Keyboard);
 		ISpDevices_ActivateClass(kISpDeviceClass_SpeechRecognition);
 		ISpDevices_ActivateClass(kISpDeviceClass_Tickle);
-		
+
 		input_sprocket_elements= (ISpElementReference *) malloc(sizeof(ISpElementReference) * NUMBER_OF_INPUT_SPROCKET_NEEDS);
 		assert(input_sprocket_elements);
 		err= ISpElement_NewVirtualFromNeeds(NUMBER_OF_INPUT_SPROCKET_NEEDS, input_sprocket_needs, input_sprocket_elements, 0);
 		if (err) dprintf("ISpElementVirtuals err=%d",err);
 		err= ISpInit(NUMBER_OF_INPUT_SPROCKET_NEEDS, input_sprocket_needs, input_sprocket_elements, '52.4', 'fooc', 0, 0, 0);
-		if (err) dprintf("ISpInit err=%d",err); 
+		if (err) dprintf("ISpInit err=%d",err);
 		atexit(input_sprocket_handler);
 		err= ISpSuspend();	// start out suspended, resume when we begin the game
-	
+
 		if (input_preferences->input_device)
 		{
 			use_input_sprocket = true;
@@ -347,7 +347,7 @@ static void initialize_application_heap(
 	if (system_information->has_draw_sprocket)
 	{
 		OSStatus err;
-		
+
 		err= DSpStartup();
 		atexit(draw_sprocket_handler);
 	}
@@ -389,7 +389,7 @@ void global_idle_proc(
 	music_idle_proc();
 	network_speaker_idle_proc();
 	sound_manager_idle_proc();
-	
+
 	return;
 }
 
@@ -404,12 +404,12 @@ void handle_game_key(
 	boolean update_interface= FALSE;
 
 	virtual = (event->message >> 8) & charCodeMask;
-	
+
 #ifndef FINAL
 	if (!game_is_networked && (event->modifiers & controlKey))
 	{
 		short type_of_cheat;
-		
+
 		type_of_cheat = process_keyword_key(key);
 		if (type_of_cheat != NONE) handle_keyword(type_of_cheat);
 	}
@@ -471,11 +471,11 @@ void handle_game_key(
 			case '?':
 				{
 					extern boolean displaying_fps;
-					
+
 					displaying_fps= !displaying_fps;
 				}
 				break;
-			
+
 			default: // well, let's check the function keys then, using the keycodes.
 				switch(virtual)
 				{
@@ -538,12 +538,12 @@ void handle_game_key(
 						if(event->modifiers & shiftKey)
 						{
 							short keys[NUMBER_OF_KEYS];
-				
+
 							set_default_keys((short *) &keys, 0);
 							set_keys((short *) &keys);
 						}
 						break;
-						
+
 					case kcF10:
 #ifdef envppc
 						// secret ludicrous speed mode
@@ -562,7 +562,7 @@ void handle_game_key(
 						}
 #endif
 						break;
-						
+
 					case kcF11:
 						if (graphics_preferences->screen_mode.gamma_level)
 						{
@@ -571,7 +571,7 @@ void handle_game_key(
 							changed_prefs= TRUE;
 						}
 						break;
-						
+
 					case kcF12:
 						if (graphics_preferences->screen_mode.gamma_level<NUMBER_OF_GAMMA_LEVELS-1)
 						{
@@ -580,7 +580,7 @@ void handle_game_key(
 							changed_prefs= TRUE;
 						}
 						break;
-						
+
 					default:
 						if(get_game_controller()==_demo)
 						{
@@ -599,7 +599,7 @@ void handle_game_key(
 		if(update_interface) draw_interface();
 	}
 	if (changed_prefs) write_preferences();
-	
+
 	return;
 }
 
@@ -614,22 +614,22 @@ static void verify_environment(
 	{
 		alert_user(fatalError, strERRORS, badSystem, environment.systemVersion);
 	}
-	
+
 	if (!environment.hasColorQD)
 	{
 		alert_user(fatalError, strERRORS, badQuickDraw, 0);
 	}
-	
+
 	if (!environment.processor&&environment.processor<env68040)
 	{
 		alert_user(fatalError, strERRORS, badProcessor, environment.processor);
 	}
-	
+
 	if (FreeMem()<2900000)
 	{
 		alert_user(fatalError, strERRORS, badMemory, FreeMem());
 	}
-	
+
 	return;
 }
 
@@ -657,21 +657,21 @@ static void initialize_core_events(
 		quit_application_proc= NewAEEventHandlerProc(handle_quit_application);
 		print_document_proc= NewAEEventHandlerProc(handle_print_document);
 		open_application_proc= NewAEEventHandlerProc(handle_open_application);
-		assert(open_document_proc && quit_application_proc 
+		assert(open_document_proc && quit_application_proc
 			&& print_document_proc && open_application_proc);
-	
+
 		err= AEInstallEventHandler(kCoreEventClass, kAEOpenDocuments, open_document_proc, 0,
 			FALSE);
 		assert(!err);
-		
+
 		err= AEInstallEventHandler(kCoreEventClass, kAEQuitApplication, quit_application_proc, 0,
 			FALSE);
 		assert(!err);
-	
+
 		err= AEInstallEventHandler(kCoreEventClass, kAEPrintDocuments, print_document_proc, 0,
 			FALSE);
 		assert(!err);
-	
+
 		err= AEInstallEventHandler(kCoreEventClass, kAEOpenApplication, open_application_proc, 0,
 			FALSE);
 		assert(!err);
@@ -679,14 +679,14 @@ static void initialize_core_events(
 }
 
 static pascal OSErr handle_open_document(
-	AppleEvent *event, 
-	AppleEvent *reply, 
+	AppleEvent *event,
+	AppleEvent *reply,
 	long myRefCon)
 {
 	OSErr err;
 	AEDescList docList;
 
-#pragma unused (reply, myRefCon)	
+#pragma unused (reply, myRefCon)
 	err= AEGetParamDesc(event, keyDirectObject, typeAEList, &docList);
 	if(!err)
 	{
@@ -694,7 +694,7 @@ static pascal OSErr handle_open_document(
 		if(!err)
 		{
 			long itemsInList;
-		
+
 			err= AECountItems(&docList, &itemsInList);
 
 			if(!err)
@@ -704,12 +704,12 @@ static pascal OSErr handle_open_document(
 				FSSpec myFSS;
 				Size actualSize;
 
-				for(index= 1; !done && index<= itemsInList; index++) 
+				for(index= 1; !done && index<= itemsInList; index++)
 				{
 					DescType typeCode;
 					AEKeyword theKeyword;
 
-					err=AEGetNthPtr(&docList, index, typeFSS, &theKeyword, &typeCode, 
+					err=AEGetNthPtr(&docList, index, typeFSS, &theKeyword, &typeCode,
 						(Ptr) &myFSS, sizeof(FSSpec), &actualSize);
 					if(!err)
 					{
@@ -721,7 +721,7 @@ static pascal OSErr handle_open_document(
 							case SCENARIO_FILE_TYPE:
 								set_map_file((FileDesc *) &myFSS);
 								break;
-								
+
 							case SAVE_GAME_TYPE:
 #ifndef TRILOGY
 								if (serial_preferences->network_only)
@@ -737,26 +737,26 @@ static pascal OSErr handle_open_document(
 									}
 								}
 								break;
-								
+
 							case FILM_FILE_TYPE:
 								if(handle_open_replay((FileDesc *) &myFSS))
 								{
 									done= TRUE;
 								}
 								break;
-								
+
 							case PHYSICS_FILE_TYPE:
 								set_physics_file((FileDesc *) &myFSS);
 								break;
-								
+
 							case SHAPES_FILE_TYPE:
 								open_shapes_file(&myFSS);
 								break;
-								
+
 							case SOUNDS_FILE_TYPE:
 						 		open_sound_file(&myFSS);
 								break;
-								
+
 							default:
 								break;
 						}
@@ -765,29 +765,29 @@ static pascal OSErr handle_open_document(
 			}
 		}
 	}
-	
+
 	return err;
 }
 
 static pascal OSErr handle_quit_application(
-	AppleEvent *event, 
-	AppleEvent *reply, 
+	AppleEvent *event,
+	AppleEvent *reply,
 	long myRefCon)
 {
 #pragma unused(reply, myRefCon)
 	OSErr err;
-	
+
 	err= required_appleevent_check(event);
 	if(err) return err;
-	
+
 	set_game_state(_quit_game);
 
 	return noErr;
 }
 
 static pascal OSErr handle_print_document(
-	AppleEvent *event, 
-	AppleEvent *reply, 
+	AppleEvent *event,
+	AppleEvent *reply,
 	long myRefCon)
 {
 	#pragma unused(event, reply, myRefCon)
@@ -796,8 +796,8 @@ static pascal OSErr handle_print_document(
 }
 
 static pascal OSErr handle_open_application(
-	AppleEvent *event, 
-	AppleEvent *reply, 
+	AppleEvent *event,
+	AppleEvent *reply,
 	long myRefCon)
 {
 #pragma unused(reply, myRefCon)
@@ -815,10 +815,10 @@ static OSErr required_appleevent_check(
 	OSErr err;
 	DescType typeCode;
 	Size actualSize;
-	
+
 	err=AEGetAttributePtr(event, keyMissedKeywordAttr, typeWildCard, &typeCode,
 		0l, 0, &actualSize);
-		
+
 	if(err==errAEDescNotFound) return noErr;
 	if(err==noErr) return (errAEEventNotHandled);
 
@@ -830,9 +830,9 @@ static void initialize_system_information(
 {
 	long system_version, apple_events_present, processor_type;
 	OSErr err;
-	
-	/* Allocate the system information structure.. */	
-	system_information= (struct system_information_data *) 
+
+	/* Allocate the system information structure.. */
+	system_information= (struct system_information_data *)
 		NewPtr(sizeof(struct system_information_data));
 	assert(system_information);
 
@@ -873,30 +873,30 @@ static void initialize_system_information(
 			case gestaltCPU68010: // highly unlikely, wouldn't you say?
 			case gestaltCPU68020:
 			case gestaltCPU68030:
-				system_information->machine_is_68k= TRUE; 
-				system_information->machine_is_68040= FALSE; 
+				system_information->machine_is_68k= TRUE;
+				system_information->machine_is_68040= FALSE;
 				system_information->machine_is_ppc= FALSE;
 				break;
-				
+
 			case gestaltCPU68040:
-				system_information->machine_is_68k= TRUE; 
-				system_information->machine_is_68040= TRUE; 
+				system_information->machine_is_68k= TRUE;
+				system_information->machine_is_68040= TRUE;
 				system_information->machine_is_ppc= FALSE;
 				break;
-				
+
 			case gestaltCPU601:
 			case gestaltCPU603:
 			case gestaltCPU604:
 			default: // assume the best
-				system_information->machine_is_68k= FALSE; 
-				system_information->machine_is_68040= FALSE; 
+				system_information->machine_is_68k= FALSE;
+				system_information->machine_is_68040= FALSE;
 				system_information->machine_is_ppc= TRUE;
 				break;
 		}
 	}
 	else // handle sys 6 machines, which are certainly not ppcs. (can they even be '040s?)
 	{
-		system_information->machine_is_68k= TRUE; 
+		system_information->machine_is_68k= TRUE;
 		system_information->machine_is_ppc= FALSE;
 
 		err= Gestalt(gestaltProcessorType, &processor_type);
@@ -904,25 +904,25 @@ static void initialize_system_information(
 		{
 			if(processor_type==gestalt68040)
 			{
-				system_information->machine_is_68040= TRUE; 
+				system_information->machine_is_68040= TRUE;
 			} else {
-				system_information->machine_is_68040= FALSE; 
+				system_information->machine_is_68040= FALSE;
 			}
 		}
 	}
-	
+
 #ifdef SUPPORT_INPUT_SPROCKET
 	{
 		// assume false, if we linked and have version 1.2 mark as true
 		// we require 1.1 because we use some 1.1 specific calls
 		// and we use 1.2's delta features (which unfortunately crash 1.1)
 		system_information->has_input_sprocket= FALSE;
-		
+
 		if (ISpGetVersion != kUnresolvedCFragSymbolAddress)
 		{
 			NumVersion inputSprocketVersionStruct = ISpGetVersion();
 			UInt32 inputSprocketVersion = * (UInt32 *) &(inputSprocketVersionStruct);
-		
+
 			if (inputSprocketVersion > 0x01200000)	// require 1.2 (binary coded decimal)
 			{
 				system_information->has_input_sprocket= TRUE;
@@ -968,21 +968,21 @@ static void marathon_dialog_header_proc(
 	Rect *frame)
 {
 	long refCon= GetWRefCon(dialog);
-	
+
 	if (refCon>=FIRST_DIALOG_REFCON && refCon<=LAST_DIALOG_REFCON)
 	{
 		PicHandle picture= GetPicture(DIALOG_HEADER_RESOURCE_OFFSET - FIRST_DIALOG_REFCON + refCon);
-		
+
 		if (picture)
 		{
 			Rect destination= (*picture)->picFrame;
-			
+
 			OffsetRect(&destination, frame->left-destination.left+DIALOG_HEADER_HORIZONTAL_INSET,
 				frame->top-destination.top+DIALOG_HEADER_VERTICAL_INSET);
 			DrawPicture(picture, &destination);
 		}
 	}
-		
+
 	return;
 }
 
@@ -992,16 +992,16 @@ static void initialize_marathon_music_handler(
 	FSSpec music_file_spec;
 	OSErr error;
 	boolean initialized= FALSE;
-	
+
 	error= get_file_spec(&music_file_spec, strFILENAMES, filenameMUSIC, strPATHS);
 	if (!error)
 	{
 		boolean is_folder, was_aliased;
-	
+
 		ResolveAliasFile(&music_file_spec, TRUE, &is_folder, &was_aliased);
 		initialized= initialize_music_handler((FileDesc *) &music_file_spec);
 	}
-	
+
 	return;
 }
 
@@ -1083,7 +1083,7 @@ static short process_keyword_key(
 	}
 	keyword_buffer[MAXIMUM_KEYWORD_LENGTH-1]= key+'A'-1;
 	keyword_buffer[MAXIMUM_KEYWORD_LENGTH]= 0;
-	
+
 	/* any matches? */
 	for (i=0; i<NUMBER_OF_KEYWORDS; ++i)
 	{
@@ -1095,7 +1095,7 @@ static short process_keyword_key(
 			break;
 		}
 	}
-	
+
 	return tag;
 }
 
@@ -1165,11 +1165,11 @@ static void handle_keyword(
 			{
 				short items[]= { _i_assault_rifle, _i_magnum, _i_missile_launcher, _i_flamethrower,
 					_i_plasma_pistol, _i_alien_shotgun, _i_shotgun,
-					_i_assault_rifle_magazine, _i_assault_grenade_magazine, 
+					_i_assault_rifle_magazine, _i_assault_grenade_magazine,
 					_i_magnum_magazine, _i_missile_launcher_magazine, _i_flamethrower_canister,
 					_i_plasma_magazine, _i_shotgun_magazine, _i_shotgun, _i_smg, _i_smg_ammo };
 				short index;
-				
+
 				for(index= 0; index<sizeof(items)/sizeof(short); ++index)
 				{
 					switch(get_item_kind(items[index]))
@@ -1184,40 +1184,40 @@ static void handle_keyword(
 								} else {
 									local_player->items[items[index]]++;
 								}
-							} else {	
+							} else {
 								local_player->items[items[index]]= 1;
 							}
 							break;
-							
+
 						case _ammunition:
 							local_player->items[items[index]]= 10;
 							break;
-							
+
 						case _powerup:
 						case _weapon_powerup:
 							break;
-							
+
 						default:
 							halt();
 							break;
-					} 
+					}
 					process_new_item_for_reloading(local_player_index, items[index]);
 				}
 			}
 			local_player->suit_energy = 3*PLAYER_MAXIMUM_SUIT_ENERGY;
 			update_interface(NONE);
 			break;
-		
+
 		case _tag_level:
 			{
 				struct player_data *player= get_player_data(0);
 				int level_number= dynamic_world->current_level_number+1;
-				
+
 				player->teleporting_destination= -level_number;
 				player->delay_before_teleport= TICKS_PER_SECOND/2;
 			}
 			break;
-			
+
 		default:
 			cheated= FALSE;
 			break;
@@ -1229,7 +1229,7 @@ static void handle_keyword(
 	if (cheated)
 	{
 		long final_ticks;
-		
+
 		SetSoundVol(7);
 		play_local_sound(20110);
 		Delay(45, &final_ticks);
@@ -1238,7 +1238,7 @@ static void handle_keyword(
 		play_local_sound(20110);
 	}
 #endif
-	
+
 	return;
 }
 #endif
@@ -1250,12 +1250,12 @@ static Boolean check_input_sprocket_button(	ISpElementReference theElement)
 			OSStatus	err;
 			ISpElementEvent input_sprocket_event;
 			Boolean was_input_sprocket_event;
-			
+
 	err= ISpElement_GetNextEvent(	theElement,
 									sizeof(ISpElementEvent),
 									&input_sprocket_event,
 									&was_input_sprocket_event);
-												
+
 	if (!err && was_input_sprocket_event && (input_sprocket_event.data == kISpButtonDown))
 	{
 		return true;
@@ -1267,16 +1267,16 @@ static Boolean check_input_sprocket_button(	ISpElementReference theElement)
 }
 
 #endif
-  
+
 static void main_event_loop(
 	void)
 {
 	wait_for_highlevel_event();
-	
+
 	while(get_game_state()!=_quit_game)
 	{
 		boolean use_waitnext;
-		
+
 		if(try_for_event(&use_waitnext))
 		{
 			EventRecord event;
@@ -1287,17 +1287,17 @@ static void main_event_loop(
 			boolean changed_screen_mode = FALSE;
 			boolean changed_prefs = FALSE;
 			boolean update_interface = FALSE;
-			
+
 			if (use_input_sprocket)
 			{
 				ISpTickle();	// give input sprocket time
-				
+
 				// check slow stuff here
 				if (check_input_sprocket_button(input_sprocket_elements[_input_sprocket_quit]))
 				{
 					do_menu_item_command(mGame, iQuitGame, FALSE);
 				}
-				
+
 				if (check_input_sprocket_button(input_sprocket_elements[_input_sprocket_volume_up]))
 				{
 					changed_prefs= adjust_sound_volume_up(sound_preferences, _snd_adjust_volume);
@@ -1313,7 +1313,7 @@ static void main_event_loop(
 					walk_player_list();
 					render_screen(0);
 				}
-				
+
 				if (check_input_sprocket_button(input_sprocket_elements[_input_sprocket_zoom_map_in]))
 				{
 					zoom_overhead_map_in();
@@ -1358,7 +1358,7 @@ static void main_event_loop(
 				if (check_input_sprocket_button(input_sprocket_elements[_input_sprocket_show_fps]))
 				{
 					extern boolean displaying_fps;
-					
+
 					displaying_fps= !displaying_fps;
 				}
 
@@ -1449,7 +1449,7 @@ static void main_event_loop(
 					}
 				}
 			}
-			
+
 			if (changed_screen_mode)
 			{
 				change_screen_mode(&graphics_preferences->screen_mode, TRUE);
@@ -1467,10 +1467,10 @@ static void main_event_loop(
 			{
 				got_event= GetOSEvent(everyEvent, &event);
 			}
-			
+
 			if(got_event) process_event(&event);
-			
-			if(get_game_state()==_game_in_progress) 
+
+			if(get_game_state()==_game_in_progress)
 			{
 				FlushEvents(keyDownMask|keyUpMask|autoKeyMask, 0);
 			}
@@ -1489,8 +1489,8 @@ static void wait_for_highlevel_event(
 {
 	EventRecord event;
 	boolean done= FALSE;
-	
-	// CAF -- this was blocking forever	
+
+	// CAF -- this was blocking forever
 #if !SUPPORT_DRAW_SPROCKET
 	while(!done)
 	{
@@ -1523,7 +1523,7 @@ void update_any_window(
 	}
 	EndUpdate(window);
 	SetPort(old_port);
-	
+
 	return;
 }
 
@@ -1537,7 +1537,7 @@ void activate_any_window(
 	{
 		activate_screen_window(window, event, active);
 	}
-	
+
 	return;
 }
 
@@ -1550,7 +1550,7 @@ static void process_event(
 	// CAF -- give DSp a chance to handle the event
 #if SUPPORT_DRAW_SPROCKET
 	Boolean theEventWasProcessed = false;
-	
+
 	DSpProcessEvent( event, &theEventWasProcessed );
 	if( theEventWasProcessed )
 		return;
@@ -1566,26 +1566,26 @@ static void process_event(
 				case inMenuBar:
 					halt();
 					break;
-					
+
 				case inContent:
 					process_screen_click(event);
 					break;
-					
+
 				default:
 					vhalt(csprintf(temporary, "What the hell is part code: %d?", part_code));
 					break;
 			}
 			break;
-		
+
 		case keyDown:
 		case autoKey:
 			process_key(event, toupper(event->message&charCodeMask));
 			break;
-			
+
 		case updateEvt:
 			update_any_window((WindowPtr)event->message, event);
 			break;
-			
+
 		case activateEvt:
 			activate_any_window((WindowPtr)(event->message), event, event->modifiers&activeFlag);
 			break;
@@ -1610,11 +1610,11 @@ static void process_event(
 					break;
 			}
 			break;
-			
+
 		default:
 			break;
 	}
-		
+
 	return;
 }
 
@@ -1624,16 +1624,16 @@ static void process_screen_click(
 	GrafPtr old_port;
 	Point where= event->where;
 	boolean cheatkeys_down;
-	
+
 	GetPort(&old_port);
 	SetPort(screen_window);
-	
+
 	GlobalToLocal(&where);
 	cheatkeys_down= has_cheat_modifiers(event);
 	portable_process_screen_click(where.h, where.v, cheatkeys_down);
 
-	SetPort(old_port);	
-	
+	SetPort(old_port);
+
 	return;
 }
 

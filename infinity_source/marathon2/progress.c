@@ -34,7 +34,7 @@ void open_progress_dialog(
 	Rect item_box;
 	short item_type;
 	Handle item_handle;
-		
+
 	progress_data.dialog= GetNewDialog(dialogPROGRESS, NULL, (WindowPtr) -1);
 	assert(progress_data.dialog);
 	progress_data.progress_bar_upp= NewUserItemProc(draw_distribute_progress);
@@ -66,7 +66,7 @@ void set_progress_dialog_message(
 	GetDItem(progress_data.dialog, iPROGRESS_MESSAGE, &item_type, &item_handle, &bounds);
 	getpstr(temporary, strPROGRESS_MESSAGES, message_id);
 	SetIText(item_handle, (StringPtr)temporary);
-	
+
 	return;
 }
 
@@ -83,17 +83,17 @@ void close_progress_dialog(
 }
 
 void draw_progress_bar(
-	long sent, 
+	long sent,
 	long total)
 {
 	Rect bounds;
 	Handle item;
 	short item_type;
 	short width;
-	
+
 	GetDItem(progress_data.dialog, iPROGRESS_BAR, &item_type, &item, &bounds);
 	width= (sent*RECTANGLE_WIDTH(&bounds))/total;
-	
+
 	bounds.right= bounds.left+width;
 	RGBForeColor(system_colors+gray15Percent);
 	PaintRect(&bounds);
@@ -112,17 +112,17 @@ void reset_progress_bar(
 
 /* --------- private code */
 static pascal void draw_distribute_progress(
-	DialogPtr dialog, 
+	DialogPtr dialog,
 	short item_num)
 {
 	Rect item_box;
 	short item_type;
 	Handle item_handle;
 	GrafPtr old_port;
-	
+
 	GetPort(&old_port);
 	SetPort(dialog);
-	
+
 	GetDItem(dialog, item_num, &item_type, &item_handle, &item_box);
 	PenNormal();
 	RGBForeColor(system_colors+windowHighlight);

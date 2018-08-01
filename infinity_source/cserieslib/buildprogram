@@ -35,7 +35,7 @@ if "{program}"=="cseries"||"{program}"=="cseries.lib"||"{program}"=="cseries.xco
 	Set TargPPC cseries.xcoff
 	Set OptimizationsPPC "-opt size"
 	Set SymbolsPPC "-sym off"
-	
+
 	# final build for 68k
 	Set COptions "-opt full -b2 -r -mbg off -k ∂"{CSeriesLibraries}∂""
 	Set Obj68k :Objects:68k:
@@ -53,7 +53,7 @@ else if "{program}"=="cseries.debug"||"{program}"=="cseries.debug.lib"||"{progra
 	Set COptions "-opt full -b2 -r -mbg on -d DEBUG -k ∂"{CSeriesLibraries}∂""
 	Set Obj68k :Objects:68k.debug:
 	Set Targ68k cseries.debug.lib
-	
+
 else if "{program}"=="cseries.sym"||"{program}"=="cseries.sym.xcoff"
 	# debug build with symbols for PPC
 	Set PPCCOptions "-i {CSeriesInterfaces} -typecheck relaxed -sym on -d DEBUG"

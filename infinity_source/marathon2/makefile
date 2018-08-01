@@ -86,20 +86,20 @@ PPCCOptions= -i "{CSeriesInterfaces}" {VersionPPCCOptions} -align mac68k -typech
 # ••• Special case for MrC 2.0d5c2 bug
 #{ObjPPC}keyboard_dialog.ppc.o ƒ keyboard_dialog.c
 #	MrC keyboard_dialog.c {PPCCOptions} -o "{ObjPPC}"keyboard_dialog.ppc.o -opt local
-	
+
 #{ObjPPC}game_sound.ppc.o ƒ game_sound.c
 #	MrC game_sound.c {PPCCOptions} -o "{ObjPPC}"game_sound.ppc.o -opt local
-	
+
 #{ObjPPC}sound_macintosh.ppc.o ƒ sound_macintosh.c
 #	MrC sound_macintosh.c {PPCCOptions} -o "{ObjPPC}"sound_macintosh.ppc.o -opt local
 
 # default dependency rule for .ppc.o files
 .ppc.o ƒ .c
-	MrC {Default}.c {PPCCOptions} -o "{ObjPPC}"{Default}.ppc.o 
+	MrC {Default}.c {PPCCOptions} -o "{ObjPPC}"{Default}.ppc.o
 
 # default dependency rule for .s.o files
 .s.o ƒ .s
-	PPCAsm {Default}.s -o "{ObjPPC}"{Default}.s.o 
+	PPCAsm {Default}.s -o "{ObjPPC}"{Default}.s.o
 
 # default dependency rule for .xcoff (ppc library) files (doesn't work)
 #.xcoff ƒ .o
@@ -334,7 +334,7 @@ LinkDependencies68k= {ApplicationLibraries68k}
 #shell library dependencies
 {ObjPPC}shell.ppc.o ƒ map.h world.h monsters.h player.h render.h shell.h interface.h game_sound.h ∂
 	music.h fades.h tags.h network_sound.h mouse.h screen_drawing.h computer_interface.h ∂
-	game_wad.h game_window.h {UbiqDependencies} #macintosh_input.h input_sprocket_needs.h 
+	game_wad.h game_window.h {UbiqDependencies} #macintosh_input.h input_sprocket_needs.h
 {ObjPPC}shapes.ppc.o ƒ shell.h interface.h shapes_macintosh.c {UbiqDependencies}
 {ObjPPC}screen.ppc.o ƒ interface.h map.h world.h render.h scottish_textures.h textures.h shell.h monsters.h overhead_map.h player.h valkyrie.h game_window.h {UbiqDependencies}
 {ObjPPC}quadruple.s.o ƒ {UbiqDependencies}

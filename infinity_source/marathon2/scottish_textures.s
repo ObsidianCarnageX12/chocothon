@@ -3,7 +3,7 @@
 ;	short downshift;
 ;	short x0;
 ;	short width;
-;	
+;
 ;	short pad;
 ;};
 data_downshift	EQU	0
@@ -15,12 +15,12 @@ data_pad		EQU	6
 ;{
 ;	short width, height; /* in pixels */
 ;	short bytes_per_row; /* if ==NONE this is a transparent RLE shape */
-;	
+;
 ;	short flags; /* [column_order.1] [unused.15] */
 ;	short bit_depth; /* should always be ==8 */
 ;
 ;	short unused[8];
-;	
+;
 ;	pixel8 *row_addresses[1];
 ;};
 bitmap_width			EQU	0
@@ -43,13 +43,13 @@ line_texture_dy			EQU	12
 
 				export	._texture_vertical_polygon_lines8[DS]
 				export	._texture_vertical_polygon_lines8
-	
-				toc 
+
+				toc
 
 				csect	_texture_vertical_polygon_lines8[DS]
 				dc.l	._texture_vertical_polygon_lines8, TOC[tc0]
 
-				toc 
+				toc
 				tc		_texture_vertical_polygon_lines8[TC], _texture_vertical_polygon_lines8[DS]
 
 				csect [PR]
@@ -82,7 +82,7 @@ y1_table	EQU		r7
 				stw       r9,0x0040(SP)
 				lha       r10,0x0000(r5)
 				ble       bail
-outer_loop_start:				
+outer_loop_start:
 				lwz       r5,0x003C(SP)
 				lwz       r4,0x0038(SP)
 				cmpwi     r5,4
@@ -401,7 +401,7 @@ data_write:		stwux     r31,r12,r11
 				add       r8,r8,r20
 				add       r9,r9,r28
 				bdnz      inner_loop
-				
+
 				stw       r7,0x007C(SP)
 				add       r16,r12,r11
 				stw       r6,0x0078(SP)
@@ -505,13 +505,13 @@ funny_traceback:
 #
 				export	._texture_horizontal_polygon_lines8[DS]
 				export	._texture_horizontal_polygon_lines8
-	
-				toc 
+
+				toc
 
 				csect	_texture_horizontal_polygon_lines8[DS]
 				dc.l	._texture_horizontal_polygon_lines8, TOC[tc0]
 
-				toc 
+				toc
 				tc		_texture_horizontal_polygon_lines8[TC], _texture_horizontal_polygon_lines8[DS]
 
 				csect [PR]
@@ -646,7 +646,7 @@ funny_traceback:
 #{
 #	unsigned long source_x, source_y;
 #	unsigned long source_dx, source_dy;
-#	
+#
 #	void *shading_table;
 #};
 horiz_source_x		EQU	0
@@ -657,13 +657,13 @@ horiz_shading_table	EQU	16
 
 				export	._landscape_horizontal_polygon_lines8[DS]
 				export	._landscape_horizontal_polygon_lines8
-	
-				toc 
+
+				toc
 
 				csect	_landscape_horizontal_polygon_lines8[DS]
 				dc.l	._landscape_horizontal_polygon_lines8, TOC[tc0]
 
-				toc 
+				toc
 				tc		_landscape_horizontal_polygon_lines8[TC], _landscape_horizontal_polygon_lines8[DS]
 
 				csect [PR]

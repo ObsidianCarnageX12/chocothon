@@ -72,7 +72,7 @@ enum /* damage flags */
 struct damage_definition
 {
 	short type, flags;
-	
+
 	short base, random;
 	fixed scale;
 };
@@ -100,7 +100,7 @@ enum /* map object flags */
 	_map_object_is_deaf= 0x0008, /* monster cannot activate by sound */
 	_map_object_floats= 0x0010, /* used by sound sources caused by media */
 	_map_object_is_network_only= 0x0020 /* for items only */
-	
+
 	// top four bits is activation bias for monsters
 };
 
@@ -114,7 +114,7 @@ struct map_object /* 16 bytes */
 	short facing;
 	short polygon_index;
 	world_point3d location; // .z is a delta
-	
+
 	word flags;
 };
 
@@ -138,7 +138,7 @@ enum { /* entry point types- this is per map level (long). */
 	_rugby_entry_point= 0x40
 };
 
-struct entry_point 
+struct entry_point
 {
 	short level_number;
 	char level_name[64+1];
@@ -146,7 +146,7 @@ struct entry_point
 
 #define MAXIMUM_PLAYER_START_NAME_LENGTH 32
 
-struct player_start_data 
+struct player_start_data
 {
 	short team;
 	short identifier;
@@ -169,10 +169,10 @@ struct directory_data {
 struct map_annotation
 {
 	short type; /* turns into color, font, size, style, etc... */
-	
+
 	world_point2d location; /* where to draw this (lower left) */
 	short polygon_index; /* only displayed if this polygon is in the automap */
-	
+
 	char text[MAXIMUM_ANNOTATION_TEXT_LENGTH];
 };
 
@@ -186,7 +186,7 @@ struct map_annotation *get_next_map_annotation(short *count);
 struct ambient_sound_image_data // 16 bytes
 {
 	word flags;
-	
+
 	short sound_index;
 	short volume;
 
@@ -206,17 +206,17 @@ enum // sound image flags
 struct random_sound_image_data // 32 bytes
 {
 	word flags;
-	
+
 	short sound_index;
-	
+
 	short volume, delta_volume;
 	short period, delta_period;
 	angle direction, delta_direction;
 	fixed pitch, delta_pitch;
-	
+
 	// only used at run-time; initialize to NONE
 	short phase;
-	
+
 	short unused[3];
 };
 
@@ -330,9 +330,9 @@ struct object_location
 {
 	struct world_point3d p;
 	short polygon_index;
-	
+
 	angle yaw, pitch;
-	
+
 	word flags;
 };
 
@@ -342,9 +342,9 @@ struct object_data /* 32 bytes */
 		and velocity fields */
 	world_point3d location;
 	short polygon;
-	
+
 	angle facing;
-	
+
 	/* this is not really a shape descriptor: (and this is the only place in the game where you
 		find this pseudo-shape_descriptor type) the collection is valid, as usual, but the
 		shape index is an index into the animated shape array for that collection. */
@@ -355,7 +355,7 @@ struct object_data /* 32 bytes */
 	short transfer_mode, transfer_period; /* if NONE take from shape data */
 	short transfer_phase; /* for transfer mode animations */
 	short permutation; /* usually index into owner array */
-	
+
 	short next_object; /* or NONE */
 	short parasitic_object; /* or NONE */
 
@@ -379,10 +379,10 @@ struct endpoint_data /* 16 bytes */
 {
 	word flags;
 	world_distance highest_adjacent_floor_height, lowest_adjacent_ceiling_height;
-	
+
 	world_point2d vertex;
 	world_point2d transformed;
-	
+
 	short supporting_polygon_index;
 };
 
@@ -420,15 +420,15 @@ struct line_data /* 32 bytes */
 
 	world_distance length;
 	world_distance highest_adjacent_floor, lowest_adjacent_ceiling;
-	
+
 	/* the side definition facing the clockwise polygon which references this side, and the side
 		definition facing the counterclockwise polygon (can be NONE) */
 	short clockwise_polygon_side_index, counterclockwise_polygon_side_index;
-	
+
 	/* a line can be owned by a clockwise polygon, a counterclockwise polygon, or both (but never
 		two of the same) (can be NONE) */
 	short clockwise_polygon_owner, counterclockwise_polygon_owner;
-	
+
 	short unused[6];
 };
 
@@ -500,7 +500,7 @@ struct side_data /* 64 bytes */
 {
 	short type;
 	word flags;
-	
+
 	struct side_texture_definition primary_texture;
 	struct side_texture_definition secondary_texture;
 	struct side_texture_definition transparent_texture; /* not drawn if .texture==NONE */
@@ -511,14 +511,14 @@ struct side_data /* 64 bytes */
 
 	short control_panel_type; /* Only valid if side->flags & _side_is_control_panel */
 	short control_panel_permutation; /* platform index, light source index, etc... */
-	
+
 	short primary_transfer_mode; /* These should be in the side_texture_definition.. */
 	short secondary_transfer_mode;
 	short transparent_transfer_mode;
 
 	short polygon_index, line_index;
 
-	short primary_lightsource_index;	
+	short primary_lightsource_index;
 	short secondary_lightsource_index;
 	short transparent_lightsource_index;
 
@@ -564,7 +564,7 @@ struct horizontal_surface_data /* should be in polygon structure */
 	short lightsource_index;
 	shape_descriptor texture;
 	short transfer_mode, transfer_mode_data;
-	
+
 	world_point2d origin;
 };
 
@@ -577,15 +577,15 @@ struct polygon_data /* 128 bytes */
 	short vertex_count;
 	short endpoint_indexes[MAXIMUM_VERTICES_PER_POLYGON]; /* clockwise */
 	short line_indexes[MAXIMUM_VERTICES_PER_POLYGON];
-	
+
 	shape_descriptor floor_texture, ceiling_texture;
 	world_distance floor_height, ceiling_height;
 	short floor_lightsource_index, ceiling_lightsource_index;
-	
+
 	long area; /* in world_distance^2 units */
-	
+
 	short first_object;
-	
+
 	/* precalculated impassability information; each polygon has a list of lines and points
 		that anything big (i.e., monsters but not projectiles) inside it must check against when
 		ending a move inside it. */
@@ -595,30 +595,30 @@ struct polygon_data /* 128 bytes */
 
 	short floor_transfer_mode;
 	short ceiling_transfer_mode;
-	
+
 	short adjacent_polygon_indexes[MAXIMUM_VERTICES_PER_POLYGON];
-	
+
 	/* a list of polygons within WORLD_ONE of us */
 	short first_neighbor_index;
 	short neighbor_count;
-	
+
 	world_point2d center;
-	
+
 	short side_indexes[MAXIMUM_VERTICES_PER_POLYGON];
-	
+
 	world_point2d floor_origin, ceiling_origin;
-	
+
 	short media_index;
 	short media_lightsource_index;
-	
+
 	/* NONE terminated list of _saved_sound_source indexes which must be checked while a
 		listener is inside this polygon (can be none) */
 	short sound_source_indexes;
-	
+
 	// either can be NONE
 	short ambient_sound_image_index;
 	short random_sound_image_index;
-	
+
 	short unused[1];
 };
 
@@ -646,11 +646,11 @@ enum // flags for object_frequency_definition
 struct object_frequency_definition
 {
 	word flags;
-	
+
 	short initial_count;   // number that initially appear. can be greater than maximum_count
 	short minimum_count;   // this number of objects will be maintained.
 	short maximum_count;   // can’t exceed this, except at the beginning of the level.
-	
+
 	short random_count;    // maximum random occurences of the object
 	word random_chance;    // in (0, 65535]
 };
@@ -675,7 +675,7 @@ enum /* environment flags */
 	_environment_rebellion= 0x0004, // makes clients fight pfhor
 	_environment_low_gravity= 0x0008, // low gravity
 
-	_environment_network= 0x2000,	// these two pseudo-environments are used to prevent items 
+	_environment_network= 0x2000,	// these two pseudo-environments are used to prevent items
 	_environment_single_player= 0x4000 // from arriving in the items.c code.
 };
 
@@ -683,12 +683,12 @@ enum /* environment flags */
 struct static_data
 {
 	short environment_code;
-	
+
 	short physics_model;
 	short song_index;
 	short mission_flags;
 	short environment_flags;
-	
+
 	boolean ball_in_play;	// true if there's a ball in play
 	boolean unused1;
 	short unused[3];
@@ -719,7 +719,7 @@ enum /* game options.. */
 
 enum // specifies how the user completed the level. saved in dynamic_data
 {
-	_level_unfinished, 
+	_level_unfinished,
 	_level_finished,
 	_level_failed
 };
@@ -740,18 +740,18 @@ enum {
 #define GET_GAME_OPTIONS() (dynamic_world->game_information.game_options)
 #define GET_GAME_PARAMETER(x) (dynamic_world->game_information.parameters[(x)])
 
-/* 
+/*
 	Single player game:
 		game_type= _game_of_kill_monsters;
 		game_options= 0
 */
 
-struct game_data 
+struct game_data
 {
 	/* Used for the net game, decrement each tick.  Used for the */
 	/*  single player game-> set to LONG_MAX, and decremented over time, so */
 	/*  that you know how long it took you to solve the game. */
-	long game_time_remaining;  
+	long game_time_remaining;
 	short game_type; /* One of previous enum's */
 	short game_options;
 	short kill_limit;
@@ -764,17 +764,17 @@ struct dynamic_data
 {
 	/* ticks since the beginning of the game */
 	long tick_count;
-	
+
 	/* the real seed is static in WORLD.C; must call set_random_seed() */
 	word random_seed;
-	
+
 	/* This is stored in the dynamic_data so that it is valid across */
 	/* saves. */
 	struct game_data game_information;
-	
+
 	short player_count;
 	short speaking_player_index;
-	
+
 	short unused;
 	short platform_count;
 	short endpoint_count;
@@ -784,27 +784,27 @@ struct dynamic_data
 	short lightsource_count;
 	short map_index_count;
 	short ambient_sound_image_count, random_sound_image_count;
-	
+
 	/* statistically unlikely to be valid */
 	short object_count;
 	short monster_count;
 	short projectile_count;
 	short effect_count;
 	short light_count;
-	
+
 	short default_annotation_count;
 	short personal_annotation_count;
-	
+
 	short initial_objects_count;
-	
+
 	short garbage_object_count;
 
-	/* used by move_monsters() to decide who gets to generate paths, etc. */	
+	/* used by move_monsters() to decide who gets to generate paths, etc. */
 	short last_monster_index_to_get_time, last_monster_index_to_build_path;
 
 	/* variables used by new_monster() to adjust for different difficulty levels */
 	short new_monster_mangler_cookie, new_monster_vanishing_cookie;
-	
+
 	/* number of civilians killed by players; periodically decremented */
 	short civilians_killed_by_players;
 
@@ -815,10 +815,10 @@ struct dynamic_data
 	short current_item_count[MAXIMUM_OBJECT_TYPES];
 
 	short current_level_number;   // what level the user is currently exploring.
-	
+
 	short current_civilian_causalties, current_civilian_count;
 	short total_civilian_causalties, total_civilian_count;
-	
+
 	world_point2d game_beacon;
 	short game_player_index;
 };
@@ -898,7 +898,7 @@ struct shape_and_transfer_mode
 {
 	/* extended shape descriptor */
 	short collection_code, low_level_shape_index;
-	
+
 	short transfer_mode;
 	fixed transfer_phase; /* [0,FIXED_ONE] */
 };
@@ -1042,13 +1042,13 @@ void left_polygon(short index);
 /* ---------- prototypes/DEVICES.C */
 
 void mark_control_panel_shapes(boolean load);
-void initialize_control_panels_for_level(void); 
+void initialize_control_panels_for_level(void);
 void update_control_panels(void);
 
 boolean control_panel_in_environment(short control_panel_type, short environment_code);
 
 void change_device_state(short device_index, boolean active);
-short new_device(world_point2d *location, short initial_polygon_index, 
+short new_device(world_point2d *location, short initial_polygon_index,
 	short type, short extra_data, boolean active);
 void update_action_key(short player_index, boolean triggered);
 
@@ -1076,17 +1076,17 @@ boolean select_map_to_use(void);
 
 /* Call with location of NULL to get the number of start locations for a */
 /* given team or player */
-short get_player_starting_location_and_facing(short team, short index, 
+short get_player_starting_location_and_facing(short team, short index,
 	struct object_location *location);
 
 void pause_game(void);
 void resume_game(void);
 
-boolean get_indexed_entry_point(struct entry_point *entry_point, 
+boolean get_indexed_entry_point(struct entry_point *entry_point,
 	short *index, long type);
-boolean new_game(short number_of_players, boolean network, 
+boolean new_game(short number_of_players, boolean network,
 	struct game_data *game_information,
-	struct player_start_data *player_start_information, 
+	struct player_start_data *player_start_information,
 	struct entry_point *entry_point);
 boolean goto_level(struct entry_point *entry, boolean new_game);
 #endif

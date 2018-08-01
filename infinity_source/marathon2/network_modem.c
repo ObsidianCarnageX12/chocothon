@@ -60,7 +60,7 @@ OSErr initialize_modem_endpoint(
 {
 	OSErr error;
 	static boolean first_time= TRUE;
-	
+
 	assert(communications_toolbox_present());
 	if(first_time)
 	{
@@ -73,12 +73,12 @@ OSErr initialize_modem_endpoint(
 				error= InitCM();
 			}
 		}
-	} 
-	else 
+	}
+	else
 	{
 		error= noErr;
 	}
-	
+
 	return error;
 }
 
@@ -105,13 +105,13 @@ OSErr teardown_modem_endpoint(
 		}
 		CMDispose(connection_handle);
 		connection_handle= NULL;
-		
+
 		for(index= 0; index<NUMBER_OF_ASYNCHRONOUS_BUFFERS; ++index)
 		{
 			DisposePtr((Ptr) asynchronous_buffers[index]);
 		}
 	}
-	
+
 	return error;
 }
 
@@ -161,7 +161,7 @@ OSErr write_modem_endpoint(
 	word data_size= length;
 
 	assert(connection_handle);
-	
+
 	data_written= length;
 	err= CMWrite(connection_handle, data, &data_written,
 		cmData, FALSE, NULL, timeout, 0);
@@ -180,12 +180,12 @@ OSErr read_modem_endpoint(
 	CMErr err;
 
 	assert(connection_handle);
-	
+
 	data_read= length;
 	err= CMRead(connection_handle, data, &data_read,
 		cmData, FALSE, NULL, timeout, 0);
 	vassert(!err && data_read==length,
-		csprintf(temporary, "Err: %d Data read: %d requested: %d", 
+		csprintf(temporary, "Err: %d Data read: %d requested: %d",
 			err, data_read, length));
 
 	return err;
@@ -205,7 +205,7 @@ void write_modem_endpoint_asynchronous(
 	assert(length<kBufferSize);
 	memcpy(asynchronous_buffers[_write_buffer], data, length);
 	data_written= length;
-	err= CMWrite(connection_handle, asynchronous_buffers[_write_buffer], 
+	err= CMWrite(connection_handle, asynchronous_buffers[_write_buffer],
 		&data_written, cmData, TRUE, NULL, timeout, 0);
 	assert(!err);
 
@@ -222,12 +222,12 @@ boolean asynchronous_write_completed(
 
 	error= CMStatus(connection_handle, sizes, &flags);
 	assert(!error);
-	
+
 	if(flags & cmStatusDWPend)
 	{
 		complete= FALSE;
 	}
-	
+
 	return complete;
 }
 
@@ -258,10 +258,10 @@ long modem_read_bytes_available(
 	assert(connection_handle);
 	error= CMStatus(connection_handle, sizes, &flags);
 	assert(sizes[cmDataIn]&&(flags&cmStatusDataAvail) || !sizes[cmDataIn]);
-	
+
 	return sizes[cmDataIn];
 }
-	
+
 /* ------------ local code */
 static boolean communications_toolbox_present(
 	void)
@@ -272,7 +272,7 @@ static boolean communications_toolbox_present(
 	{
 		installed= FALSE;
 	}
-	
+
 	return installed;
 }
 
@@ -288,15 +288,15 @@ static ConnHandle instantiate_connection_record(
 	if(procID==NONE)
 	{
 		OSErr err;
-		
+
 		err= CRMGetIndToolName(classCM, 1, (StringPtr)temporary);
-		if(!err) 
+		if(!err)
 		{
 			procID= CMGetProcID((StringPtr)temporary);
 		}
 	}
-	
-	if(procID!=NONE) 
+
+	if(procID!=NONE)
 	{
 		CMBufferSizes buff_sizes;
 		short index;
@@ -332,7 +332,7 @@ static pascal void listen_completion_routine(
 {
 	listen_error= (*connection)->errCode;
 	listen_completed= TRUE;
-	
+
 	return;
 }
 
@@ -358,21 +358,21 @@ static boolean establish_connection(
 		MoveHHi((Handle) connection_handle);
 		HLock((Handle) connection_handle);
 
-		/* Save the preferences. */	
+		/* Save the preferences. */
 		save_connection_preferences();
 
 		/* Save off the name of the tool they are using.. */
 		save_connection_preferences();
-				
+
 		completion_proc= NewConnectionCompletionProc(listen_completion_routine);
 		assert(completion_proc);
-				
+
 		/* Open the listening dialog. */
 		listen_completed= FALSE;
-				
+
 		dialog= GetNewDialog(dlogAWAITING_ANSWER, NULL, (WindowPtr) -1l);
 		assert(dialog);
-				
+
 		/* Start listening.. */
 		if(calling)
 		{
@@ -385,27 +385,27 @@ static boolean establish_connection(
 				listen_error= CMOpen(connection_handle, TRUE, completion_proc, MODEM_OPEN_TIMEOUT);
 			}
 		}
-		
+
 		while(!listen_completed && !cancelled && !listen_error)
 		{
 			ModalDialog(NULL, &item_hit);
-		
+
 			/* This needs to go into the general idle proc.. */
 			idle_modem_endpoint();
 			if(item_hit==iCANCEL) cancelled= TRUE;
-			
+
 			if(!calling)
 			{
 				CMBufferSizes sizes;
 				CMStatFlags flags;
-			
+
 				assert(connection_handle);
 				listen_error= CMStatus(connection_handle, sizes, &flags);
 dprintf("CMStatus returned: %d", listen_error);
 				if(flags & cmStatusIncomingCallPresent)
-				{	
+				{
 					boolean accept_call= FALSE;
-				
+
 					/* Should we accept this call */
 					accept_call= TRUE;
 dprintf("Incoming call present!");
@@ -415,15 +415,15 @@ dprintf("CMAccept returned: %d", listen_error);
 				}
 			}
 		}
-		
+
 		/* Get rid of the dialog.. */
 		DisposeDialog(dialog);
-		
+
 		/* Check for errors... */
 		if(listen_error==cmNoErr && !cancelled)
 		{
 			success= TRUE;
-			
+
 			/* And save the preferences... */
 		} else {
 			if(!cancelled)
@@ -432,7 +432,7 @@ dprintf("CMAccept returned: %d", listen_error);
 				alert_user(fatalError, strNETWORK_ERRORS, netErrCantContinue, listen_error);
 			}
 		}
-		
+
 		DisposeRoutineDescriptor(completion_proc);
 	}
 
@@ -447,11 +447,11 @@ static void save_connection_preferences(
 	CMGetToolName((*connection_handle)->procID, stored_tool_name);
 	data= CMGetConfig(connection_handle);
 	assert(data);
-	
+
 	/* Save the connection data.. */
-	
+
 	DisposePtr(data);
-	
+
 	return;
 }
 
@@ -459,7 +459,7 @@ static void load_connection_tool_name_from_preferences(
 	char *name)
 {
 	strcpy(name, (char *)"\pSerial Tool");
-	
+
 	return;
 }
 
@@ -467,9 +467,9 @@ static void load_connection_preferences(
 	void)
 {
 	Ptr configuration= NULL;
-	
+
 	/* Load the tool name.. */
-	
+
 	if(configuration)
 	{
 		/* Setup the configuration from stored values */

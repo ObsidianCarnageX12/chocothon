@@ -11,7 +11,7 @@ MakeFile=
 
 # default dependency rule for .ppc.o files
 .ppc.o ƒ .c
-	MrC {Default}.c {PPCCOptions} -o "{ObjPPC}"{Default}.ppc.o 
+	MrC {Default}.c {PPCCOptions} -o "{ObjPPC}"{Default}.ppc.o
 
 Headers= "{CSeriesInterfaces}"cseries.h "{CSeriesInterfaces}"my32bqd.h "{CSeriesInterfaces}"rle.h "{CSeriesInterfaces}"checksum.h ∂
 	"{CSeriesInterfaces}"preferences.h "{CSeriesInterfaces}"macintosh_cseries.h "{CSeriesInterfaces}"proximity_strcmp.h ∂

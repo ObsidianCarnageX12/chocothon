@@ -107,13 +107,13 @@ struct replay_private_data {
 	boolean game_is_being_recorded;
 	boolean have_read_last_chunk;
 	ActionQueue *recording_queues;
-	
+
 	short vRefNum; // for free bytes check
 	short recording_file_refnum;
 	char *fsread_buffer;
 	char *location_in_cache;
 	long bytes_in_cache;
-	
+
 	long film_resource_offset;
 	Handle film_resource;
 };
@@ -158,7 +158,7 @@ ActionQueue *get_player_recording_queue(
 {
 	assert(replay.recording_queues);
 	assert(player_index>=0 && player_index<MAXIMUM_NUMBER_OF_PLAYERS);
-	
+
 	return (replay.recording_queues+player_index);
 }
 #endif
@@ -198,12 +198,12 @@ void initialize_keyboard_controller(
 	void)
 {
 	ActionQueue  *queue;
-	
+
 	vassert(NUMBER_OF_KEYS == NUMBER_OF_STANDARD_KEY_DEFINITIONS,
 		csprintf(temporary, "NUMBER_OF_KEYS == %d, NUMBER_OF_KEY_DEFS = %d. Not Equal!", NUMBER_OF_KEYS, NUMBER_OF_STANDARD_KEY_DEFINITIONS));
 	assert(NUMBER_OF_STANDARD_KEY_DEFINITIONS==NUMBER_OF_LEFT_HANDED_KEY_DEFINITIONS);
 	assert(NUMBER_OF_LEFT_HANDED_KEY_DEFINITIONS==NUMBER_OF_POWERBOOK_KEY_DEFINITIONS);
-	
+
 	// get globals initialized
 	heartbeat_count= 0;
 	input_task_active= FALSE;
@@ -211,21 +211,21 @@ void initialize_keyboard_controller(
 	replay.game_is_being_recorded= FALSE;
 	replay.game_is_being_replayed= FALSE;
 	saved_header_size= NONE;
-	
+
 	if (input_task == NULL)
 	{
 		input_task = myTMSetup(1000/TICKS_PER_SECOND, input_controller);
 		assert(input_task);
-	
+
 		atexit(remove_input_controller);
 
 		set_keys(input_preferences->keycodes);
 	}
-	
+
 	if (recording_queues == NULL)
 	{
 		short player_index;
-	
+
 		recording_queues = (ActionQueue *) NewPtr(MAXIMUM_NUMBER_OF_PLAYERS * sizeof(ActionQueue));
 		assert(recording_queues);
 		for (player_index= 0; player_index<MAXIMUM_NUMBER_OF_PLAYERS; player_index++)
@@ -238,7 +238,7 @@ void initialize_keyboard_controller(
 	}
 
 	enter_mouse(0);
-	
+
 	return;
 }
 #endif
@@ -313,18 +313,18 @@ void sync_heartbeat_count(
  *
  *********************************************************************************************/
 void start_recording(
-	long header_size, 
+	long header_size,
 	byte *header)
 {
 	FSSpec recording_file;
 	long   count;
 	OSErr error;
-	
+
 	if(get_recording_fsspec(&recording_file))
 	{
 		FSpDelete(&recording_file);
 	}
-	
+
 	error= FSpCreate(&recording_file, APPLICATION_CREATOR, FILM_FILE_TYPE, smSystemScript);
 	if(!error)
 	{
@@ -334,9 +334,9 @@ void start_recording(
 		{
 			game_is_being_recorded= TRUE;
 			recording_vrefnum= recording_file.vRefNum;
-	
+
 			// save a header containing information about the game.
-			count = header_size; 
+			count = header_size;
 			FSWrite(recording_file_refnum, &count, header);
 			saved_header_size = header_size;
 		}
@@ -346,7 +346,7 @@ void start_recording(
 /*********************************************************************************************
  *
  * Function: rewind_recording
- * Purpose:  essentially, erase the recording and start over again, with the same 
+ * Purpose:  essentially, erase the recording and start over again, with the same
  *           header block. this is done when a game is being recorded and was reverted.
  *           This function is safe even if we aren't currently recording.
  *
@@ -358,7 +358,7 @@ void rewind_recording(
 	{
 		/* This is unnecessary, because it is called from reset_player_queues, */
 		/* which is always called from revert_game */
-//		reset_recording_and_playback_queues(); 
+//		reset_recording_and_playback_queues();
 		SetEOF(recording_file_refnum, saved_header_size);
 		SetFPos(recording_file_refnum, fsFromLEOF, 0);
 	}
@@ -376,7 +376,7 @@ void stop_recording(
 	if (game_is_being_recorded)
 	{
 		short player_index;
-	
+
 		for (player_index= 0; player_index<dynamic_world->player_count; player_index++)
 		{
 //dprintf("Final queue size: %d", get_recording_queue_size(player_index));
@@ -389,7 +389,7 @@ void stop_recording(
 		/* Unecessary, because reset_player_queues calls this. */
 //		reset_recording_and_playback_queues();
 	}
-	
+
 	return;
 }
 
@@ -400,12 +400,12 @@ void stop_recording(
  *
  *********************************************************************************************/
 boolean start_replay(
-	long header_size, 
-	byte *header, 
+	long header_size,
+	byte *header,
 	boolean prompt_user_for_location)
 {
 	boolean successful = FALSE;
-	
+
 	if (prompt_user_for_location)
 	{
 		StandardFileReply reply;
@@ -413,7 +413,7 @@ boolean start_replay(
 		short type_count= 0;
 
 		types[type_count++]= FILM_FILE_TYPE;
-		
+
 		StandardGetFile(NULL, type_count, types, &reply);
 		if (reply.sfGood)
 		{
@@ -429,7 +429,7 @@ boolean start_replay(
 			successful= setup_replay_from_file(&recording_file_location, header, header_size);
 		}
 	}
-	
+
 	return successful;
 }
 
@@ -445,29 +445,29 @@ boolean setup_replay_from_file(
 	if(!error && recording_file_refnum > 0)
 	{
 		long count;
-	
+
 		have_read_last_chunk = FALSE;
 		game_is_being_replayed = TRUE;
 		film_resource = NULL;
 		film_resource_offset = -1;
-		
-		count= header_size; 
+
+		count= header_size;
 		FSRead(recording_file_refnum, &count, header);
 
-		fsread_buffer= NewPtr(DISK_CACHE_SIZE); 
+		fsread_buffer= NewPtr(DISK_CACHE_SIZE);
 		assert(fsread_buffer);
 		if(!fsread_buffer) alert_user(fatalError, strERRORS, outOfMemory, MemError());
-		
+
 		location_in_cache= NULL;
 		bytes_in_cache= 0;
 		replay_speed= 1;
-		
+
 #ifdef DEBUG_REPLAY
 		open_stream_file();
 #endif
 		successful= TRUE;
 	}
-	
+
 	return successful;
 }
 
@@ -479,14 +479,14 @@ boolean setup_replay_from_file(
  *
  *********************************************************************************************/
 boolean start_replay_from_random_resource(
-	long header_size, 
+	long header_size,
 	byte *header)
 {
 	short number_of_films;
 	short which_film_to_play;
 	static short index_of_last_film_played= 0;
 	boolean success= FALSE;
-	
+
 	number_of_films = CountResources(FILM_RESOURCE_TYPE);
 	if(number_of_films > 0)
 	{
@@ -496,28 +496,28 @@ boolean start_replay_from_random_resource(
 		}
 		else
 		{
-			for (which_film_to_play = index_of_last_film_played; 
+			for (which_film_to_play = index_of_last_film_played;
 					which_film_to_play == index_of_last_film_played;
 					which_film_to_play = (abs(Random()) % number_of_films))
 				;
 			index_of_last_film_played= which_film_to_play;
 		}
-	
+
 		film_resource = GetIndResource(FILM_RESOURCE_TYPE, which_film_to_play+1);
 		vassert(film_resource, csprintf(temporary, "film_to_play = %d", which_film_to_play+1));
 		film_resource_offset= 0;
 		have_read_last_chunk= FALSE;
 		game_is_being_replayed= TRUE;
 		success= TRUE;
-		
+
 		heartbeat_count= 0;
-		
+
 		BlockMove(*film_resource, header, header_size);
 		film_resource_offset += header_size;
-		
+
 		replay_speed= 1;
 	}
-	
+
 	return success;
 }
 #endif
@@ -552,7 +552,7 @@ void stop_replay(
 	/* Unecessary, because reset_player_queues calls this. */
 //	reset_recording_and_playback_queues();
 	replay.valid= FALSE;
-	
+
 	return;
 }
 
@@ -561,18 +561,18 @@ void move_replay(
 {
 	Str255 suggested_name;
 	StandardFileReply reply;
-	
+
 	getpstr(temporary, strPROMPTS, _save_replay_prompt);
 	getpstr(suggested_name, strFILENAMES, filenameMARATHON_RECORDING);
 	StandardPutFile(temporary, suggested_name, &reply);
 	if(reply.sfGood)
 	{
 		FSSpec source_spec;
-				
+
 		if(get_recording_fsspec(&source_spec))
 		{
 			OSErr err;
-		
+
 			/* If we are replacing.. */
 			if(reply.sfReplacing)
 			{
@@ -581,11 +581,11 @@ void move_replay(
 
 			err= copy_file(&source_spec, &reply.sfFile);
 
-			/* Alert them on problems */			
+			/* Alert them on problems */
 			if (err) alert_user(infoError, strERRORS, fileError, err);
 		}
 	}
-	
+
 	return;
 }
 
@@ -616,14 +616,14 @@ void check_recording_replaying(
 	if (game_is_being_recorded)
 	{
 		boolean enough_data_to_save= TRUE;
-	
+
 		// it's time to save the queues if all of them have >= RECORD_CHUNK_SIZE flags in them.
 		for (player_index= 0; enough_data_to_save && player_index<dynamic_world->player_count; player_index++)
 		{
 			queue_size= get_recording_queue_size(player_index);
 			if (queue_size < RECORD_CHUNK_SIZE)	enough_data_to_save= FALSE;
 		}
-		
+
 		if(enough_data_to_save)
 		{
 			OSErr error;
@@ -642,14 +642,14 @@ void check_recording_replaying(
 	else if (game_is_being_replayed)
 	{
 		boolean load_new_data= TRUE;
-	
+
 		// it's time to refill the requeues if they all have < RECORD_CHUNK_SIZE flags in them.
 		for (player_index= 0; load_new_data && player_index<dynamic_world->player_count; player_index++)
 		{
 			queue_size= get_recording_queue_size(player_index);
 			if(queue_size>= RECORD_CHUNK_SIZE) load_new_data= FALSE;
 		}
-		
+
 		if(load_new_data)
 		{
 			// at this point, we’ve determined that the queues are sufficently empty, so
@@ -668,7 +668,7 @@ short find_key_setup(
 {
 	short index, jj;
 	short key_setup= NONE;
-	
+
 	for (index= 0; key_setup==NONE && index<NUMBER_OF_KEY_SETUPS; index++)
 	{
 		struct key_definition *definition = all_key_definitions[index];
@@ -683,7 +683,7 @@ short find_key_setup(
 			key_setup= index;
 		}
 	}
-	
+
 	return key_setup;
 }
 
@@ -694,12 +694,12 @@ short find_key_setup(
  *
  *********************************************************************************************/
 void set_default_keys(
-	short *keycodes, 
+	short *keycodes,
 	short which_default)
 {
 	short i;
 	struct key_definition *definitions;
-	
+
 	assert(which_default >= 0 && which_default < NUMBER_OF_KEY_SETUPS);
 	definitions= all_key_definitions[which_default];
 	for (i= 0; i < NUMBER_OF_STANDARD_KEY_DEFINITIONS; i++)
@@ -719,10 +719,10 @@ void set_keys(
 {
 	short index;
 	struct key_definition *definitions;
-	
+
 	/* all of them have the same ordering, so which one we pick is moot. */
-	definitions = all_key_definitions[_standard_keyboard_setup]; 
-	
+	definitions = all_key_definitions[_standard_keyboard_setup];
+
 	for (index = 0; index < NUMBER_OF_STANDARD_KEY_DEFINITIONS; index++)
 	{
 		current_key_definitions[index].offset= keycodes[index];
@@ -730,7 +730,7 @@ void set_keys(
 		assert(current_key_definitions[index].offset <= 0x7f);
 	}
 	precalculate_key_information();
-	
+
 	return;
 }
 
@@ -741,7 +741,7 @@ void reset_recording_and_playback_queues(
 	void)
 {
 	short index;
-	
+
 	for(index= 0; index<MAXIMUM_NUMBER_OF_PLAYERS; ++index)
 	{
 		recording_queues[index].read_index= recording_queues[index].write_index= 0;
@@ -763,10 +763,10 @@ long parse_keymap(
 	KeyMap key_map;
 	struct key_definition *key= current_key_definitions;
 	struct special_flag_data *special= special_flags;
-	
+
 	GetKeys(&key_map);
 
-	/* parse the keymap */	
+	/* parse the keymap */
 	for (i=0;i<NUMBER_OF_STANDARD_KEY_DEFINITIONS;++i,++key)
 	{
 		if (*((byte*)key_map + key->offset) & key->mask) flags|= key->action_flag;
@@ -789,16 +789,16 @@ long parse_keymap(
 						flags|= special->alternate_flag;
 					}
 					break;
-				
+
 				case _latched_flag:
 					/* if this flag is latched and still being held down, mask it out */
 					if (special->persistence==MAXIMUM_FLAG_PERSISTENCE) flags&= ~special->flag;
 					break;
-				
+
 				default:
 					halt();
 			}
-			
+
 			special->persistence= MAXIMUM_FLAG_PERSISTENCE;
 		}
 		else
@@ -811,7 +811,7 @@ long parse_keymap(
 	if (input_preferences->input_device!=_keyboard_or_game_pad)
 	{
 		fixed delta_yaw, delta_pitch, delta_velocity;
-		
+
 		mouse_idle(input_preferences->input_device);
 		test_mouse(input_preferences->input_device, &flags, &delta_yaw, &delta_pitch, &delta_velocity);
 		flags= mask_in_absolute_positioning_information(flags, delta_yaw, delta_pitch, delta_velocity);
@@ -892,7 +892,7 @@ static boolean input_controller(
 					if (replay.replay_speed > 0 || (--phase<=0))
 					{
 						short flag_count= MAX(replay.replay_speed, 1);
-					
+
 						if (!pull_flags_from_recording(flag_count)) // oops. silly me.
 						{
 							if (replay.have_read_last_chunk)
@@ -902,12 +902,12 @@ static boolean input_controller(
 							}
 						}
 						else
-						{	
+						{
 							/* Increment the heartbeat.. */
 							heartbeat_count+= flag_count;
 						}
-	
-						/* Reset the phase-> doesn't matter if the replay speed is positive */					
+
+						/* Reset the phase-> doesn't matter if the replay speed is positive */
 						/* +1 so that replay_speed 0 is different from replay_speed 1 */
 						phase= -(replay.replay_speed) + 1;
 					}
@@ -916,7 +916,7 @@ static boolean input_controller(
 			else // then getting input from the keyboard/mouse
 			{
 				long action_flags= parse_keymap();
-				
+
 				process_action_flags(local_player_index, &action_flags, 1);
 				heartbeat_count++; // ba-doom
 			}
@@ -924,7 +924,7 @@ static boolean input_controller(
 // dprintf("Out of phase.. (%d);g", heartbeat_count - dynamic_world->tick_count);
 		}
 	}
-	
+
 	return TRUE; // tells the time manager library to reschedule this task
 }
 
@@ -935,8 +935,8 @@ static boolean input_controller(
  *
  *********************************************************************************************/
 void process_action_flags(
-	short player_identifier, 
-	long *action_flags, 
+	short player_identifier,
+	long *action_flags,
 	short count)
 {
 	if (replay.game_is_being_recorded)
@@ -954,13 +954,13 @@ void process_action_flags(
  *
  *********************************************************************************************/
 static void record_action_flags(
-	short player_identifier, 
-	long *action_flags, 
+	short player_identifier,
+	long *action_flags,
 	short count)
 {
 	short index;
 	ActionQueue  *queue;
-	
+
 	queue= get_player_recording_queue(player_identifier);
 	assert(queue && queue->write_index >= 0 && queue->write_index < MAXIMUM_QUEUE_SIZE);
 	for (index= 0; index<count; index++)
@@ -993,15 +993,15 @@ static void save_recording_queue_chunk(
 	{
 		buffer = (long *)NewPtr((RECORD_CHUNK_SIZE * sizeof(long)) + RECORD_CHUNK_SIZE * sizeof(short));
 	}
-	
+
 	location= buffer;
 	count= 0; // keeps track of how many bytes we'll save.
 	last_flag= NONE;
 
 	queue= get_player_recording_queue(player_index);
-	
+
 	// don't want to save too much stuff
-	max_flags= MIN(RECORD_CHUNK_SIZE, get_recording_queue_size(player_index)); 
+	max_flags= MIN(RECORD_CHUNK_SIZE, get_recording_queue_size(player_index));
 
 	// save what's in the queue
 	run_count= num_flags_saved= 0;
@@ -1009,7 +1009,7 @@ static void save_recording_queue_chunk(
 	{
 		flag = *(queue->buffer + queue->read_index);
 		INCREMENT_QUEUE_COUNTER(queue->read_index);
-		
+
 		if (i && flag != last_flag)
 		{
 			*(short*)location = run_count;
@@ -1025,14 +1025,14 @@ static void save_recording_queue_chunk(
 		}
 		last_flag = flag;
 	}
-	
+
 	// now save the final run
 	*(short*)location = run_count;
 	((short*)location)++;
 	*location++ = last_flag;
 	count += sizeof(short) + sizeof(long);
 	num_flags_saved += run_count;
-	
+
 	if (max_flags<RECORD_CHUNK_SIZE)
 	{
 		*(short*)location = END_OF_RECORDING_INDICATOR;
@@ -1041,12 +1041,12 @@ static void save_recording_queue_chunk(
 		count += sizeof(short) + sizeof(long);
 		num_flags_saved += RECORD_CHUNK_SIZE-max_flags;
 	}
-	
+
 	FSWrite(replay.recording_file_refnum, &count, buffer);
 	replay.header.length+= count;
-		
+
 	vwarn(num_flags_saved == RECORD_CHUNK_SIZE,
-		csprintf(temporary, "bad recording: %d flags, max=%d, count = %d;dm #%d #%d", num_flags_saved, max_flags, 
+		csprintf(temporary, "bad recording: %d flags, max=%d, count = %d;dm #%d #%d", num_flags_saved, max_flags,
 			count, buffer, count));
 }
 
@@ -1066,9 +1066,9 @@ static void read_recording_queue_chunks(
 	short        count, player_index, num_flags;
 	OSErr        error;
 	ActionQueue  *queue;
-	
+
 	if (replay.film_resource) film_size = GetHandleSize(replay.film_resource);
-	
+
 	for (player_index = 0; player_index < dynamic_world->player_count; player_index++)
 	{
 		queue= get_player_recording_queue(player_index);
@@ -1077,7 +1077,7 @@ static void read_recording_queue_chunks(
 			if (replay.film_resource)
 			{
 				boolean hit_end= FALSE;
-				
+
 				if (replay.film_resource_offset >= film_size)
 				{
 					hit_end = TRUE;
@@ -1090,7 +1090,7 @@ static void read_recording_queue_chunks(
 					action_flags = * (long *) (*replay.film_resource + replay.film_resource_offset);
 					replay.film_resource_offset += sizeof(action_flags);
 				}
-				
+
 				if (hit_end || num_flags == END_OF_RECORDING_INDICATOR)
 				{
 					replay.have_read_last_chunk= TRUE;
@@ -1107,7 +1107,7 @@ static void read_recording_queue_chunks(
 					error = vblFSRead(replay.recording_file_refnum, &sizeof_read, &action_flags);
 					assert(error == noErr || (error == eofErr && sizeof_read == sizeof(action_flags)));
 				}
-				
+
 				if ((error == eofErr && sizeof_read != sizeof(long)) || num_flags == END_OF_RECORDING_INDICATOR)
 				{
 					replay.have_read_last_chunk = TRUE;
@@ -1116,7 +1116,7 @@ static void read_recording_queue_chunks(
 			}
 			assert(replay.have_read_last_chunk || num_flags);
 			count += num_flags;
-			vassert((num_flags != 0 && count <= RECORD_CHUNK_SIZE) || replay.have_read_last_chunk, 
+			vassert((num_flags != 0 && count <= RECORD_CHUNK_SIZE) || replay.have_read_last_chunk,
 				csprintf(temporary, "num_flags = %d, count = %d", num_flags, count));
 			for (i = 0; i < num_flags; i++)
 			{
@@ -1141,7 +1141,7 @@ static boolean pull_flags_from_recording(
 {
 	short player_index;
 	boolean success= TRUE;
-	
+
 	// first check that we can pull something from each player’s queue
 	// (at the beginning of the game, we won’t be able to)
 	// i'm not sure that i really need to do this check. oh well.
@@ -1156,7 +1156,7 @@ static boolean pull_flags_from_recording(
 		{
 			short index;
 			ActionQueue  *queue;
-		
+
 			queue= get_player_recording_queue(player_index);
 			for (index= 0; index<count; index++)
 			{
@@ -1173,7 +1173,7 @@ dprintf("Dropping flag?");
 			}
 		}
 	}
-	
+
 	return success;
 }
 
@@ -1181,20 +1181,20 @@ dprintf("Dropping flag?");
  *
  * Function: vblFSRead
  * Purpose:  a replacement for FSRead, only used in this file (from read_recording_queue_chunks)
- *           It is called exactly like FSRead. It reads in a bigger chunk than necessary, so 
+ *           It is called exactly like FSRead. It reads in a bigger chunk than necessary, so
  *           that we don't call FSRead so often. This is particularly important since FSRead is
  *           currently not native on the powermacs.
  * Note:     This limits read calls so that you can only read less than DISK_CACHE_SIZE bytes.
  *
  *********************************************************************************************/
-static OSErr vblFSRead(short 
-	refnum, 
-	long *count, 
+static OSErr vblFSRead(short
+	refnum,
+	long *count,
 	void *dest)
 {
 	long   fsread_count;
 	OSErr  error = noErr;
-	
+
 	assert(replay.fsread_buffer);
 
 	if (replay.bytes_in_cache < *count)
@@ -1219,11 +1219,11 @@ static OSErr vblFSRead(short
 	{
 		error = noErr;
 	}
-	
+
 	BlockMove(replay.location_in_cache, dest, *count);
 	replay.bytes_in_cache -= *count;
 	replay.location_in_cache += *count;
-	
+
 	return error;
 }
 
@@ -1234,12 +1234,12 @@ static OSErr get_freespace_on_disk(
 	OSErr           error;
 	HParamBlockRec  parms;
 
-	memset(&parms, 0, sizeof(HParamBlockRec));	
+	memset(&parms, 0, sizeof(HParamBlockRec));
 	parms.volumeParam.ioCompletion = NULL;
 	parms.volumeParam.ioVolIndex = 0;
 	parms.volumeParam.ioNamePtr = temporary;
 	parms.volumeParam.ioVRefNum = vRefNum;
-	
+
 	error = PBHGetVInfo(&parms, FALSE);
 	if (error == noErr)
 		*free_space = (unsigned long) parms.volumeParam.ioVAlBlkSiz * (unsigned long) parms.volumeParam.ioVFrBlk;
@@ -1255,7 +1255,7 @@ static short get_recording_queue_size(
 	/* Note that this is a circular queue */
 	size= queue->write_index-queue->read_index;
 	if(size<0) size+= MAXIMUM_QUEUE_SIZE;
-	
+
 	return size;
 }
 
@@ -1269,14 +1269,14 @@ static void precalculate_key_information(
 	void)
 {
 	short i;
-	
+
 	/* convert raw key codes to offets and masks */
 	for (i = 0; i < NUMBER_OF_STANDARD_KEY_DEFINITIONS; ++i)
 	{
 		current_key_definitions[i].mask = 1 << (current_key_definitions[i].offset&7);
 		current_key_definitions[i].offset >>= 3;
 	}
-	
+
 	return;
 }
 
@@ -1294,7 +1294,7 @@ static boolean get_recording_fsspec(
 		getpstr(temporary, strFILENAMES, filenameMARATHON_RECORDING);
 		error= FSMakeFSSpec(vRef, parID, temporary, file);
 	}
-	
+
 	return (error==noErr);
 }
 
@@ -1306,7 +1306,7 @@ static OSErr copy_file(
 {
 	OSErr err;
 	FInfo info;
-	
+
 	err= FSpGetFInfo(source, &info);
 	if(!err)
 	{
@@ -1314,7 +1314,7 @@ static OSErr copy_file(
 		if(!err)
 		{
 			short dest_refnum, source_refnum;
-		
+
 			err= FSpOpenDF(destination, fsWrPerm, &dest_refnum);
 			if(!err)
 			{
@@ -1324,20 +1324,20 @@ static OSErr copy_file(
 					/* Everything is opened. Do the deed.. */
 					Ptr data;
 					long total_length;
-					
+
 					SetFPos(source_refnum, fsFromLEOF, 0l);
 					GetFPos(source_refnum, &total_length);
 					SetFPos(source_refnum, fsFromStart, 0l);
-					
+
 					data= NewPtr(COPY_BUFFER_SIZE);
 					if(data)
 					{
 						long running_length= total_length;
-						
+
 						while(running_length && !err)
 						{
 							long count= MIN(COPY_BUFFER_SIZE, running_length);
-						
+
 							err= FSRead(source_refnum, &count, data);
 							if(!err)
 							{
@@ -1345,12 +1345,12 @@ static OSErr copy_file(
 							}
 							running_length -= count;
 						}
-					
+
 						DisposePtr(data);
 					} else {
 						err= MemError();
 					}
-					
+
 					FSClose(source_refnum);
 				}
 
@@ -1361,7 +1361,7 @@ static OSErr copy_file(
 			if(err) FSpDelete(destination);
 		}
 	}
-	
+
 	return err;
 }
 
@@ -1386,20 +1386,20 @@ static void open_stream_file(
 
 	get_my_fsspec(&file);
 	memcpy(file.name, name, name[0]+1);
-	
+
 	FSpDelete(&file);
 	error= FSpCreate(&file, 'ttxt', 'TEXT', smSystemScript);
 	if(error) dprintf("Err:%d", error);
 	error= FSpOpenDF(&file, fsWrPerm, &stream_refnum);
 	if(error || stream_refnum==NONE) dprintf("Open Err:%d", error);
-	
+
 	action_flag_buffer= (struct recorded_flag *) malloc(MAXIMUM_STREAM_FLAGS*sizeof(struct recorded_flag));
 	assert(action_flag_buffer);
 	action_flag_index= 0;
 }
 
 static void write_flags(
-	struct recorded_flag *buffer, 
+	struct recorded_flag *buffer,
 	long count)
 {
 	long index, size;
@@ -1414,18 +1414,18 @@ static void write_flags(
 	if(sorted)
 	{
 		short player_index;
-		
+
 		for(player_index= 0; player_index<dynamic_world->player_count; ++player_index)
 		{
 			short player_action_flag_count= 0;
-		
+
 			for(index= 0; index<count; ++index)
 			{
 				if(buffer[index].player_index==player_index)
 				{
 					if(!(player_action_flag_count%TICKS_PER_SECOND))
 					{
-						sprintf(temporary, "%d 0x%08x (%d secs)\n", buffer[index].player_index, 
+						sprintf(temporary, "%d 0x%08x (%d secs)\n", buffer[index].player_index,
 							buffer[index].flag, player_action_flag_count/TICKS_PER_SECOND);
 					} else {
 						sprintf(temporary, "%d 0x%08x\n", buffer[index].player_index, buffer[index].flag);
@@ -1472,7 +1472,7 @@ static void close_stream_file(
 
 		write_flags(action_flag_buffer, action_flag_index-1);
 		FSClose(stream_refnum);
-		
+
 		free(action_flag_buffer);
 		action_flag_buffer= NULL;
 	}
@@ -1480,11 +1480,11 @@ static void close_stream_file(
 #endif
 
 void set_recording_header_data(
-	short number_of_players, 
-	short level_number, 
+	short number_of_players,
+	short level_number,
 	unsigned long map_checksum,
-	short version, 
-	struct player_start_data *starts, 
+	short version,
+	struct player_start_data *starts,
 	struct game_data *game_information)
 {
 	assert(!replay.valid);
@@ -1501,11 +1501,11 @@ void set_recording_header_data(
 }
 
 void get_recording_header_data(
-	short *number_of_players, 
-	short *level_number, 
+	short *number_of_players,
+	short *level_number,
 	unsigned long *map_checksum,
-	short *version, 
-	struct player_start_data *starts, 
+	short *version,
+	struct player_start_data *starts,
 	struct game_data *game_information)
 {
 	assert(replay.valid);
@@ -1515,7 +1515,7 @@ void get_recording_header_data(
 	*version= replay.header.version;
 	memcpy(starts, replay.header.starts, MAXIMUM_NUMBER_OF_PLAYERS*sizeof(struct player_start_data));
 	memcpy(game_information, &replay.header.game_information, sizeof(struct game_data));
-	
+
 	return;
 }
 
@@ -1530,34 +1530,34 @@ boolean setup_for_replay_from_file(
 	if(!error && replay.recording_file_refnum > 0)
 	{
 		long count;
-	
+
 		replay.valid= TRUE;
 		replay.have_read_last_chunk = FALSE;
 		replay.game_is_being_replayed = TRUE;
 		replay.film_resource= NULL;
 		replay.film_resource_offset= NONE;
-		
-		count= sizeof(struct recording_header); 
+
+		count= sizeof(struct recording_header);
 		FSRead(replay.recording_file_refnum, &count, &replay.header);
 
 		if(replay.header.map_checksum==map_checksum)
 		{
-			replay.fsread_buffer= NewPtr(DISK_CACHE_SIZE); 
+			replay.fsread_buffer= NewPtr(DISK_CACHE_SIZE);
 			assert(replay.fsread_buffer);
 			if(!replay.fsread_buffer) alert_user(fatalError, strERRORS, outOfMemory, MemError());
-			
+
 			replay.vRefNum= file->vRefNum;
 			replay.location_in_cache= NULL;
 			replay.bytes_in_cache= 0;
 			replay.replay_speed= 1;
-			
+
 #ifdef DEBUG_REPLAY
 			open_stream_file();
 #endif
 			successful= TRUE;
 		}
 	}
-	
+
 	return successful;
 }
 
@@ -1567,7 +1567,7 @@ boolean setup_replay_from_random_resource(
 	short number_of_films;
 	static short index_of_last_film_played= 0;
 	boolean success= FALSE;
-	
+
 	number_of_films= Count1Resources(FILM_RESOURCE_TYPE);
 	if(number_of_films > 0)
 	{
@@ -1579,18 +1579,18 @@ boolean setup_replay_from_random_resource(
 		}
 		else
 		{
-			for (which_film_to_play = index_of_last_film_played; 
+			for (which_film_to_play = index_of_last_film_played;
 					which_film_to_play == index_of_last_film_played;
 					which_film_to_play = (abs(Random()) % number_of_films))
 				;
 			index_of_last_film_played= which_film_to_play;
 		}
-	
+
 		replay.film_resource= GetIndResource(FILM_RESOURCE_TYPE, which_film_to_play+1);
 		vassert(replay.film_resource, csprintf(temporary, "film_to_play = %d", which_film_to_play+1));
-		
+
 //		heartbeat_count= 0;
-		
+
 		HLock(replay.film_resource);
 		BlockMove(*replay.film_resource, &replay.header, sizeof(struct recording_header));
 		HUnlock(replay.film_resource);
@@ -1607,11 +1607,11 @@ boolean setup_replay_from_random_resource(
 			ReleaseResource(replay.film_resource);
 			replay.film_resource= NULL;
 		}
-		
+
 		replay.replay_speed= 1;
 		replay.valid= TRUE;
 	}
-	
+
 	return success;
 }
 
@@ -1622,15 +1622,15 @@ void start_recording(
 	FSSpec recording_file;
 	long count;
 	OSErr error;
-	
+
 	assert(!replay.valid);
 	replay.valid= TRUE;
-	
+
 	if(get_recording_fsspec(&recording_file))
 	{
 		FSpDelete(&recording_file);
 	}
-	
+
 	error= FSpCreate(&recording_file, APPLICATION_CREATOR, FILM_FILE_TYPE, smSystemScript);
 	if(!error)
 	{
@@ -1640,9 +1640,9 @@ void start_recording(
 		{
 			replay.game_is_being_recorded= TRUE;
 			replay.vRefNum= recording_file.vRefNum;
-	
+
 			// save a header containing information about the game.
-			count= sizeof(struct recording_header); 
+			count= sizeof(struct recording_header);
 			FSWrite(replay.recording_file_refnum, &count, &replay.header);
 		}
 	}
@@ -1664,9 +1664,9 @@ void stop_recording(
 		}
 
 		replay.game_is_being_recorded = FALSE;
-		
+
 		/* Rewrite the header, since it has the new length */
-		SetFPos(replay.recording_file_refnum, fsFromStart, 0l); 
+		SetFPos(replay.recording_file_refnum, fsFromStart, 0l);
 		count= sizeof(struct recording_header);
 		FSWrite(replay.recording_file_refnum, &count, &replay.header);
 		assert(count==sizeof(struct recording_header));
@@ -1674,13 +1674,13 @@ void stop_recording(
 		SetFPos(replay.recording_file_refnum, fsFromLEOF, 0l);
 		GetFPos(replay.recording_file_refnum, &total_length);
 		assert(total_length==replay.header.length);
-		
+
 		FSClose(replay.recording_file_refnum);
 
 	}
 
 	replay.valid= FALSE;
-	
+
 	return;
 }
 
@@ -1695,7 +1695,7 @@ void rewind_recording(
 		SetFPos(replay.recording_file_refnum, fsFromLEOF, 0);
 		replay.header.length= sizeof(struct recording_header);
 	}
-	
+
 	return;
 }
 
@@ -1704,12 +1704,12 @@ void initialize_keyboard_controller(
 {
 	ActionQueue *queue;
 	short player_index;
-	
+
 	vassert(NUMBER_OF_KEYS == NUMBER_OF_STANDARD_KEY_DEFINITIONS,
 		csprintf(temporary, "NUMBER_OF_KEYS == %d, NUMBER_OF_KEY_DEFS = %d. Not Equal!", NUMBER_OF_KEYS, NUMBER_OF_STANDARD_KEY_DEFINITIONS));
 	assert(NUMBER_OF_STANDARD_KEY_DEFINITIONS==NUMBER_OF_LEFT_HANDED_KEY_DEFINITIONS);
 	assert(NUMBER_OF_LEFT_HANDED_KEY_DEFINITIONS==NUMBER_OF_POWERBOOK_KEY_DEFINITIONS);
-	
+
 	// get globals initialized
 	heartbeat_count= 0;
 	input_task_active= FALSE;
@@ -1717,18 +1717,18 @@ void initialize_keyboard_controller(
 	replay.game_is_being_recorded= FALSE;
 	replay.game_is_being_replayed= FALSE;
 	replay.valid= FALSE;
-	
+
 	input_task = myTMSetup(1000/TICKS_PER_SECOND, input_controller);
 	assert(input_task);
-	
+
 	atexit(remove_input_controller);
 	set_keys(input_preferences->keycodes);
-	
-	/* Allocate the recording queues */	
+
+	/* Allocate the recording queues */
 	replay.recording_queues = (ActionQueue *) NewPtr(MAXIMUM_NUMBER_OF_PLAYERS * sizeof(ActionQueue));
 	assert(replay.recording_queues);
 	if(!replay.recording_queues) alert_user(fatalError, strERRORS, outOfMemory, MemError());
-	
+
 	/* Allocate the individual ones */
 	for (player_index= 0; player_index<MAXIMUM_NUMBER_OF_PLAYERS; player_index++)
 	{
@@ -1739,7 +1739,7 @@ void initialize_keyboard_controller(
 		if(!queue->buffer) alert_user(fatalError, strERRORS, outOfMemory, MemError());
 	}
 	enter_mouse(0);
-	
+
 	return;
 }
 
@@ -1751,14 +1751,14 @@ void check_recording_replaying(
 	if (replay.game_is_being_recorded)
 	{
 		boolean enough_data_to_save= TRUE;
-	
+
 		// it's time to save the queues if all of them have >= RECORD_CHUNK_SIZE flags in them.
 		for (player_index= 0; enough_data_to_save && player_index<dynamic_world->player_count; player_index++)
 		{
 			queue_size= get_recording_queue_size(player_index);
 			if (queue_size < RECORD_CHUNK_SIZE)	enough_data_to_save= FALSE;
 		}
-		
+
 		if(enough_data_to_save)
 		{
 			OSErr error;
@@ -1777,14 +1777,14 @@ void check_recording_replaying(
 	else if (replay.game_is_being_replayed)
 	{
 		boolean load_new_data= TRUE;
-	
+
 		// it's time to refill the requeues if they all have < RECORD_CHUNK_SIZE flags in them.
 		for (player_index= 0; load_new_data && player_index<dynamic_world->player_count; player_index++)
 		{
 			queue_size= get_recording_queue_size(player_index);
 			if(queue_size>= RECORD_CHUNK_SIZE) load_new_data= FALSE;
 		}
-		
+
 		if(load_new_data)
 		{
 			// at this point, we’ve determined that the queues are sufficently empty, so
@@ -1800,7 +1800,7 @@ void reset_recording_and_playback_queues(
 	void)
 {
 	short index;
-	
+
 	for(index= 0; index<MAXIMUM_NUMBER_OF_PLAYERS; ++index)
 	{
 		replay.recording_queues[index].read_index= replay.recording_queues[index].write_index= 0;
@@ -1808,11 +1808,11 @@ void reset_recording_and_playback_queues(
 }
 
 boolean find_replay_to_use(
-	boolean ask_user, 
+	boolean ask_user,
 	FSSpec *file)
 {
 	boolean successful = FALSE;
-	
+
 	if(ask_user)
 	{
 		StandardFileReply reply;
@@ -1820,7 +1820,7 @@ boolean find_replay_to_use(
 		short type_count= 0;
 
 		types[type_count++]= FILM_FILE_TYPE;
-		
+
 		StandardGetFile(NULL, type_count, types, &reply);
 		if (reply.sfGood)
 		{

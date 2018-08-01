@@ -57,7 +57,7 @@ boolean quit_without_saving(
 	short item_hit;
 	boolean quit= FALSE;
 	Point origin= {78, 134};
-	
+
 	dialog= myGetNewDialog(dlogQUIT_WITHOUT_SAVING, NULL, (WindowPtr) -1, 0);
 	assert(dialog);
 
@@ -67,10 +67,10 @@ boolean quit_without_saving(
 	SetPort(old_port);
 	MoveWindow(dialog, origin.h, origin.v, FALSE);
 	ShowWindow(dialog);
-	
+
 	ModalDialog(get_general_filter_upp(), &item_hit);
 	DisposeDialog(dialog);
-	
+
 	return item_hit!=iOK ? FALSE : TRUE; /* note default button is the safe, don’t quit, one */
 }
 
@@ -81,10 +81,10 @@ void ask_for_serial_number(
 	boolean valid_serial_number= FALSE;
 	short retries= 0;
 	short item_hit;
-	
+
 	assert(dialog);
 	assert(serial_preferences);
-	
+
 	/* setup and show dialog */
 	serial_dialog_instantiate_proc(dialog);
 	ShowWindow(dialog);
@@ -92,9 +92,9 @@ void ask_for_serial_number(
 	do
 	{
 		boolean reinstantiate= FALSE;
-		
+
 		ModalDialog(get_general_filter_upp(), &item_hit);
-		
+
 		switch(item_hit)
 		{
 			case iSERIAL_NAME_BOX:
@@ -103,18 +103,18 @@ void ask_for_serial_number(
 				reinstantiate= TRUE;
 				break;
 		}
-		
+
 		if (reinstantiate) serial_dialog_instantiate_proc(dialog);
 
-		if (item_hit==iOK)	
-		{		
+		if (item_hit==iOK)
+		{
 			byte short_serial_number[BYTES_PER_SHORT_SERIAL_NUMBER];
 			byte inferred_pad[BYTES_PER_SHORT_SERIAL_NUMBER];
-			
+
 			long_serial_number_to_short_serial_number_and_pad(serial_preferences->long_serial_number, short_serial_number, inferred_pad);
 
 			// also allow marathon2 network-only numbers
-			if ((PADS_ARE_EQUAL(inferred_pad, actual_pad) || 
+			if ((PADS_ARE_EQUAL(inferred_pad, actual_pad) ||
 				(PADS_ARE_EQUAL(inferred_pad, actual_pad_m2) && ((char)short_serial_number[2])<0)) &&
 				VALID_INVERSE_SEQUENCE(short_serial_number))
 			{
@@ -131,10 +131,10 @@ void ask_for_serial_number(
 		}
 	}
 	while ((item_hit!=iOK || !valid_serial_number) && item_hit!=iCANCEL);
-	
+
 	DisposeDialog(dialog);
 
-	if (!valid_serial_number) 
+	if (!valid_serial_number)
 	{
 		delete_partial_preferences_file();
 		exit(0);
@@ -147,7 +147,7 @@ static void delete_partial_preferences_file(
 	void)
 {
 	FSSpec preferences_file;
-	
+
 	getpstr((char *)preferences_file.name, strFILENAMES, filenamePREFERENCES);
 	find_preferences_location((FileDesc *)&preferences_file);
 	FSpDelete(&preferences_file);
@@ -162,7 +162,7 @@ static void serial_dialog_instantiate_proc(
 	short item_type;
 	Handle item_handle;
 	Rect item_rectangle;
-	
+
 	GetDItem(dialog, iSERIAL_NAME_BOX, &item_type, &item_handle, &item_rectangle);
 	GetIText(item_handle, serial_preferences->user_name);
 
@@ -170,8 +170,8 @@ static void serial_dialog_instantiate_proc(
 	GetIText(item_handle, serial_preferences->tokenized_serial_number);
 
 	modify_control(dialog, iOK, (*serial_preferences->user_name && *serial_preferences->tokenized_serial_number) ? CONTROL_ACTIVE : CONTROL_INACTIVE, 0);
-	
+
 	generate_long_serial_number_from_tokens((char *)serial_preferences->tokenized_serial_number+1, serial_preferences->long_serial_number);
-	
+
 	return;
 }

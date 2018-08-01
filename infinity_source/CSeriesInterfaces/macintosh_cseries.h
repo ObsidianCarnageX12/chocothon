@@ -149,7 +149,7 @@ enum
 	inactiveAppleRed,
 	inactiveApplePurple,
 	inactiveAppleBlue,
-	
+
 	stupidColor1,
 	NUMBER_OF_SYSTEM_COLORS
 };
@@ -225,7 +225,7 @@ void activate_any_window(WindowPtr window, EventRecord *event, boolean activate)
 void global_idle_proc(void);
 
 /* ---------- prototypes: MACINTOSH_UTILITIES.C */
-	
+
 long whats_on_top(void);
 boolean is_application_window(WindowPtr window);
 
@@ -293,10 +293,10 @@ OSErr get_my_fsspec(FSSpec *file);
 struct GDSpec
 {
 	short slot;
-	
+
 	word flags; /* deviceIsGrayscale || deviceIsColor */
 	short bit_depth; /* bits per pixel */
-	
+
 	short width, height;
 };
 typedef struct GDSpec GDSpec, *GDSpecPtr;

@@ -18,7 +18,7 @@ Wednesday, July 20, 1994 12:34:06 AM
 	variable number of updates per packet. (can only be adjusted upward, not downward).
 Monday, July 25, 1994 9:04:24 PM
 	Jason's new algorithm. dropping players and slowing down the ring doesn't work now.
-	but performance is much smoother, and better understood, to boot. 
+	but performance is much smoother, and better understood, to boot.
 Sunday, August 21, 1994 3:58:23 PM
 	about a week ago, added stuff to use the ring to distribute other information, like
 	sound or text for the game.
@@ -83,7 +83,7 @@ clearly this is all broken until we have packet types
 
 #define STREAM_TRANSFER_CHUNK_SIZE (10000)
 #define MAP_TRANSFER_TIME_OUT   (60*70) // 70 seconds to wait for map.
-#define NET_SYNC_TIME_OUT       (60*50) // 50 seconds to time out of syncing. 
+#define NET_SYNC_TIME_OUT       (60*50) // 50 seconds to time out of syncing.
 
 #define kACK_TIMEOUT 40
 #define kRETRIES     50  // how many timeouts allowed before dropping the next player
@@ -98,11 +98,11 @@ enum /* tag */
 	tagRING_PACKET,
 	tagACKNOWLEDGEMENT,
 	tagCHANGE_RING_PACKET,  // to tell a player to change his downring address. also has action flags.
-	
+
 	tagNEW_PLAYER,
 	tagCANCEL_GAME,
 	tagSTART_GAME,
-	
+
 	tagLOSSY_DISTRIBUTION,     // for transfer data other than action flags
 	tagLOSSLESS_DISTRIBUTION   // ditto, but currently unimplemented
 };
@@ -112,7 +112,7 @@ enum
 	typeSYNC_RING_PACKET,    // first packet of the game, gets everyone in the game
 	typeTIME_RING_PACKET,    // second packet of the game, sets everyone's clock
 	typeNORMAL_RING_PACKET,   // all the other packets of the game
-	
+
 	typeUNSYNC_RING_PACKET,	// last packet of the game, get everyone unsynced properly.
 	typeDEAD_PACKET	// This is simply a convenience for a switch. This packet never leaves the server.
 };
@@ -123,7 +123,7 @@ struct NetPacketHeader
 {
 	short  tag;
 	long   sequence;
-	
+
 	/* data */
 };
 typedef struct NetPacketHeader NetPacketHeader, *NetPacketHeaderPtr;
@@ -151,7 +151,7 @@ typedef struct NetDistributionPacket NetDistributionPacket, *NetDistributionPack
 struct NetPlayer
 {
 	AddrBlock dspAddress, ddpAddress;
-	
+
 	short identifier;
 
 	boolean net_dead; // only valid if you are the server.
@@ -164,11 +164,11 @@ struct NetTopology
 {
 	short tag;
 	short player_count;
-	
+
 	short nextIdentifier;
-	
+
 	byte game_data[MAXIMUM_GAME_DATA_SIZE];
-	
+
 	struct NetPlayer players[MAXIMUM_NUMBER_OF_NETWORK_PLAYERS];
 };
 typedef struct NetTopology NetTopology, *NetTopologyPtr;
@@ -178,30 +178,30 @@ struct NetStatus
 	/* we receive packets from downring and send them upring */
 	AddrBlock upringAddress, downringAddress;
 	short upringPlayerIndex;
-	
+
 	long lastValidRingSequence; /* the sequence number of the last valid ring packet we received */
 	long ringPacketCount; /* the number of ring packets we have received */
-	
+
 	boolean receivedAcknowledgement; /* TRUE if we received a valid acknowledgement for the last ring packet we sent */
-	boolean canForwardRing; 
+	boolean canForwardRing;
 	boolean clearToForwardRing; /* TRUE if we are the server and we got a valid ring packet but we didn’t send it */
 	boolean acceptPackets; /* TRUE if we want to get packets */
 	boolean acceptRingPackets; /* TRUE if we want to get ring packets */
 	boolean oldSelfSendStatus;
 
 	short retries;
-	
+
 	short action_flags_per_packet;
 	short last_extra_flags;
 	short update_latency;
-	
+
 	boolean iAmTheServer;
 	boolean single_player; /* Set true if I dropped everyone else. */
 	short server_player_index;
 	short new_packet_tag; /* Valid _only_ if you are the server, and is only set when you just became the server. */
 
 	byte *buffer;
-	
+
 	long localNetTime;
 };
 typedef struct NetStatus NetStatus, *NetStatusPtr;
@@ -285,7 +285,7 @@ static void NetBuildRingPacket(DDPFramePtr frame, byte *data, short data_size, l
 static void NetBuildFirstRingPacket(DDPFramePtr frame, long sequence);
 static void NetRebuildRingPacket(DDPFramePtr frame, short tag, long sequence);
 static void NetAddFlagsToPacket(NetPacketPtr packet);
-	
+
 static void NetSendRingPacket(DDPFramePtr frame);
 static void NetSendAcknowledgement(DDPFramePtr frame, long sequence);
 static boolean NetDelayedSendRingFrame(void);
@@ -328,13 +328,13 @@ static OSErr send_stream_data(void *data, long length);
 struct network_statistics {
 	long numSmears;
 	long numCountChanges;
-	
+
 	long ontime_acks;
 	long sync_ontime_acks;
 	long time_ontime_acks;
 	long unsync_ontime_acks;
 	long dead_ontime_acks;
-	
+
 	long late_acks;
 	long packets_from_the_unknown;
 	long retry_count;
@@ -411,13 +411,13 @@ boolean NetEnter(
 #ifdef TEST_MODEM
 	success= ModemEnter();
 #else
-	
+
 	assert(netState==netUninitialized);
 
 	/* if this is the first time we’ve been called, add NetExit to the list of cleanup procedures */
 	{
 		static boolean added_exit_procedure= FALSE;
-		
+
 		if (!added_exit_procedure) atexit(NetExit);
 		added_exit_procedure= TRUE;
 	}
@@ -426,8 +426,8 @@ boolean NetEnter(
 	{
 		distribution_info[i].type_in_use = FALSE;
 	}
-	
-	error= NetDDPOpen();	
+
+	error= NetDDPOpen();
 	if (!error)
 	{
 		error= NetADSPOpen();
@@ -437,7 +437,7 @@ boolean NetEnter(
 			status= (NetStatusPtr) NewPtrClear(sizeof(NetStatus));
 			network_adsp_packet= (char *) NewPtrClear(MaxStreamPacketLength());
 			error= MemError();
-			if(!error) 
+			if(!error)
 			{
 				status->buffer= (byte *) NewPtrClear(ddpMaxData);
 				error= MemError();
@@ -445,7 +445,7 @@ boolean NetEnter(
 				{
 					/* Set the server player identifier */
 					NetSetServerIdentifier(0);
-				
+
 					ringFrame= NetDDPNewFrame();
 					error= MemError();
 					if(!error)
@@ -480,7 +480,7 @@ boolean NetEnter(
 						}
 					}
 				}
-			} 
+			}
 		}
 	}
 
@@ -492,7 +492,7 @@ boolean NetEnter(
 		success= FALSE;
 	}
 #endif
-	
+
 	return success;
 }
 
@@ -535,11 +535,11 @@ void NetExit(
 				DisposePtr((Ptr)status);
 				status= NULL;
 				topology= NULL;
-				
+
 				NetDDPDisposeFrame(ackFrame);
 				NetDDPDisposeFrame(ringFrame);
 				NetDDPDisposeFrame(distributionFrame);
-								
+
 				netState= netUninitialized;
 			}
 		}
@@ -550,14 +550,14 @@ void NetExit(
 	NetDDPClose();
 	NetADSPClose();
 #endif
-		
+
 	return;
 }
 
 /* Add a function for a distribution type. returns the type, or NONE if it can't be
  * installed. It's safe to call this function multiple times for the same proc. */
 short NetAddDistributionFunction(
-	NetDistributionProc proc, 
+	NetDistributionProc proc,
 	boolean lossy)
 {
 	short    i;
@@ -568,7 +568,7 @@ short NetAddDistributionFunction(
 #else
 
 	assert(lossy == TRUE); // until we decide to support it.
-	
+
 	// see if it's already installed.
 	for (i = 0; i < NUM_DISTRIBUTION_TYPES; i++)
 	{
@@ -579,7 +579,7 @@ short NetAddDistributionFunction(
 			break;
 		}
 	}
-	
+
 	if (!found_slot) // not installed, install it.
 	{
 		for (i = 0; i < NUM_DISTRIBUTION_TYPES; i++)
@@ -594,7 +594,7 @@ short NetAddDistributionFunction(
 			}
 		}
 	}
-	
+
 	return found_slot ? i : NONE;
 #endif
 }
@@ -613,9 +613,9 @@ void NetRemoveDistributionFunction(
 
 /* Distribute information to the whole net. */
 void NetDistributeInformation(
-	short type, 
-	void *buffer, 
-	short buffer_size, 
+	short type,
+	void *buffer,
+	short buffer_size,
 	boolean send_to_self)
 {
 	NetDistributionPacket distribution_header;
@@ -629,7 +629,7 @@ void NetDistributeInformation(
 	assert(buffer_size <= MAX_NET_DISTRIBUTION_BUFFER_SIZE);
 	assert(type >= 0 && type < NUM_DISTRIBUTION_TYPES);
 	assert(distribution_info[type].type_in_use);
-	
+
 	if (send_to_self)
 	{
 		distribution_info[type].distribution_proc(buffer, buffer_size, localPlayerIndex);
@@ -638,7 +638,7 @@ void NetDistributeInformation(
 	distributionFrame->data_size = sizeof(NetPacketHeader) + sizeof(NetDistributionPacket) + buffer_size;
 	{
 		NetPacketHeaderPtr header = (NetPacketHeaderPtr) distributionFrame->data;
-		
+
 		header->tag = distribution_info[type].lossy ? tagLOSSY_DISTRIBUTION : tagLOSSLESS_DISTRIBUTION;
 		header->sequence = 0;
 	}
@@ -646,13 +646,13 @@ void NetDistributeInformation(
 	distribution_header.first_player_index = localPlayerIndex;
 	distribution_header.data_size = buffer_size;
 	BlockMove(&distribution_header, distributionFrame->data+sizeof(NetPacketHeader), sizeof(NetDistributionPacket));
-	BlockMove(buffer, 
-		distributionFrame->data + (sizeof(NetPacketHeader) + sizeof(NetDistributionPacket) - (2*sizeof(byte))), 
+	BlockMove(buffer,
+		distributionFrame->data + (sizeof(NetPacketHeader) + sizeof(NetDistributionPacket) - (2*sizeof(byte))),
 		buffer_size);
-	
+
 	NetDDPSendFrame(distributionFrame, &status->upringAddress, kPROTOCOL_TYPE, ddpSocket);
 #endif
-	
+
 	return;
 }
 
@@ -672,7 +672,7 @@ NetGather
 	---> player data of gathering player (no bigger than MAXIMUM_PLAYER_DATA_SIZE)
 	---> size of player data
 	---> lookupUpdateProc (we call NetLookupOpen() and NetLookupClose())
-	
+
 	<--- error
 
 start gathering players.
@@ -682,7 +682,7 @@ NetGatherPlayer
 ---------------
 
 	---> player index (into the array of looked up names)
-	
+
 	<--- error
 
 bring the given player into our game.
@@ -717,7 +717,7 @@ boolean NetGather(
 	NetInitializeTopology(game_data, game_data_size, player_data, player_data_size);
 	netState= netGathering;
 #endif
-	
+
 	return TRUE;
 }
 
@@ -752,7 +752,7 @@ boolean NetStart(
 	// sort on hop counts) but we'll just order them by their network numbers.
 	// however, we need to leave the server player index 0 because we assume that the person
 	// that starts out at index 0 is the server.
-	
+
 	if (topology->player_count > 2)
 	{
 		qsort(topology->players+1, topology->player_count-1, sizeof(struct NetPlayer),
@@ -775,12 +775,12 @@ boolean NetStart(
 }
 
 static int net_compare(
-	struct NetPlayer *p1, 
+	struct NetPlayer *p1,
 	struct NetPlayer *p2)
 {
 	word base_network_number;
 	word p1_network_number, p2_network_number;
-	
+
 	base_network_number = topology->players[0].ddpAddress.aNet; // get server's addres.
 	p1_network_number = p1->ddpAddress.aNet;
 	p2_network_number = p2->ddpAddress.aNet;
@@ -805,7 +805,7 @@ NetGameJoin
 	---> player type (to register)
 	---> player data (no larger than MAXIMUM_PLAYER_DATA_SIZE)
 	---> size of player data
-	
+
 	<--- error
 
 ------------------
@@ -838,11 +838,11 @@ boolean NetGameJoin(
 #else
 	/* initialize default topology (no game data) */
 	NetInitializeTopology((void *) NULL, 0, player_data, player_data_size);
-	
+
 	/* register our downring socket with the net so gather dialogs can find us */
-	error= NetRegisterName(player_name, player_type, version_number, 
+	error= NetRegisterName(player_name, player_type, version_number,
 		NetGetStreamSocketNumber());
-	
+
 	if (error==noErr)
 	{
 		error= NetStreamWaitForConnection();
@@ -853,13 +853,13 @@ boolean NetGameJoin(
 			success= TRUE;
 		}
 	}
-	
+
 	if(error)
 	{
 		alert_user(infoError, strNETWORK_ERRORS, netErrCouldntJoin, error);
 	}
 #endif
-	
+
 	return success;
 }
 
@@ -871,9 +871,9 @@ void NetCancelJoin(
 #ifdef TEST_MODEM
 	ModemCancelJoin();
 #else
-	
+
 	assert(netState==netJoining||netState==netWaiting||netState==netCancelled||netState==netJoinErrorOccurred);
-	
+
 	error= NetUnRegisterName();
 	if (error==noErr)
 	{
@@ -883,7 +883,7 @@ void NetCancelJoin(
 			/* our name has been unregistered and our connection end has been closed */
 		}
 	}
-#endif	
+#endif
 	return;
 }
 
@@ -910,8 +910,8 @@ called at the end of a network game to ensure a clean exit from the net game.
 
 */
 
-/* 
-	Externally, this is only called before a new game.  It removes the reliance that 
+/*
+	Externally, this is only called before a new game.  It removes the reliance that
 	localPlayerIndex of zero is the server, which is not necessarily true if we are
 	resyncing for another cooperative level.
 */
@@ -942,7 +942,7 @@ boolean NetSync(
 	local_queue.read_index= local_queue.write_index= 0;
 
 	netState= netStartingUp;
-	
+
 	/* if we are the server (player index zero), start the ring */
 	if (localPlayerIndex==status->server_player_index)
 	{
@@ -950,7 +950,7 @@ boolean NetSync(
 
 		/* act like somebody just sent us this packet */
 		status->ringPacketCount= 1;
-		
+
 		NetBuildFirstRingPacket(ringFrame, status->lastValidRingSequence+1);
 		NetSendRingPacket(ringFrame);
 	}
@@ -975,7 +975,7 @@ boolean NetSync(
 		}
 	}
 #endif
-	
+
 	return success;
 }
 
@@ -993,11 +993,11 @@ boolean NetUnSync(
 #ifdef TEST_MODEM
 	success= ModemUnsync();
 #else
-	
+
 	if (netState==netStartingUp || netState==netActive)
 	{
 		netState= netComingDown;
-		
+
 		/* Next time the server receives a packet, and if the netState==netComingDown */
 		/*  the server will send a packet with zero flags, which means process the remaining */
 		/*  flags, and get ready to change level.  Once the packet with zero flags gets back */
@@ -1009,7 +1009,7 @@ boolean NetUnSync(
 		// timeout, in case we are quitting and someone else is refusing to give up the ring.
 		while((status->acceptRingPackets || !status->receivedAcknowledgement) && (TickCount()-ticks<UNSYNC_TIMEOUT));
 	}
-	if(status->acceptRingPackets) 
+	if(status->acceptRingPackets)
 	{
 		status->acceptRingPackets= success= FALSE;
 	}
@@ -1020,7 +1020,7 @@ boolean NetUnSync(
 	dprintf("Flags processed: %d Time: %d;g", net_stats.action_flags_processed, TickCount()-ticks);
 	net_stats.action_flags_processed= 0;
 #endif
-#endif	
+#endif
 
 	return success;
 }
@@ -1049,7 +1049,7 @@ short NetGetPlayerIdentifier(
 #else
 	assert(netState!=netUninitialized&&netState!=netDown&&netState!=netJoining);
 	assert(player_index>=0&&player_index<topology->player_count);
-	
+
 	return topology->players[player_index].identifier;
 #endif
 }
@@ -1073,7 +1073,7 @@ boolean NetNumberOfPlayerIsValid(
 			break;
 	}
 #endif
-	
+
 	return valid;
 }
 
@@ -1084,7 +1084,7 @@ short NetGetNumberOfPlayers(
 	return ModemGetNumberOfPlayers();
 #else
 	assert(netState!=netUninitialized /* &&netState!=netDown*/ &&netState!=netJoining);
-	
+
 	return topology->player_count;
 #endif
 }
@@ -1097,7 +1097,7 @@ void *NetGetPlayerData(
 #else
 	assert(netState!=netUninitialized/* && netState!=netDown */ &&netState!=netJoining);
 	assert(player_index>=0&&player_index<topology->player_count);
-	
+
 	return topology->players[player_index].player_data;
 #endif
 }
@@ -1109,7 +1109,7 @@ void NetSetPlayerData(
 {
 	assert(data_size>=0&&data_size<=MAXIMUM_PLAYER_DATA_SIZE);
 	BlockMove(data, topology->players[player_index].player_data, data_size);
-	
+
 	return;
 }
 
@@ -1120,7 +1120,7 @@ void *NetGetGameData(
 	return ModemGetGameData();
 #else
 	assert(netState!=netUninitialized&&netState!=netDown&&netState!=netJoining);
-	
+
 	return topology->game_data;
 #endif
 }
@@ -1132,7 +1132,7 @@ NetEntityNotInGame
 
 	---> entity
 	---> address
-	
+
 	<--- TRUE if the entity is not in the game, FALSE otherwise
 
 used to filter entities which have been added to a game out of the lookup list
@@ -1145,13 +1145,13 @@ boolean NetEntityNotInGame(
 {
 	short player_index;
 	boolean valid= TRUE;
-	
+
 	#pragma unused (entity)
-	
+
 	for (player_index=0;player_index<topology->player_count;++player_index)
 	{
 		AddrBlock *player_address= &topology->players[player_index].dspAddress;
-		
+
 		if (address->aNode==player_address->aNode && address->aSocket==player_address->aSocket &&
 			address->aNet==player_address->aNet)
 		{
@@ -1159,7 +1159,7 @@ boolean NetEntityNotInGame(
 			break;
 		}
 	}
-	
+
 	return valid;
 }
 
@@ -1183,10 +1183,10 @@ void NetDDPPacketHandler(
 {
 	static already_here= FALSE;
 	NetPacketHeaderPtr header= (NetPacketHeaderPtr) packet->datagramData;
-	
+
 	assert(!already_here);
 	already_here = TRUE;
-	
+
 	if (status->acceptPackets)
 	{
 		if (packet->datagramSize >= sizeof(NetPacketHeader) && packet->protocolType == kPROTOCOL_TYPE)
@@ -1217,23 +1217,23 @@ void NetDDPPacketHandler(
 									case typeSYNC_RING_PACKET:
 										net_stats.sync_ontime_acks++;
 										break;
-										
+
 									case typeTIME_RING_PACKET:
 										net_stats.time_ontime_acks++;
 										break;
-							
+
 									case typeUNSYNC_RING_PACKET:
 										net_stats.unsync_ontime_acks++;
 										break;
-							
+
 									case typeNORMAL_RING_PACKET:
 										net_stats.ontime_acks++;
 										break;
-							
+
 									case typeDEAD_PACKET:
 										net_stats.dead_ontime_acks++;
 										break;
-										
+
 									default:
 										halt();
 										break;
@@ -1261,7 +1261,7 @@ void NetDDPPacketHandler(
 						}
 					}
 					break;
-					
+
 				case tagCHANGE_RING_PACKET:
 					status->downringAddress.aNet= packet->sourceAddress.aNet;
 					status->downringAddress.aNode= packet->sourceAddress.aNode;
@@ -1272,7 +1272,7 @@ void NetDDPPacketHandler(
 #endif
 //					dprintf("got change ring packet %d;g", header->sequence);
 					/* fall through to tagRING_PACKET */
-				
+
 				case tagRING_PACKET:
 					if(status->acceptRingPackets)
 					{
@@ -1285,29 +1285,29 @@ void NetDDPPacketHandler(
 	#ifdef DEBUG_NET
 								{
 									NetPacketPtr packet_data= (NetPacketPtr) (packet->datagramData+sizeof(NetPacketHeader));
-	
+
 									switch(packet_data->ring_packet_type)
 									{
 										case typeUNSYNC_RING_PACKET:
 											net_stats.late_unsync_rings++;
 											break;
-											
+
 										case typeSYNC_RING_PACKET:
 											net_stats.late_sync_rings++;
 											break;
-	
+
 										case typeTIME_RING_PACKET:
 											net_stats.late_time_rings++;
 											break;
-											
+
 										case typeNORMAL_RING_PACKET:
 											net_stats.late_rings++;
 											break;
-	
+
 										case typeDEAD_PACKET:
 											net_stats.late_dead_rings++;
 											break;
-										
+
 										default:
 											halt();
 											break;
@@ -1323,7 +1323,7 @@ void NetDDPPacketHandler(
 								/* on-time or early ring packet */
 	//							dprintf("Got ring.;g");
 	//							dprintf("on-time ring %p (%d bytes);dm #%d #%d;g", packet, packet->datagramSize, packet->datagramData, packet->datagramSize);
-	
+
 								/* process remote actions, add our local actions, build ringFrame for sending */
 								NetProcessIncomingBuffer(packet->datagramData+sizeof(NetPacketHeader),
 									packet->datagramSize-sizeof(NetPacketHeader), header->sequence);
@@ -1348,15 +1348,15 @@ void NetDDPPacketHandler(
 						}
 					}
 					break;
-				
+
 				default:
 					halt();
 			}
 		}
 	}
-	
+
 	already_here= FALSE;
-	
+
 	return;
 }
 
@@ -1366,7 +1366,7 @@ static void NetProcessLossyDistribution(
 	short                     type;
 	NetPacketHeaderPtr        header;
 	NetDistributionPacketPtr  packet_data;
-	
+
 	packet_data = (NetDistributionPacketPtr)buffer;
 	type = packet_data->distribution_type;
 
@@ -1442,7 +1442,7 @@ static void NetProcessIncomingBuffer(
 			}
 			/* else forward immediately. */
 			break;
-			
+
 		case typeTIME_RING_PACKET:
 			netState= netActive; // we are live!
 			if (status->iAmTheServer)
@@ -1464,7 +1464,7 @@ static void NetProcessIncomingBuffer(
 				}
 			}
 			break;
-			
+
 		case typeNORMAL_RING_PACKET:
 /* This needs to be done differently, because the required action flags at zero need to be */
 /*  read so that I know that the netState==netComingDown. */
@@ -1485,7 +1485,7 @@ static void NetProcessIncomingBuffer(
 				{
 					become_the_gatherer(packet_data);
 					packet_tag= tagCHANGE_RING_PACKET;
-				} 
+				}
 			}
 #endif
 			break;
@@ -1508,16 +1508,16 @@ static void NetProcessIncomingBuffer(
 #endif
 					packet_data->ring_packet_type= typeDEAD_PACKET;
 				}
-			} 
+			}
 #ifdef DEBUG_NET
-			else 
+			else
 			{
 //				dprintf("Got a spurious unsync packet...;g");
 				net_stats.spurious_unsyncs++;
 			}
 #endif
 			break;
-			
+
 		default:
 			halt();
 			break;
@@ -1556,12 +1556,12 @@ static void NetProcessIncomingBuffer(
 			/* The buck stops here (after acknowledging it). */
 			NetSendAcknowledgement(ackFrame, status->lastValidRingSequence);
 			break;
-			
+
 		default:
 			halt();
 			break;
 	}
-	
+
 	return;
 }
 
@@ -1571,13 +1571,13 @@ static void NetAddFlagsToPacket(
 	long *action_flags;
 	short player_index, extra_flags, flags_to_remove, action_flag_index;
 	static boolean already_here = FALSE;
-	
+
 	assert(already_here == FALSE);
 	already_here= TRUE;
 
 	vwarn(packet->required_action_flags >= 0 && packet->required_action_flags <= MAXIMUM_UPDATES_PER_PACKET,
 		csprintf(temporary, "the server asked for %d flags.  bastard.  fucking ram doubler.", packet->required_action_flags));
-	
+
 	// figure out where our action flags are.
 	action_flags= packet->action_flags;
 	for (player_index= 0; player_index<localPlayerIndex; player_index++)
@@ -1608,7 +1608,7 @@ static void NetAddFlagsToPacket(
 				count+= packet->action_flag_count[player_index];
 			}
 		}
-		
+
 		vassert(count>=0 && count<=(MAXIMUM_UPDATES_PER_PACKET * MAXIMUM_NUMBER_OF_NETWORK_PLAYERS),
 			csprintf(temporary, "bad count. count = %d. packet:; dm #%d", count, ((byte*)packet)-sizeof(NetPacketHeader)));
 
@@ -1658,9 +1658,9 @@ static void NetAddFlagsToPacket(
 
 	// tell everyone that we’re meeting code.
 	packet->action_flag_count[localPlayerIndex]= packet->required_action_flags;
-	
+
 //	dprintf("NETPACKET:;dm %x %x;g;", packet, sizeof(NetPacket)+sizeof(long)*2*8);
-	
+
 	/* Allow for reentrance into this function */
 	already_here= FALSE;
 }
@@ -1676,7 +1676,7 @@ static void NetInitializeTopology(
 	short player_data_size)
 {
 	NetPlayerPtr local_player;
-	
+
 	assert(player_data_size>=0&&player_data_size<MAXIMUM_PLAYER_DATA_SIZE);
 	assert(game_data_size>=0&&game_data_size<MAXIMUM_GAME_DATA_SIZE);
 
@@ -1694,7 +1694,7 @@ static void NetInitializeTopology(
 		NetLocalAddrBlock(&local_player->ddpAddress, ddpSocket);
 	}
 	BlockMove(player_data, local_player->player_data, player_data_size);
-	
+
 	/* initialize the network topology (assume we’re the only player) */
 	topology->player_count= 1;
 	topology->nextIdentifier= 1;
@@ -1708,13 +1708,13 @@ static void NetLocalAddrBlock(
 	short socketNumber)
 {
 	short node, network;
-	
+
 	GetNodeAddress(&node, &network);
-	
+
 	address->aSocket= socketNumber;
 	address->aNode= node;
 	address->aNet= network;
-	
+
 	return;
 }
 
@@ -1723,7 +1723,7 @@ static long NetPacketSize(
 {
 	register long   size = 0;
 	register short  i;
-	
+
 	for (i = 0; i < topology->player_count; ++i)
 	{
 		if (packet->action_flag_count[i] != NET_DEAD_ACTION_FLAG_COUNT) // player has become net dead.
@@ -1767,10 +1767,10 @@ static void NetSendAcknowledgement(
 	frame->data_size= sizeof(NetPacketHeader);
 	header->tag= tagACKNOWLEDGEMENT;
 	header->sequence= sequence;
-	
+
 	/* send the acknowledgement */
 	NetDDPSendFrame(frame, &status->downringAddress, kPROTOCOL_TYPE, ddpSocket);
-	
+
 	return;
 }
 
@@ -1781,10 +1781,10 @@ static void NetBuildFirstRingPacket(
 {
 	short player_index;
 	NetPacketPtr  data;
-	
+
 	data = (NetPacketPtr) NewPtr(sizeof(NetPacket));
 	assert(data);
-	
+
 	data->server_player_index= localPlayerIndex;
 	data->ring_packet_type= typeSYNC_RING_PACKET;
 	data->required_action_flags= UPDATES_PER_PACKET;
@@ -1797,9 +1797,9 @@ static void NetBuildFirstRingPacket(
 	}
 
 	NetBuildRingPacket(frame, (byte *)data, NetPacketSize(data), sequence);
-	
+
 	DisposePtr((Ptr) data);
-	
+
 	return;
 }
 
@@ -1828,7 +1828,7 @@ static void NetRebuildRingPacket(
 	long sequence)
 {
 	NetPacketHeaderPtr header= (NetPacketHeaderPtr) frame->data;
-	
+
 	header->tag= tag;
 	header->sequence= sequence;
 }
@@ -1837,11 +1837,11 @@ static void NetSendRingPacket(
 	DDPFramePtr frame)
 {
 //	dprintf("sent frame;g");
-	
+
 	status->retries= 0; // needs to be here, in case retry task was canceled (’cuz it likes to set retries)
 	status->receivedAcknowledgement= FALSE; /* will not be set until we receive an acknowledgement for this packet */
 
-	if (!resendTMTask) 
+	if (!resendTMTask)
 	{
 		resendTMTask= myTMSetup(kACK_TIMEOUT, NetCheckResendRingPacket);
 	} else {
@@ -1850,8 +1850,8 @@ static void NetSendRingPacket(
 
 	status->canForwardRing= FALSE; /* will not be set unless this task fires without a packet to forward */
 	status->clearToForwardRing= FALSE; /* will not be set until we receive the next valid ring packet but will be irrelevant if serverCanForwardRing is TRUE */
-	NetDDPSendFrame(frame, &status->upringAddress, kPROTOCOL_TYPE, ddpSocket);	
-	
+	NetDDPSendFrame(frame, &status->upringAddress, kPROTOCOL_TYPE, ddpSocket);
+
 	return;
 }
 
@@ -1884,7 +1884,7 @@ static boolean NetCheckResendRingPacket(
 					case netStartingUp:
 						/* There might be several retries as we start up */
 						break;
-						
+
 					case netComingDown:
 #ifdef DEBUG_NET
 dprintf("Never got confirmation on NetUnsync packet.  They don't love us.");
@@ -1892,7 +1892,7 @@ dprintf("Never got confirmation on NetUnsync packet.  They don't love us.");
 						reinstall= FALSE;
 						status->acceptRingPackets= FALSE;
 						break;
-						
+
 					default:
 						/* They have been gone too long.. */
 						drop_upring_player();
@@ -1908,23 +1908,23 @@ dprintf("Never got confirmation on NetUnsync packet.  They don't love us.");
 					case typeSYNC_RING_PACKET:
 						net_stats.sync_retry_count++;
 						break;
-						
+
 					case typeTIME_RING_PACKET:
 						net_stats.time_retry_count++;
 						break;
-			
+
 					case typeUNSYNC_RING_PACKET:
 						net_stats.unsync_retry_count++;
 						break;
-			
+
 					case typeNORMAL_RING_PACKET:
 						net_stats.retry_count++;
 						break;
-			
+
 					case typeDEAD_PACKET:
 						net_stats.dead_retry_count++;
 						break;
-						
+
 					default:
 						halt();
 						break;
@@ -1960,7 +1960,7 @@ static boolean NetServerTask(
 				local_queue.write_index = 0;
 			status->localNetTime++;
 		}
-		
+
 		if (local_queue_size >= status->action_flags_per_packet)
 		{
 			// This weird voodoo with canForwardRing prevents a problem if a packet arrives at the wrong time.
@@ -1968,7 +1968,7 @@ static boolean NetServerTask(
 			if (status->clearToForwardRing) /* has the socket listener already received the ring?  and not forwarded it? */
 			{
 				NetPacketPtr packet_data= (NetPacketPtr) status->buffer;
-				
+
 //				status->canForwardRing = FALSE;
 				packet_data->server_net_time= status->localNetTime;
 				if(netState==netComingDown)
@@ -1980,8 +1980,8 @@ static boolean NetServerTask(
 						net_stats.server_unsyncing++;
 #endif
 						packet_data->ring_packet_type= typeUNSYNC_RING_PACKET;
-					} 
-					else 
+					}
+					else
 					{
 #ifdef DEBUG_NET
 //						dprintf("I Server got a normal packet & net was coming down required flags at 0. (%d);g", net_stats.action_flags_processed);
@@ -1990,15 +1990,15 @@ static boolean NetServerTask(
 						/* Change the type to an unsync ring packet... */
 						packet_data->required_action_flags= 0;
 					}
-				} 
-				else 
+				}
+				else
 				{
 					packet_data->required_action_flags= NetSizeofLocalQueue();
 				}
-				
+
 				NetAddFlagsToPacket(packet_data);
 				NetBuildRingPacket(ringFrame, (byte *) packet_data, NetPacketSize(packet_data), status->lastValidRingSequence+1);
-				if(status->new_packet_tag != NONE) 
+				if(status->new_packet_tag != NONE)
 				{
 #ifdef DEBUG_NET
 //					dprintf("rebuilding the server tag (%d);g", status->new_packet_tag);
@@ -2013,7 +2013,7 @@ static boolean NetServerTask(
 			}
 		}
 	}
-	
+
 	return reinstall;
 }
 
@@ -2021,7 +2021,7 @@ static boolean NetQueueingTask(
 	void)
 {
 	boolean reinstall= (netState != netDown);
-	
+
 	if(reinstall)
 	{
 		if (NetSizeofLocalQueue() < MAXIMUM_UPDATES_PER_PACKET)
@@ -2032,7 +2032,7 @@ static boolean NetQueueingTask(
 			status->localNetTime++;
 		}
 	}
-	
+
 	return reinstall;
 }
 
@@ -2040,8 +2040,8 @@ static void NetUpdateTopology(
 	void)
 {
 	short previousPlayerIndex, nextPlayerIndex;
-	
-	/* recalculate localPlayerIndex */					
+
+	/* recalculate localPlayerIndex */
 	for (localPlayerIndex=0;localPlayerIndex<topology->player_count;++localPlayerIndex)
 	{
 		if (topology->players[localPlayerIndex].identifier==localPlayerIdentifier) break;
@@ -2049,16 +2049,16 @@ static void NetUpdateTopology(
 #ifdef DEBUG
 	if (localPlayerIndex==topology->player_count) dprintf("couldn’t find my identifier: %p", topology);
 #endif
-	
-	/* recalculate downringAddress */				
+
+	/* recalculate downringAddress */
 	previousPlayerIndex= localPlayerIndex ? localPlayerIndex-1 : topology->player_count-1;
 	status->downringAddress= topology->players[previousPlayerIndex].ddpAddress;
-	
+
 	/* recalculate upringAddress */
 	nextPlayerIndex= localPlayerIndex==topology->player_count-1 ? 0 : localPlayerIndex+1;
 	status->upringAddress= topology->players[nextPlayerIndex].ddpAddress;
 	status->upringPlayerIndex = nextPlayerIndex;
-	
+
 	return;
 }
 
@@ -2070,12 +2070,12 @@ static short NetAdjustUpringAddressUpwards(
 {
 	short nextPlayerIndex, newNextPlayerIndex;
 	AddrBlock *address;
-	
+
 	// figure out where the current upring address is.
 	for (nextPlayerIndex= 0; nextPlayerIndex<topology->player_count; nextPlayerIndex++)
 	{
 		address = &(topology->players[nextPlayerIndex].ddpAddress);
-		if (address->aNet == status->upringAddress.aNet 
+		if (address->aNet == status->upringAddress.aNet
 			&& address->aNode == status->upringAddress.aNode
 			&& address->aSocket == status->upringAddress.aSocket)
 		{
@@ -2087,9 +2087,9 @@ static short NetAdjustUpringAddressUpwards(
 	newNextPlayerIndex= nextPlayerIndex==topology->player_count-1 ? 0 : nextPlayerIndex+1;
 	status->upringAddress= topology->players[newNextPlayerIndex].ddpAddress;
 	status->upringPlayerIndex= newNextPlayerIndex;
-	
+
 	return nextPlayerIndex;
-	
+
 }
 
 static boolean NetSetSelfSend(
@@ -2097,7 +2097,7 @@ static boolean NetSetSelfSend(
 {
 	OSErr          err;
 	MPPParamBlock  pb;
-	
+
 	pb.SETSELF.newSelfFlag = on;
 	err = PSetSelfSend(&pb, FALSE);
 	assert(err == noErr);
@@ -2128,12 +2128,12 @@ static void drop_upring_player(
 
 	/* If the next player upring was the server, and the next player upring wasn't us.. */
 	if (oldNextPlayerIndex==status->server_player_index && !status->iAmTheServer)
-	{				
+	{
 		// let us crown ourselves!
 		status->server_player_index= localPlayerIndex;
 		status->iAmTheServer= TRUE;
 #ifdef DEBUG_NET
-//		dprintf("Trying to become the server (drop_upring);g");				
+//		dprintf("Trying to become the server (drop_upring);g");
 		net_stats.assuming_control_on_retry++;
 #endif
 
@@ -2143,7 +2143,7 @@ static void drop_upring_player(
 		serverTMTask = myXTMSetup(1000/TICKS_PER_SECOND, NetServerTask);
 		packet_data->server_net_time= status->localNetTime;
 	}
-	
+
 	//  adjust the packet to indicate that our fellow player has become deceased.
 	// (is this an obituary?)
 	action_flags = packet_data->action_flags;
@@ -2154,7 +2154,7 @@ static void drop_upring_player(
 			action_flags += packet_data->action_flag_count[index];
 		}
 	}
-	
+
 	for (index= oldNextPlayerIndex+1; index<topology->player_count; index++)
 	{
 		if (packet_data->action_flag_count[index] != NET_DEAD_ACTION_FLAG_COUNT)
@@ -2162,12 +2162,12 @@ static void drop_upring_player(
 			flag_count += packet_data->action_flag_count[index];
 		}
 	}
-	
+
 	/* Remove the servers flags.. */
-	if (flag_count > 0) 
+	if (flag_count > 0)
 	{
 		// changed "flag_count" to "sizeof(long)*flag_count"
-		BlockMove(action_flags + packet_data->action_flag_count[oldNextPlayerIndex], 
+		BlockMove(action_flags + packet_data->action_flag_count[oldNextPlayerIndex],
 			action_flags, sizeof(long)*flag_count);
 	}
 	/* Mark the server as net dead */
@@ -2214,8 +2214,8 @@ boolean NetChangeMap(
 	}
 	else
 	{
-		// being the server, we must send out the map to everyone.	
-		if(localPlayerIndex==status->server_player_index) 
+		// being the server, we must send out the map to everyone.
+		if(localPlayerIndex==status->server_player_index)
 		{
 			wad= (byte *)get_map_for_net_transfer(entry);
 			if(wad)
@@ -2228,7 +2228,7 @@ boolean NetChangeMap(
 //				if (!wad) alert_user(fatalError, strERRORS, badReadMap, -1);
 				assert(error_pending());
 			}
-		} 
+		}
 		else // wait for de damn map.
 		{
 			wad= NetReceiveGameData();
@@ -2236,7 +2236,7 @@ boolean NetChangeMap(
 			// Note that NetReceiveMap handles display of its own errors, therefore we don't
 			//  assert that an error is pending.....
 		}
-	
+
 		/* Now load the level.. */
 		if (!error && wad)
 		{
@@ -2245,12 +2245,12 @@ boolean NetChangeMap(
 		}
 	}
 #endif
-	
+
 	return success;
 }
 
 static OSErr NetDistributeGameDataToAllPlayers(
-	byte *wad_buffer, 
+	byte *wad_buffer,
 	long wad_length)
 {
 	short playerIndex, message_id;
@@ -2260,7 +2260,7 @@ static OSErr NetDistributeGameDataToAllPlayers(
 	short physics_message_id;
 	byte *physics_buffer;
 	long physics_length;
-	
+
 	message_id= (topology->player_count==2) ? (_distribute_map_single) : (_distribute_map_multiple);
 	physics_message_id= (topology->player_count==2) ? (_distribute_physics_single) : (_distribute_physics_multiple);
 	open_progress_dialog(physics_message_id);
@@ -2300,20 +2300,20 @@ static OSErr NetDistributeGameDataToAllPlayers(
 			/* Note that we try to close regardless of error. */
 			NetCloseStreamConnection(FALSE);
 		}
-		
+
 		if (error)
 		{
 			alert_user(infoError, strNETWORK_ERRORS, netErrCouldntDistribute, error);
-		} 
+		}
 		else if  (TickCount()-initial_ticks>(topology->player_count*MAP_TRANSFER_TIME_OUT))
 		{
 			alert_user(infoError, strNETWORK_ERRORS, netErrWaitedTooLongForMap, error);
 			error= 1;
 		}
 	}
-	
+
 	/* Fill the progress bar.. */
-	if (!error) 
+	if (!error)
 	{
 		/* Process the physics file & frees it!.. */
 		process_network_physics_model(physics_buffer);
@@ -2321,7 +2321,7 @@ static OSErr NetDistributeGameDataToAllPlayers(
 	}
 
 	close_progress_dialog();
-	
+
 	return error;
 }
 
@@ -2341,11 +2341,11 @@ static byte *NetReceiveGameData(
 	{
 		if((TickCount()-ticks)>MAP_TRANSFER_TIME_OUT)  timed_out= TRUE;
 	}
-	
+
 	if (timed_out)
 	{
 			alert_user(infoError, strNETWORK_ERRORS, netErrWaitedTooLongForMap, 0);
-	} 
+	}
 	else
 	{
 		byte *physics_buffer;
@@ -2377,7 +2377,7 @@ static byte *NetReceiveGameData(
 		/* And close our dialog.. */
 		draw_progress_bar(10, 10);
 		close_progress_dialog();
-	
+
 		/* Await for the next connection attempt. */
 		error= NetStreamWaitForConnection();
 		if (error != noErr || map_buffer == NULL)
@@ -2388,7 +2388,7 @@ static byte *NetReceiveGameData(
 			} else {
 				alert_user(infoError, strERRORS, outOfMemory, MemError());
 			}
-	
+
 			if(map_buffer)
 			{
 				free(map_buffer);
@@ -2396,12 +2396,12 @@ static byte *NetReceiveGameData(
 			}
 		}
 	}
-	
+
 	return map_buffer;
 }
 
 void NetSetInitialParameters(
-	short updates_per_packet, 
+	short updates_per_packet,
 	short update_latency)
 {
 	initial_updates_per_packet= updates_per_packet;
@@ -2419,8 +2419,8 @@ static short NetSizeofLocalQueue(
 	void)
 {
 	short size;
-	
-	if ((size= local_queue.write_index-local_queue.read_index) < 0) 
+
+	if ((size= local_queue.write_index-local_queue.read_index) < 0)
 		size += NET_QUEUE_SIZE;
 
 	return size;
@@ -2438,24 +2438,24 @@ static void *receive_stream_data(
 	// first we'll get the map length
 	error= NetReceiveStreamPacket(&packet_type, network_adsp_packet);
 
-	if (!error && packet_type==_stream_size_packet)	
+	if (!error && packet_type==_stream_size_packet)
 	{
 		*length= *((long *) network_adsp_packet);
 		if(*length)
 		{
 			buffer = (byte *) malloc(*length); // because my caller expects it to be portable.
-			
+
 			if (buffer)
 			{
 				long offset;
-			
+
 				// we transfer the map in chunks, since ADSP can only transfer 64K at a time.
 				for (offset = 0; !error && offset < *length; offset += STREAM_TRANSFER_CHUNK_SIZE)
 				{
 					word expected_count;
-										
+
 					expected_count = MIN(STREAM_TRANSFER_CHUNK_SIZE, *length - offset);
-					
+
 					error= NetReceiveStreamPacket(&packet_type, network_adsp_packet);
 					if(packet_type != _stream_data_packet)
 					{
@@ -2472,7 +2472,7 @@ static void *receive_stream_data(
 		}
 	}
 	*receive_error= error;
-		
+
 	return buffer;
 }
 
@@ -2488,12 +2488,12 @@ static OSErr send_stream_data(
 	if(!error)
 	{
 		long offset, length_written= 0;
-	
+
 		// ready or not, here it comes, in smaller chunks
 		for (offset = 0; !error && offset < length; offset += STREAM_TRANSFER_CHUNK_SIZE)
 		{
 			word adsp_count;
-			
+
 			adsp_count = MIN(STREAM_TRANSFER_CHUNK_SIZE, length - offset);
 
 			/* Note that the last time through this we will have garbage at the */
@@ -2501,7 +2501,7 @@ static OSErr send_stream_data(
 			/*  of the map. */
 			memcpy(network_adsp_packet, ((byte *) data)+offset, adsp_count);
 			error= NetSendStreamPacket(_stream_data_packet, network_adsp_packet);
-			
+
 			length_written+= adsp_count;
 			draw_progress_bar(length_written, length);
 		}
@@ -2514,7 +2514,7 @@ void NetPrintInfo(
 	void)
 {
 #ifdef DEBUG_NET
-	dprintf("numSmears= %d numCountChanges= %d ring packet_count= %d Single: %d;g", net_stats.numSmears, 
+	dprintf("numSmears= %d numCountChanges= %d ring packet_count= %d Single: %d;g", net_stats.numSmears,
 		net_stats.numCountChanges, 	status->ringPacketCount, status->single_player);
 	dprintf("localPlayerIndex= %d, server_player_index= %d;g", localPlayerIndex, status->server_player_index);
 	dprintf("tick_count= %d, localNetTime= %d;g", dynamic_world->tick_count, status->localNetTime);
@@ -2551,7 +2551,7 @@ static void process_packet_buffer_flags(
 		{
 			warn(packet_data->action_flag_count[index]<=0);
 		}
-		
+
 		for(index= 0; index<status->server_player_index; index++)
 		{
 			warn(packet_data->action_flag_count[index]<=0);
@@ -2577,8 +2577,8 @@ static void process_packet_buffer_flags(
 					net_stats.server_unsyncing++;
 #endif
 					packet_data->ring_packet_type= typeUNSYNC_RING_PACKET;
-				} 
-				else 
+				}
+				else
 				{
 #ifdef DEBUG_NET
 //					dprintf("Server got a packet & net was coming down (changed) (%d) current: %d;g",  net_stats.action_flags_processed, packet_data->required_action_flags);
@@ -2586,21 +2586,21 @@ static void process_packet_buffer_flags(
 #endif
 					packet_data->required_action_flags= 0;
 				}
-			} 
-			else 
+			}
+			else
 			{
 				packet_data->required_action_flags= NetSizeofLocalQueue();
 			}
-		} 
+		}
 		NetAddFlagsToPacket(packet_data);
 		NetBuildRingPacket(ringFrame, (byte *) packet_data, NetPacketSize(packet_data), status->lastValidRingSequence+1);
 
 		/* We just became the server.. */
-		if(packet_tag != NONE) 
+		if(packet_tag != NONE)
 		{
 			NetRebuildRingPacket(ringFrame, packet_tag, status->lastValidRingSequence+1);
 		}
-		
+
 		/* Send the Ack just after we pass the token along.. */
 		NetSendAcknowledgement(ackFrame, status->lastValidRingSequence);
 		NetSendRingPacket(ringFrame);
@@ -2618,7 +2618,7 @@ static void process_packet_buffer_flags(
 	0	tick0	tick0				tick0						tick1 Pulls (0, 1, 2)
 	1	-----	tick0 (Pulls 0)		tick0						tick0
 	2	-----	-----				tick0 (Pulls 0, 1, 2(none))	tick0
-	
+
 	must pull yourself and everything above you to complete the ring.
 */
 
@@ -2636,20 +2636,20 @@ static void process_flags(
 	for (player_index= 0; player_index<topology->player_count; ++player_index)
 	{
 		short player_flag_count= packet_data->action_flag_count[player_index];
-	
+
 		vassert(player_flag_count >= -1 && player_flag_count <= MAXIMUM_UPDATES_PER_PACKET,
-			csprintf(temporary, "UGH! count= %d;dm #%d", player_flag_count, 
+			csprintf(temporary, "UGH! count= %d;dm #%d", player_flag_count,
 			((byte*)packet_data)-sizeof(NetPacketHeader)));
-	
+
 		/* if the player is not net dead */
-		if (player_flag_count != NET_DEAD_ACTION_FLAG_COUNT) 
+		if (player_flag_count != NET_DEAD_ACTION_FLAG_COUNT)
 		{
 			process_action_flags(player_index, action_flags, player_flag_count);
 #ifdef DEBUG_NET
 #ifdef STREAM_NET
 			{
 				short ii;
-				
+
 				for(ii= 0; ii<player_flag_count; ++ii)
 				{
 					debug_stream_of_flags(action_flags[ii], player_index);
@@ -2666,15 +2666,15 @@ static void process_flags(
 		{
 			/* Only process if this is in our range of flags. */
 			short index;
-	
-//			dprintf("will stuff %d flags", packet_data->required_action_flags);				
+
+//			dprintf("will stuff %d flags", packet_data->required_action_flags);
 			for (index= 0; index<packet_data->required_action_flags; index++)
 			{
 				long flag= NET_DEAD_ACTION_FLAG;
 
 				topology->players[player_index].net_dead= TRUE;
-				
-				process_action_flags(player_index, &flag, 1);	
+
+				process_action_flags(player_index, &flag, 1);
 #ifdef DEBUG_NET
 #ifdef STREAM_NET
 				debug_stream_of_flags(flag, player_index);
@@ -2693,7 +2693,7 @@ static void become_the_gatherer(
 {
 	short flag_count, index, oldNextPlayerIndex;
 	long *action_flags;
-	
+
 	flag_count= 0;
 
 #ifdef DEBUG_NET
@@ -2708,12 +2708,12 @@ static void become_the_gatherer(
 	/* If the next player upring was the server, and the next player upring wasn't us.. */
 	assert(oldNextPlayerIndex==status->server_player_index);
 	if (oldNextPlayerIndex==status->server_player_index && !status->iAmTheServer)
-	{				
+	{
 		// let us crown ourselves!
 		status->server_player_index= localPlayerIndex;
 		status->iAmTheServer= TRUE;
 #ifdef DEBUG_NET
-//		dprintf("Trying to become the server...;g");				
+//		dprintf("Trying to become the server...;g");
 		net_stats.assuming_control++;
 #endif
 
@@ -2723,7 +2723,7 @@ static void become_the_gatherer(
 		serverTMTask = myXTMSetup(1000/TICKS_PER_SECOND, NetServerTask);
 		packet_data->server_net_time= status->localNetTime;
 	}
-	
+
 	//  adjust the packet to indicate that our fellow player has become deceased.
 	// (is this an obituary?)
 	action_flags= packet_data->action_flags;
@@ -2734,7 +2734,7 @@ static void become_the_gatherer(
 			action_flags += packet_data->action_flag_count[index];
 		}
 	}
-	
+
 	for (index= oldNextPlayerIndex+1; index<topology->player_count; index++)
 	{
 		if (packet_data->action_flag_count[index] != NET_DEAD_ACTION_FLAG_COUNT)
@@ -2742,11 +2742,11 @@ static void become_the_gatherer(
 			flag_count += packet_data->action_flag_count[index];
 		}
 	}
-	
+
 	/* Remove the servers flags.. */
-	if (flag_count > 0) 
+	if (flag_count > 0)
 	{
-		BlockMove(action_flags + packet_data->action_flag_count[oldNextPlayerIndex], 
+		BlockMove(action_flags + packet_data->action_flag_count[oldNextPlayerIndex],
 			action_flags, sizeof(long)*flag_count);
 	}
 	/* Mark the server as net dead */
@@ -2786,13 +2786,13 @@ static void open_stream_file(
 
 	get_my_fsspec(&file);
 	memcpy(file.name, name, name[0]+1);
-	
+
 	FSpDelete(&file);
 	error= FSpCreate(&file, 'ttxt', 'TEXT', smSystemScript);
 	if(error) dprintf("Err:%d", error);
 	error= FSpOpenDF(&file, fsWrPerm, &stream_refnum);
 	if(error || stream_refnum==NONE) dprintf("Open Err:%d", error);
-	
+
 	action_flag_buffer= (struct recorded_flag *) malloc(MAXIMUM_STREAM_FLAGS*sizeof(struct recorded_flag));
 	assert(action_flag_buffer);
 	action_flag_index= 0;
@@ -2813,17 +2813,17 @@ static void write_flags(
 	for(player_index= 0; player_index<topology->player_count; ++player_index)
 	{
 		long player_action_flag_count= 0;
-	
+
 		for(index= 0; index<action_flag_index-1; ++index)
 		{
 			if(action_flag_buffer[index].player_index==player_index)
 			{
 				if(!(player_action_flag_count%TICKS_PER_SECOND))
 				{
-					sprintf(temporary, "%d 0x%08x (%d secs)\n", action_flag_buffer[index].player_index, 
+					sprintf(temporary, "%d 0x%08x (%d secs)\n", action_flag_buffer[index].player_index,
 						action_flag_buffer[index].flag, player_action_flag_count/TICKS_PER_SECOND);
 				} else {
-					sprintf(temporary, "%d 0x%08x\n", action_flag_buffer[index].player_index, 
+					sprintf(temporary, "%d 0x%08x\n", action_flag_buffer[index].player_index,
 						action_flag_buffer[index].flag);
 				}
 				size= strlen(temporary);
@@ -2859,7 +2859,7 @@ static void close_stream_file(
 
 		write_flags();
 		FSClose(stream_refnum);
-		
+
 		free(action_flag_buffer);
 		action_flag_buffer= NULL;
 	}
@@ -2896,12 +2896,12 @@ short NetUpdateJoinState(
 						/* Unregister ourselves */
 						error= NetUnRegisterName();
 						assert(!error);
-					
+
 						/* Note that we share the buffers.. */
 						localPlayerIdentifier= gathering_data->new_local_player_identifier;
 						topology->players[localPlayerIndex].identifier= localPlayerIdentifier;
 						topology->players[localPlayerIndex].net_dead= FALSE;
-						
+
 						/* Confirm. */
 						new_player_data.accepted= TRUE;
 						memcpy(&new_player_data.player, topology->players+localPlayerIndex, sizeof(NetPlayer));
@@ -2923,7 +2923,7 @@ short NetUpdateJoinState(
 							}
 						}
 					}
-				} 
+				}
 
 				if (error != noErr)
 				{
@@ -2933,7 +2933,7 @@ short NetUpdateJoinState(
 				}
 			}
 			break;
-		
+
 		case netWaiting:
 			if (NetStreamCheckConnectionStatus())
 			{
@@ -2942,7 +2942,7 @@ short NetUpdateJoinState(
 				error= NetReceiveStreamPacket(&packet_type, network_adsp_packet);
 				if(!error && packet_type==_topology_packet)
 				{
-				
+
 					/* Copy it in */
 					memcpy(topology, network_adsp_packet, sizeof(NetTopology));
 
@@ -2951,7 +2951,7 @@ short NetUpdateJoinState(
 						AddrBlock address;
 
 						NetGetStreamAddress(&address);
-						
+
 						/* for ARA, make stuff in an address we know is correct (don’t believe the server) */
 						topology->players[0].dspAddress= address;
 						topology->players[0].ddpAddress.aNet= address.aNet;
@@ -2961,26 +2961,26 @@ short NetUpdateJoinState(
 					}
 
 					NetUpdateTopology();
-				
+
 					switch (topology->tag)
 					{
 						case tagNEW_PLAYER:
 							newState= netPlayerAdded;
 							break;
-							
+
 						case tagCANCEL_GAME:
 							newState= netCancelled;
 							alert_user(infoError, strNETWORK_ERRORS, netErrServerCanceled, 0);
 							break;
-							
+
 						case tagSTART_GAME:
 							newState= netStartingUp;
 							break;
-							
+
 						default:
 							break;
 					}
-				
+
 					error= NetCloseStreamConnection(FALSE);
 					if (!error)
 					{
@@ -2991,7 +2991,7 @@ short NetUpdateJoinState(
 								the connection */
 						}
 					}
-					
+
 					if (error)
 					{
 						newState= netJoinErrorOccurred;
@@ -3000,7 +3000,7 @@ short NetUpdateJoinState(
 				}
 				else
 				{
-					if(error) 
+					if(error)
 					{
 						newState= netJoinErrorOccurred;
 						alert_user(infoError, strNETWORK_ERRORS, netErrJoinFailed, error);
@@ -3008,12 +3008,12 @@ short NetUpdateJoinState(
 				}
 			}
 			break;
-		
+
 		default:
 			newState= NONE;
 			break;
 	}
-	
+
 	/* return netPlayerAdded to tell the caller to refresh his topology, but don’t change netState to that */
 	if (newState!=netPlayerAdded && newState != NONE) netState= newState;
 #endif
@@ -3037,7 +3037,7 @@ boolean NetGatherPlayer(
 #else
 	assert(netState==netGathering);
 	assert(topology->player_count<MAXIMUM_NUMBER_OF_NETWORK_PLAYERS);
-	
+
 	/* Get the address from the dialog */
 	NetLookupInformation(player_index, &address, NULL);
 
@@ -3047,7 +3047,7 @@ boolean NetGatherPlayer(
 	topology->players[topology->player_count].ddpAddress.aNet= address.aNet;
 	topology->players[topology->player_count].ddpAddress.aNode= address.aNode;
 	error= NetOpenStreamToPlayer(topology->player_count);
-	
+
 	if (!error)
 	{
 		struct gather_player_data gather_data;
@@ -3071,14 +3071,14 @@ boolean NetGatherPlayer(
 
 						/* Copy in the player data */
 						memcpy(topology->players+topology->player_count, &new_player_data->player, sizeof(NetPlayer));
-						
+
 						/* force in some addresses we know are correct */
 						topology->players[topology->player_count].dspAddress= address;
 						topology->players[topology->player_count].ddpAddress.aNet= address.aNet;
 						topology->players[topology->player_count].ddpAddress.aNode= address.aNode;
 //						dprintf("ddp %8x, dsp %8x;g;", *((long*)&topology->players[topology->player_count].ddpAddress),
 //							*((long*)&topology->players[topology->player_count].dspAddress));
-							
+
 						error= NetCloseStreamConnection(FALSE);
 						if (!error)
 						{
@@ -3088,26 +3088,26 @@ boolean NetGatherPlayer(
 							{
 								NetLookupRemove(player_index);
 							}
-						
+
 							/* successfully added a player */
 							topology->player_count+= 1;
-						
+
 							check_player(topology->player_count-1, topology->player_count);
-	
+
 							/* recalculate our local information */
 							NetUpdateTopology();
-						
+
 							/* distribute this new topology with the new player tag */
 							/* There is no reason to check the error here, because we can't do */
 							/* anything about it.. */
 							NetDistributeTopology(tagNEW_PLAYER);
 						}
 					}
-					else 
+					else
 					{
 						NetCloseStreamConnection(FALSE);
 					}
-				} 
+				}
 				else
 				{
 					NetCloseStreamConnection(FALSE);
@@ -3117,8 +3117,8 @@ boolean NetGatherPlayer(
 			{
 				NetCloseStreamConnection(FALSE);
 			}
-		}  
-		else 
+		}
+		else
 		{
 			NetCloseStreamConnection(FALSE);
 		}
@@ -3131,7 +3131,7 @@ boolean NetGatherPlayer(
 		success= FALSE;
 	}
 #endif
-	
+
 	return success;
 }
 
@@ -3150,9 +3150,9 @@ static OSErr NetDistributeTopology(
 {
 	OSErr error;
 	short playerIndex;
-	
+
 	assert(netState==netGathering);
-	
+
 	topology->tag= tag;
 	for (playerIndex=1; playerIndex<topology->player_count; ++playerIndex)
 	{
@@ -3174,7 +3174,7 @@ static OSErr NetDistributeTopology(
 			}
 		}
 	}
-	
+
 	return error;
 }
 
@@ -3186,11 +3186,11 @@ word MaxStreamPacketLength(
 	word max_length= 0;
 
 	for(packet_type= 0; packet_type<NUMBER_OF_BUFFERED_STREAM_PACKET_TYPES; ++packet_type)
-	{	
+	{
 		word length= NetStreamPacketLength(packet_type);
 		if(length>max_length) max_length= length;
 	}
-	
+
 	return max_length;
 }
 
@@ -3204,11 +3204,11 @@ word NetStreamPacketLength(
 		case _join_player_packet:
 			length= sizeof(struct gather_player_data);
 			break;
-			
+
 		case _accept_join_packet:
 			length= sizeof(struct accept_gather_data);
 			break;
-			
+
 		case _topology_packet:
 			length= sizeof(NetTopology);
 			break;
@@ -3216,11 +3216,11 @@ word NetStreamPacketLength(
 		case _stream_size_packet:
 			length= sizeof(long);
 			break;
-			
+
 		case _stream_data_packet:
 			length= STREAM_TRANSFER_CHUNK_SIZE;
 			break;
-			
+
 		default:
 			length= 0;
 			halt();

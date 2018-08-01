@@ -15,7 +15,7 @@
 void initialize_wall_windows(void);
 
 shape_desc new_wall_window(
-	shape_desc base_shape, 	
+	shape_desc base_shape,
 	short animation_ticks,
 	shape_desc *windows,
 	short count);
@@ -23,7 +23,7 @@ shape_desc new_wall_window(
 void get_wall_window_information(
 	shape_desc texture,
 	register struct wall_information_data *data);
-	
+
 void free_wall_window(shape_desc window);
 
 void update_wall_windows(short time_elapsed);

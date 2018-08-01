@@ -15,7 +15,7 @@
 /* --------- local prototypes */
 static int alphabetical_names(const void *a, const void *b);
 static OSErr enumerate_files(struct find_file_pb *param_block, long directory_id);
-	
+
 /* ---------------- Parameter Block Version */
 OSErr find_files(
 	struct find_file_pb *param_block)
@@ -23,7 +23,7 @@ OSErr find_files(
 	OSErr err;
 
 	/* If we need to create the destination buffer */
-	if(param_block->flags & _ff_create_buffer) 
+	if(param_block->flags & _ff_create_buffer)
 	{
 		assert(param_block->search_type==_fill_buffer);
 		param_block->buffer= (FSSpec *) NewPtr(sizeof(FSSpec)*param_block->max);
@@ -42,7 +42,7 @@ OSErr find_files(
 	if(param_block->flags & _ff_alphabetical)
 	{
 		assert(param_block->search_type==_fill_buffer);
-		qsort(param_block->buffer, param_block->count, 
+		qsort(param_block->buffer, param_block->count,
 			sizeof(FSSpec), alphabetical_names);
 	}
 
@@ -52,28 +52,28 @@ OSErr find_files(
 		assert(param_block->search_type==_fill_buffer);
 		SetPtrSize((Ptr) param_block->buffer, sizeof(FSSpec)*(param_block->count));
 	}
-	
+
 	return err;
 }
 
 Boolean equal_fsspecs(
-	FSSpec *a, 
+	FSSpec *a,
 	FSSpec *b)
 {
 	Boolean equal= false;
-	
-	if(a->vRefNum==b->vRefNum && a->parID==b->parID && 
+
+	if(a->vRefNum==b->vRefNum && a->parID==b->parID &&
 		EqualString(a->name, b->name, false, false))
 	{
 		equal= true;
 	}
-	
+
 	return equal;
 }
 
 /* --------- Local Code --------- */
 static OSErr enumerate_files(
-	struct find_file_pb *param_block, 
+	struct find_file_pb *param_block,
 	long directory_id) /* Because it is recursive.. */
 {
 	static CInfoPBRec pb; /* static to prevent stack overflow.. */
@@ -82,12 +82,12 @@ static OSErr enumerate_files(
 	short index;
 
 	memset(&pb, 0, sizeof(CInfoPBRec));
-	
+
 	temp_file.vRefNum= param_block->vRefNum;
 	pb.hFileInfo.ioVRefNum= temp_file.vRefNum;
 	pb.hFileInfo.ioNamePtr= temp_file.name;
-			
-	for(err= noErr, index=1; param_block->count<param_block->max && err==noErr; index++) 
+
+	for(err= noErr, index=1; param_block->count<param_block->max && err==noErr; index++)
 	{
 		pb.hFileInfo.ioDirID= directory_id;
 		pb.hFileInfo.ioFDirIndex= index;
@@ -101,12 +101,12 @@ static OSErr enumerate_files(
 				err= enumerate_files(param_block, pb.dirInfo.ioDrDirID);
 			} else {
 				/* Add.. */
-				if(param_block->type_to_find==WILDCARD_TYPE || 
+				if(param_block->type_to_find==WILDCARD_TYPE ||
 					pb.hFileInfo.ioFlFndrInfo.fdType==param_block->type_to_find)
 				{
 					temp_file.vRefNum= pb.hFileInfo.ioVRefNum;
 					temp_file.parID= directory_id;
-					
+
 					/* Only add if there isn't a callback or it returns TRUE */
 					switch(param_block->search_type)
 					{
@@ -114,11 +114,11 @@ static OSErr enumerate_files(
 							if(!param_block->callback || param_block->callback(&temp_file, param_block->user_data))
 							{
 								/* Copy it in.. */
-								BlockMove(&temp_file, &param_block->buffer[param_block->count++], 
+								BlockMove(&temp_file, &param_block->buffer[param_block->count++],
 									sizeof(FSSpec));
 							}
 							break;
-							
+
 						case _callback_only:
 							assert(param_block->callback);
 							if(param_block->flags & _ff_callback_with_catinfo)
@@ -128,7 +128,7 @@ static OSErr enumerate_files(
 								param_block->callback(&temp_file, param_block->user_data);
 							}
 							break;
-							
+
 						default:
 							halt();
 							break;
@@ -140,7 +140,7 @@ static OSErr enumerate_files(
 		}
 	}
 
-	/* If we got a fnfErr, it was because we indexed too far. */	
+	/* If we got a fnfErr, it was because we indexed too far. */
 	return (err==fnfErr) ? (noErr) : err;
 }
 
@@ -148,5 +148,5 @@ static int alphabetical_names(
 	const void *a,
 	const void *b)
 {
-	return (IUCompString(((FSSpec *)a)->name, ((FSSpec *)b)->name)); 
+	return (IUCompString(((FSSpec *)a)->name, ((FSSpec *)b)->name));
 }

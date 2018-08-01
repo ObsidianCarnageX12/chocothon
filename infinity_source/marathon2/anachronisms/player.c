@@ -60,13 +60,13 @@ Thursday, July 6, 1995 4:53:52 PM
 #define OXYGEN_WARNING_OFFSET (10*TICKS_PER_SECOND)
 
 #define LAST_LEVEL 100
-				
+
 /* ---------- structures */
 
 struct action_queue /* 8 bytes */
 {
 	short read_index, write_index;
-	
+
 	long *buffer;
 };
 
@@ -86,7 +86,7 @@ struct damage_response_definition
 {
 	short type;
 	short damage_threshhold; /* NONE is none, otherwise bumps fade by one if over threshhold */
-	
+
 	short fade;
 	short sound, death_sound;
 };
@@ -107,7 +107,7 @@ static struct action_queue *action_queues;
 static struct player_shape_definitions player_shapes=
 {
 	6, /* collection */
-	
+
 	9, 8, /* dying hard, dying soft */
 	11, 10, /* dead hard, dead soft */
 	{7, 0, 0, 24, 23}, /* legs: stationary, walking, running, sliding, airborne */
@@ -117,33 +117,33 @@ static struct player_shape_definitions player_shapes=
 };
 
 /* Add to this as you will.. */
-static short player_initial_start_items[]= 
-{ 
+static short player_initial_start_items[]=
+{
 	_i_magnum,  // First weapon is the weapon he will use...
 	_i_knife,
 	_i_knife,
-	_i_magnum_magazine, 
+	_i_magnum_magazine,
 	_i_magnum_magazine,
 #if 0
-	_i_assault_rifle, 
-	_i_magnum, 
-	_i_missile_launcher, 
+	_i_assault_rifle,
+	_i_magnum,
+	_i_missile_launcher,
 	_i_flamethrower,
-	_i_plasma_pistol, 
-//	_i_alien_shotgun, 
+	_i_plasma_pistol,
+//	_i_alien_shotgun,
 //	_i_shotgun,
-	_i_assault_rifle_magazine, 
-	_i_assault_grenade_magazine, 
-	_i_magnum_magazine, 
-	_i_missile_launcher_magazine, 
+	_i_assault_rifle_magazine,
+	_i_assault_grenade_magazine,
+	_i_magnum_magazine,
+	_i_missile_launcher_magazine,
 	_i_flamethrower_canister,
-	_i_plasma_magazine, 
-//	_i_shotgun_magazine, 
+	_i_plasma_magazine,
+//	_i_shotgun_magazine,
 //	_i_shotgun,
 #endif
 	_i_magnum_magazine
 };
-	
+
 #define NUMBER_OF_DAMAGE_RESPONSE_DEFINITIONS (sizeof(damage_response_definitions)/sizeof(struct damage_response_definition))
 static struct damage_response_definition damage_response_definitions[]=
 {
@@ -204,7 +204,7 @@ void allocate_player_memory(
 	long *action_queue_buffer;
 	short i;
 
-#ifndef DEMO	
+#ifndef DEMO
 	/* allocate space for all our players */
 	players= (struct player_data *) malloc(sizeof(struct player_data)*MAXIMUM_NUMBER_OF_PLAYERS);
 	assert(players);
@@ -218,7 +218,7 @@ void allocate_player_memory(
 	action_queues= (struct action_queue *) malloc(sizeof(struct action_queue)*MAXIMUM_NUMBER_OF_PLAYERS);
 	action_queue_buffer= (long *) malloc(sizeof(long)*MAXIMUM_NUMBER_OF_PLAYERS*ACTION_QUEUE_BUFFER_DIAMETER);
 	assert(action_queues&&action_queue_buffer);
-	
+
 	/* tell the queues where their buffers are */
 	for (i=0;i<MAXIMUM_NUMBER_OF_PLAYERS;++i)
 	{
@@ -252,14 +252,14 @@ short new_player(
 	player->color= color;
 	player->team= team;
 	player->flags= 0;
-	
+
 	player->invincibility_duration= 0;
 	player->invisibility_duration= 0;
 	player->infravision_duration= 0;
 	player->extravision_duration= 0;
 	player->identifier= identifier;
 
-	/* initialize inventory */	
+	/* initialize inventory */
 	for (loop=0;loop<NUMBER_OF_ITEMS;++loop) player->items[loop]= NONE;
 
 	/* create the player.. */
@@ -272,7 +272,7 @@ short new_player(
 #if 0
 	if (get_game_status()==game_in_progress) serial_number_validity_check();
 #endif
-	
+
 	/* give the player his initial items */
 	if (GET_GAME_OPTIONS()&_burn_items_on_death) give_player_initial_items(player_index);
 
@@ -284,7 +284,7 @@ void walk_player_list(
 {
 	struct player_data *player;
 	short player_index= current_player_index;
-	
+
 	/* find the next player in the list we can look at and switch to them */
 	do
 	{
@@ -292,14 +292,14 @@ void walk_player_list(
 		player= get_player_data(player_index);
 	}
 	while (!(GET_GAME_OPTIONS()&_overhead_map_is_omniscient) && local_player->team!=player->team);
-	
+
 	if (current_player_index!=player_index)
 	{
 		set_current_player_index(player_index);
 		update_interface(NONE);
 		dirty_terminal_view(player_index); /* In case they are in terminal mode.. */
 	}
-	
+
 	return;
 }
 
@@ -307,17 +307,17 @@ void initialize_players(
 	void)
 {
 	short i;
-	
+
 	/* no players */
 	dynamic_world->player_count= 0;
-	
+
 	/* reset the action flag queues and zero the player slots */
 	for (i=0;i<MAXIMUM_NUMBER_OF_PLAYERS;++i)
 	{
 		memset(players+i, 0, sizeof(struct player_data));
 		action_queues[i].read_index= action_queues[i].write_index= 0;
 	}
-	
+
 	return;
 }
 
@@ -401,7 +401,7 @@ dprintf("PLayer %d is a zombie", player_index);
 	{
 		if ((size= queue->write_index-queue->read_index)<0) size+= ACTION_QUEUE_BUFFER_DIAMETER;
 	}
-	
+
 	return size;
 }
 
@@ -412,14 +412,14 @@ void update_players(
 	struct player_data *player;
 	short player_index;
 	long action_flags;
-	
+
 	for (player_index= 0, player= players; player_index<dynamic_world->player_count; ++player_index, ++player)
 	{
 		struct polygon_data *polygon= get_polygon_data(player->supporting_polygon_index);
-	
+
 		action_flags= dequeue_action_flags(player_index);
 		if (PLAYER_IS_TELEPORTING(player)) action_flags= 0;
-		
+
 		/* Deal with the terminal mode crap. */
 		if(player_in_terminal_mode(player_index))
 		{
@@ -427,7 +427,7 @@ void update_players(
 			action_flags= 0;
 			update_player_for_terminal_mode(player_index);
 		}
-		
+
 		update_player_physics_variables(player_index, action_flags);
 
 		player->invisibility_duration= FLOOR(player->invisibility_duration-1, 0);
@@ -486,7 +486,7 @@ void update_players(
 		update_player_media(player_index);
 		set_player_shapes(player_index, TRUE);
 	}
-	
+
 	return;
 }
 
@@ -514,13 +514,13 @@ void damage_player(
 		if (aggressor_index!=NONE)
 		{
 			struct monster_data *aggressor= get_monster_data(aggressor_index);
-			
+
 			if (!PLAYER_IS_DEAD(player))
 			{
 				if (MONSTER_IS_PLAYER(aggressor))
 				{
 					struct player_data *agressor_player;
-					
+
 					aggressor_player_index= monster_index_to_player_index(aggressor_index);
 					agressor_player= get_player_data(aggressor_player_index);
 					player->damage_taken[aggressor_player_index].damage+= damage_amount;
@@ -539,7 +539,7 @@ void damage_player(
 				if ((player->suit_oxygen-= damage_amount)<0) player->suit_oxygen= 0;
 				if (player_index==current_player_index) mark_oxygen_display_as_dirty();
 				break;
-			
+
 			default:
 				/* damage the player, recording the kill if the aggressor was another player and we died */
 				if ((player->suit_energy-= damage_amount)<0)
@@ -549,43 +549,43 @@ void damage_player(
 						if (!PLAYER_IS_DEAD(player))
 						{
 							short action= (damage->type==_damage_explosion || damage->type==_damage_crushing || damage_amount>PLAYER_MAXIMUM_SUIT_ENERGY/2) ? _monster_is_dying_hard : _monster_is_dying_soft;
-							
+
 							if (damage->type==_damage_flame) action= _monster_is_dying_flaming;
 							kill_player(player_index, aggressor_player_index, action);
 							if (aggressor_player_index!=NONE)
 							{
 								struct player_data *agressor_player= get_player_data(aggressor_player_index);
-								
+
 								player->damage_taken[aggressor_player_index].kills+= 1;
 								if (aggressor_player_index != player_index)
 								{
 									agressor_player->total_damage_given.kills++;
 								}
-								
+
 							}
 							else
 							{
 								player->monster_damage_taken.kills+= 1;
 							}
 						}
-						
+
 						player->suit_oxygen= 0;
 						if (player_index==current_player_index) mark_oxygen_display_as_dirty();
 					}
-					
+
 					player->suit_energy= 0;
 				}
 				break;
 		}
 	}
-	
+
 	{
 		struct damage_response_definition *definition;
 		short i;
-		
+
 		for (i=0,definition=damage_response_definitions;definition->type!=damage_type && i<NUMBER_OF_DAMAGE_RESPONSE_DEFINITIONS;++i,++definition);
 		assert(i!=NUMBER_OF_DAMAGE_RESPONSE_DEFINITIONS);
-		
+
 		play_object_sound(player->object_index, PLAYER_IS_DEAD(player) ? definition->sound : definition->death_sound);
 		if (player_index==current_player_index)
 		{
@@ -607,15 +607,15 @@ short player_identifier_to_player_index(
 {
 	struct player_data *player;
 	short player_index;
-	
+
 	for (player_index=0;player_index<dynamic_world->player_count;++player_index)
 	{
 		player= get_player_data(player_index);
-		
+
 		if (player->identifier==player_identifier) break;
 	}
 	assert(player_index!=dynamic_world->player_count);
-	
+
 	return player_index;
 }
 
@@ -628,7 +628,7 @@ void mark_player_collections(
 	mark_weapon_collections(loading);
 	mark_item_collections(loading);
 	mark_interface_collections(loading);
-	
+
 	return;
 }
 
@@ -637,7 +637,7 @@ struct player_data *get_player_data(
 	short player_index)
 {
 	assert(player_index>=0&&player_index<dynamic_world->player_count);
-	
+
 	return players+player_index;
 }
 #endif
@@ -647,7 +647,7 @@ void set_local_player_index(
 {
 	local_player_index= player_index;
 	local_player= get_player_data(player_index);
-	
+
 	return;
 }
 
@@ -656,7 +656,7 @@ void set_current_player_index(
 {
 	current_player_index= player_index;
 	current_player= get_player_data(player_index);
-	
+
 	return;
 }
 
@@ -665,13 +665,13 @@ void recreate_players_for_new_level(
 	void)
 {
 	short player_index;
-	
+
 	for (player_index= 0; player_index<dynamic_world->player_count; ++player_index)
 	{
-		/* Recreate all of the players for the new level.. */	
+		/* Recreate all of the players for the new level.. */
 		recreate_player(player_index);
 	}
-	
+
 	return;
 }
 
@@ -680,14 +680,14 @@ short monster_index_to_player_index(
 {
 	struct player_data *player;
 	short player_index;
-	
+
 	for (player_index=0;player_index<dynamic_world->player_count;++player_index)
 	{
 		player= get_player_data(player_index);
 		if (player->monster_index==monster_index) break;
 	}
 	assert(player_index!=dynamic_world->player_count);
-	
+
 	return player_index;
 }
 
@@ -696,7 +696,7 @@ short get_polygon_index_supporting_player(
 {
 	short player_index= monster_index_to_player_index(monster_index);
 	struct player_data *player= get_player_data(player_index);
-	
+
 	return player->supporting_polygon_index;
 }
 
@@ -705,7 +705,7 @@ void process_player_powerup(
 	short item_index)
 {
 	struct player_data *player= get_player_data(player_index);
-	
+
 	switch (item_index)
 	{
 		case _i_invisibility_powerup:
@@ -715,19 +715,19 @@ void process_player_powerup(
 		case _i_invincibility_powerup:
 			player->invincibility_duration+= kINVINCIBILITY_DURATION;
 			break;
-		
+
 		case _i_infravision_powerup:
 			player->infravision_duration+= kINFRAVISION_DURATION;
 			break;
-		
+
 		case _i_extravision_powerup:
 			if (player_index==current_player_index) start_extravision_effect(TRUE);
 			player->extravision_duration+= kEXTRAVISION_DURATION;
 			break;
-		
+
 		case _i_oxygen_powerup:
 			break;
-		
+
 		case _i_energy_powerup:
 			break;
 		case _i_double_energy_powerup:
@@ -745,7 +745,7 @@ world_distance dead_player_minimum_polygon_height(
 	short player_index;
 	struct player_data *player;
 	world_distance minimum_height= 0;
-	
+
 	for (player_index= 0, player= players; player_index<dynamic_world->player_count; ++player_index, ++player)
 	{
 		if (polygon_index==player->camera_polygon_index)
@@ -754,7 +754,7 @@ world_distance dead_player_minimum_polygon_height(
 			break;
 		}
 	}
-	
+
 	return minimum_height;
 };
 
@@ -772,7 +772,7 @@ boolean try_and_subtract_player_item(
 		mark_player_inventory_as_dirty(player_index, item_type);
 		found_one= TRUE;
 	}
-	
+
 	return found_one;
 }
 
@@ -784,10 +784,10 @@ static void handle_player_in_vacuum(
 {
 	struct player_data *player= get_player_data(player_index);
 
-	if (player->suit_oxygen>0)	
+	if (player->suit_oxygen>0)
 	{
 		short breathing_frequency;
-		
+
 		switch (player->suit_oxygen/TICKS_PER_MINUTE)
 		{
 			case 0: breathing_frequency= TICKS_PER_MINUTE/6;
@@ -813,17 +813,17 @@ static void handle_player_in_vacuum(
 		if (player->suit_oxygen<=0)
 		{
 			struct damage_definition damage;
-			
+
 			damage.flags= 0;
 			damage.type= _damage_suffocation;
 			damage.base= player->suit_energy+1;
 			damage.random= 0;
 			damage.scale= FIXED_ONE;
-			
+
 			damage_player(player->monster_index, NONE, NONE, &damage);
 		}
 	}
-	
+
 	return;
 }
 
@@ -838,7 +838,7 @@ static void update_player_teleport(
 	if (PLAYER_IS_TELEPORTING(player))
 	{
 		boolean changing_level= FALSE;
-	
+
 		switch (player->teleporting_phase+= 1)
 		{
 			case PLAYER_TELEPORTING_MIDPOINT:
@@ -848,7 +848,7 @@ static void update_player_teleport(
 					struct polygon_data *destination_polygon= get_polygon_data(destination_polygon_index);
 					struct damage_definition damage;
 					world_point3d destination;
-					
+
 					/* Determine where we are going. */
 					*((world_point2d *)&destination)= destination_polygon->center;
 					destination.z= destination_polygon->floor_height;
@@ -862,10 +862,10 @@ static void update_player_teleport(
 					initialize_player_physics_variables(player_index);
 
 					/* teleport in sound, at destination */
-					play_object_sound(player->object_index, _snd_teleport_in); 
+					play_object_sound(player->object_index, _snd_teleport_in);
 				} else { /* -level number is the interlevel */
  					short level_number= -player->teleporting_destination;
-					
+
 					if(level_number==EPILOGUE_LEVEL_NUMBER)
 					{
 						/* Should this do something sly in cooperative play? */
@@ -879,7 +879,7 @@ static void update_player_teleport(
 					}
 				}
 
-				/* Either the player is teleporting, or everyone is. (level change) */				
+				/* Either the player is teleporting, or everyone is. (level change) */
 				if (player_index==current_player_index || changing_level)
 				{
 					start_teleporting_effect(FALSE);
@@ -887,7 +887,7 @@ static void update_player_teleport(
 				}
 				player->teleporting_destination= NO_TELEPORTATION_DESTINATION;
 				break;
-			
+
 			case PLAYER_TELEPORTING_DURATION:
 				monster->action= _monster_is_moving;
 				SET_PLAYER_TELEPORTING_STATUS(player, FALSE);
@@ -911,7 +911,7 @@ static void update_player_teleport(
 				player->teleporting_phase= 0;
 				player->delay_before_teleport= 0; /* The only function that changes this are */
 													/* computer terminals. */
-				
+
 				/* They are in an automatic exit. */
 				if(player->teleporting_destination==NO_TELEPORTATION_DESTINATION)
 				{
@@ -926,7 +926,7 @@ static void update_player_teleport(
 						player->teleporting_destination= polygon->permutation;
 					}
 				}
-	
+
 				if(player->teleporting_destination>=0) /* simple teleport */
 				{
 					if (player_index==current_player_index) start_teleporting_effect(TRUE);
@@ -935,13 +935,13 @@ static void update_player_teleport(
 				} else { /* Level change */
 					/* Everyone plays the teleporting effect out. */
 					start_teleporting_effect(TRUE);
-					
+
 					/* Every players object plays the sound, and everyones monster responds. */
 					for(player_index= 0; player_index<dynamic_world->player_count; ++player_index)
 					{
 						player= get_player_data(player_index);
 						monster= get_monster_data(player->monster_index);
-						
+
 						play_object_sound(player->object_index, _snd_teleport_out); /* teleport out sound */
 						monster->action= _monster_is_teleporting;
 					}
@@ -961,22 +961,22 @@ static void update_player_media(
 
 	{
 		short sound_type= NONE;
-			
+
 		if (player_index==current_player_index) set_fade_effect((player->variables.flags&_HEAD_BELOW_MEDIA_BIT) ? get_media_submerged_fade_effect(polygon->media_index) : NONE);
-	
+
 		if (player->variables.flags&_FEET_BELOW_MEDIA_BIT)
 		{
 			struct media_data *media= get_media_data(polygon->media_index); // should be valid
 			world_distance current_magnitude= (player->variables.old_flags&_HEAD_BELOW_MEDIA_BIT) ? media->current_magnitude : (media->current_magnitude>>1);
 			world_distance external_magnitude= FIXED_TO_WORLD(GUESS_HYPOTENUSE(ABS(player->variables.external_velocity.i), ABS(player->variables.external_velocity.j)));
 			struct damage_definition *damage= get_media_damage(polygon->media_index, (player->variables.flags&_HEAD_BELOW_MEDIA_BIT) ? FIXED_ONE : FIXED_ONE/4);
-			
+
 			// apply current if possible
 			if (!PLAYER_IS_DEAD(player) && external_magnitude<current_magnitude) accelerate_player(player->monster_index, 0, NORMALIZE_ANGLE(media->current_direction-HALF_CIRCLE), media->current_magnitude>>2);
-			
+
 			// cause damage if possible
 			if (damage) damage_player(player->monster_index, NONE, NONE, damage);
-			
+
 			// feet entering media sound
 			if (!(player->variables.old_flags&_FEET_BELOW_MEDIA_BIT)) sound_type= _media_snd_feet_entering;
 			// head entering media sound
@@ -989,7 +989,7 @@ static void update_player_media(
 			// feet leaving media sound
 			if (polygon->media_index!=NONE && (player->variables.old_flags&_FEET_BELOW_MEDIA_BIT)) sound_type= _media_snd_feet_leaving;
 		}
-		
+
 		if (sound_type!=NONE)
 		{
 			play_object_sound(monster->object_index, get_media_sound(polygon->media_index, sound_type));
@@ -999,7 +999,7 @@ static void update_player_media(
 	if (player->variables.flags&_STEP_PERIOD_BIT)
 	{
 		short sound_index= NONE;
-		
+
 		if ((player->variables.flags&_FEET_BELOW_MEDIA_BIT) && !(player->variables.flags&_HEAD_BELOW_MEDIA_BIT))
 		{
 			sound_index= get_media_sound(polygon->media_index, _media_snd_splashing);
@@ -1008,13 +1008,13 @@ static void update_player_media(
 		{
 			/* make ordinary walking sound */
 		}
-		
+
 		if (sound_index!=NONE)
 		{
 			play_object_sound(monster->object_index, sound_index);
 		}
 	}
-	
+
 	return;
 }
 
@@ -1029,18 +1029,18 @@ static void set_player_shapes(
 	struct object_data *torso= get_object_data(legs->parasitic_object);
 	shape_descriptor new_torso_shape, new_legs_shape;
 	short transfer_mode, transfer_period;
-	
+
 	get_player_transfer_mode(player_index, &transfer_mode, &transfer_period);
-	
+
 	/* if we’re not dead, handle changing shapes (if we are dead, the correct dying shape has
 		already been set and we just have to wait for the animation to finish) */
 	if (!PLAYER_IS_DEAD(player))
 	{
 		short torso_shape;
 		short mode, pseudo_weapon_type;
-		
+
 		get_player_weapon_mode_and_type(player_index, &pseudo_weapon_type, &mode);
-		vassert(pseudo_weapon_type>=0 && pseudo_weapon_type<PLAYER_TORSO_SHAPE_COUNT, 
+		vassert(pseudo_weapon_type>=0 && pseudo_weapon_type<PLAYER_TORSO_SHAPE_COUNT,
 			csprintf(temporary, "Pseudo Weapon Type out of range: %d", pseudo_weapon_type));
 		switch(mode)
 		{
@@ -1065,12 +1065,12 @@ static void set_player_shapes(
 		/* stuff in the transfer modes */
 		if (legs->transfer_mode!=transfer_mode) legs->transfer_mode= transfer_mode, legs->transfer_period= transfer_period, legs->transfer_phase= 0;
 		if (torso->transfer_mode!=transfer_mode) torso->transfer_mode= transfer_mode, torso->transfer_period= transfer_period, torso->transfer_phase= 0;
-		
+
 		/* stuff in new shapes only if they have changed (and reset phases if they have) */
 		if (new_legs_shape!= legs->shape) legs->shape= new_legs_shape, legs->sequence= 0;
 		if (new_torso_shape!=torso->shape) torso->shape= new_torso_shape, torso->sequence= 0;
 	}
-	
+
 	if (animate)
 	{
 		/* animate the player only if we’re not airborne and not totally dead */
@@ -1114,7 +1114,7 @@ static void revive_player(
 	SET_OBJECT_SOLIDITY(object, TRUE);
 	SET_OBJECT_OWNER(object, _object_is_monster);
 	object->permutation= player->monster_index;
-	
+
 	/* create a new torso (shape will be set by set_player_shapes, below) */
 	attach_parasitic_object(monster->object_index, 0, location.yaw);
 
@@ -1139,7 +1139,7 @@ static void revive_player(
 	set_player_shapes(player_index, FALSE);
 
 	/* Update the interface to reflect your player's changed status */
-	if (player_index==current_player_index) update_interface(NONE); 
+	if (player_index==current_player_index) update_interface(NONE);
 
 	return;
 }
@@ -1154,7 +1154,7 @@ static void recreate_player(
 	struct player_data *player= get_player_data(player_index);
 	short placement_team;
 	struct object_location location;
-	
+
 	/* Determine the location */
 	placement_team= calculate_player_team(player->team);
 	get_random_player_starting_location_and_facing(player_index, placement_team, &location);
@@ -1165,7 +1165,7 @@ static void recreate_player(
 
 	/* add our parasitic torso */
 	attach_parasitic_object(monster->object_index, 0, location.yaw);
-	
+
 	/* and initialize it */
 //	player->flags= 0;
 	player->flags &= (_player_has_cheated_flag | _player_is_teleporting_flag); /* Player has cheated persists. */
@@ -1217,7 +1217,7 @@ static void kill_player(
 	monster->action= action;
 	monster_died(player->monster_index);
 	set_player_dead_shape(player_index, TRUE);
-	
+
 	/* make our torso invisible */
 	SET_OBJECT_INVISIBILITY(torso, TRUE);
 
@@ -1253,10 +1253,10 @@ static void give_player_initial_items(
 		} else {
 			player->items[player_initial_start_items[loop]]+= 1;
 		}
-		
+
 		process_new_item_for_reloading(player_index, player_initial_start_items[loop]);
 	}
-	
+
 	return;
 }
 
@@ -1265,11 +1265,11 @@ static void drop_the_ball(
 {
 	struct player_data *player= get_player_data(player_index);
 	short item_type;
-	
+
 	for (item_type= 0; item_type<NUMBER_OF_ITEMS; ++item_type)
 	{
 		short item_count= player->items[item_type];
-		
+
 		if(item_count>0 && get_item_kind(item_type)==_ball)
 		{
 			struct object_data *object= get_object_data(player->object_index);
@@ -1279,7 +1279,7 @@ static void drop_the_ball(
 			location.p.z= 0;
 			location.polygon_index= object->polygon;
 			location.yaw= location.pitch= location.flags= 0;
-		
+
 			/* Drop the ball.. */
 			new_item(&location, item_type);
 		}
@@ -1296,11 +1296,11 @@ static void burn_players_items(
 {
 	struct player_data *player= get_player_data(player_index);
 	short item_type;
-	
+
 	for (item_type= 0; item_type<NUMBER_OF_ITEMS; ++item_type)
 	{
 		short item_count= player->items[item_type];
-		
+
 		while ((item_count-= 1)>=0) object_was_just_destroyed(_object_is_item, item_type);
 		player->items[item_type]= NONE;
 	}
@@ -1327,20 +1327,20 @@ static void get_player_transfer_mode(
 	}
 	else
 	{
-		if (player->invincibility_duration) 
+		if (player->invincibility_duration)
 		{
 			*transfer_mode= _xfer_static;
 			duration= player->invincibility_duration;
 		}
 		else
 		{
-			if (player->invisibility_duration) 
+			if (player->invisibility_duration)
 			{
 				*transfer_mode= player->invisibility_duration>kINVISIBILITY_DURATION ? _xfer_subtle_invisibility : _xfer_invisibility;
 				duration= player->invisibility_duration;
 			}
 		}
-		
+
 		if (duration && duration<10*TICKS_PER_SECOND)
 		{
 			switch (duration/(TICKS_PER_SECOND/6))
@@ -1352,7 +1352,7 @@ static void get_player_transfer_mode(
 			}
 		}
 	}
-	
+
 	return;
 }
 
@@ -1363,7 +1363,7 @@ static void set_player_dead_shape(
 	struct player_data *player= get_player_data(player_index);
 	struct monster_data *monster= get_monster_data(player->monster_index);
 	short shape;
-	
+
 	if (monster->action==_monster_is_dying_flaming)
 	{
 		shape= dying ? FLAMING_DYING_SHAPE : FLAMING_DEAD_SHAPE;
@@ -1378,7 +1378,7 @@ static void set_player_dead_shape(
 		{
 			shape= (monster->action==_monster_is_dying_hard) ? player_shapes.dead_hard : player_shapes.dead_soft;
 		}
-	
+
 		shape= BUILD_DESCRIPTOR(BUILD_COLLECTION(player_shapes.collection, player->team), shape);
 	}
 
@@ -1390,7 +1390,7 @@ static void set_player_dead_shape(
 	{
 		randomize_object_sequence(monster->object_index, shape);
 	}
-	
+
 	return;
 }
 
@@ -1411,14 +1411,14 @@ static short calculate_player_team(
 			break;
 
 		case _game_of_defense:
-		case _game_of_rugby:						
+		case _game_of_rugby:
 		case _game_of_capture_the_flag:
 			team= base_team;
 			break;
 	}
-	
+
 	return team;
-}	
+}
 
 #if 0
 #define DECODE_ONLY
@@ -1437,9 +1437,9 @@ static serial_number_validity_check(
 	short i, j;
 	boolean found_duplicate= FALSE;
 	boolean found_illegal= FALSE;
-	
+
 	dprintf("serial number checking.....................................................;g;");
-	
+
 //	if (preferences->last_time_ran<0xab1747dc || preferences->last_time_ran>0xab553918)
 	{
 		for (i= 0; i<dynamic_world->player_count; ++i)
@@ -1447,19 +1447,19 @@ static serial_number_validity_check(
 			byte *player1_long_serial_number= game_is_networked ? ((struct player_info *)NetGetPlayerData(i))->long_serial_number : serial_preferences->long_serial_number;
 			byte short_serial_number[BYTES_PER_SHORT_SERIAL_NUMBER];
 			byte inferred_pad[BYTES_PER_SHORT_SERIAL_NUMBER];
-			
+
 			if (game_is_networked)
 			{
 				for (j= i+1; j<dynamic_world->player_count; ++j)
 				{
 					struct player_info *player2= NetGetPlayerData(j);
 					short k;
-					
+
 					for (k= 0; k<10 && player1_long_serial_number[k]==player2->long_serial_number[k]; ++k);
 					if (k==10) found_duplicate= TRUE;
 				}
 			}
-			
+
 			long_serial_number_to_short_serial_number_and_pad(player1_long_serial_number, short_serial_number, inferred_pad);
 			if (!PADS_ARE_EQUAL(inferred_pad, actual_pad) || !VALID_INVERSE_SEQUENCE(short_serial_number) ||
 				(!game_is_networked && ((char)short_serial_number[2])<0))
@@ -1474,7 +1474,7 @@ static serial_number_validity_check(
 	}
 
 	if (found_illegal || found_duplicate) alien_projectile_override= _projectile_rocket, human_projectile_override= _projectile_rifle_bullet;
-	
+
 	return;
 }
 #endif

@@ -47,7 +47,7 @@ enum /* fade types */
 	_fade_tint_blue, /* under water */
 	_fade_tint_orange, /* under lava */
 	_fade_tint_gross, /* under sewage */
-	
+
 	NUMBER_OF_FADE_TYPES
 };
 

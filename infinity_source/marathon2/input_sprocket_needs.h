@@ -18,10 +18,10 @@ enum
 int input_sprocket_needs_to_flags[NUMBER_OF_INPUT_SPROCKET_NEEDS]=
 {
 	_left_trigger_state,
-	_right_trigger_state,			
-	_moving_forward,				
+	_right_trigger_state,
+	_moving_forward,
 	_moving_backward,
-	
+
 	_turning_left,
 	_turning_right,
 	0,	// yaw
@@ -49,13 +49,13 @@ int input_sprocket_needs_to_flags[NUMBER_OF_INPUT_SPROCKET_NEEDS]=
 	_microphone_button,
 	0,	// quit
 	0,	// volume up
-	
+
 	0,	// volume down
 	0,	// change view
 	0,	// zoom map in
 	0,	// zoom map out
 	0,	// scroll back
-	
+
 	0,	// scroll forward
 	0,	// full screen
 	0,	// 100 percent
@@ -205,7 +205,7 @@ ISpNeed input_sprocket_needs[NUMBER_OF_INPUT_SPROCKET_NEEDS] =
 		0,
 		0
 	},
-	
+
 	// looking up/down (pitch)
 	{
 		"\pLook Down",
@@ -255,7 +255,7 @@ ISpNeed input_sprocket_needs[NUMBER_OF_INPUT_SPROCKET_NEEDS] =
 		0,
 		0
 	},
-	
+
 	{
 		"\pSidestep Left",
 		_sidestep_left_icon,
@@ -605,7 +605,7 @@ ISpNeed input_sprocket_needs[NUMBER_OF_INPUT_SPROCKET_NEEDS] =
 		0,
 		0
 	},
-#endif	
+#endif
 	{
 		"\pGamma Correction Decrement",
 		_generic_icon,	//!!! should be icon number

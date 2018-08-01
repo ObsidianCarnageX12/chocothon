@@ -39,12 +39,12 @@ struct speaker_definition
 
 	long queue_size; /* the number of bytes in the queue */
 	Ptr queue;
-	
+
 	short block_size; /* the number of bytes in each of our double buffers */
 	short connection_threshold; /* the number of times we can doubleback without data before turning off */
 	short connection_status; /* the number of times we have doublebacked without data (reset to zero if we get data) */
 	short state;
-	
+
 	word random_seed;
 };
 
@@ -72,24 +72,24 @@ OSErr open_network_speaker(
 	short connection_threshold)
 {
 	OSErr error;
-	
+
 	assert(!speaker);
 	assert(block_size>0&&block_size<=MAXIMUM_DOUBLE_BUFFER_SIZE);
 	assert(connection_threshold>1&&connection_threshold<16);
 
-	/* install our atexit cleanup procedure and build a routine descriptor */	
+	/* install our atexit cleanup procedure and build a routine descriptor */
 	{
 		static boolean initialization= TRUE;
-		
+
 		if (initialization)
 		{
 			doubleback_routine_descriptor= NewSndDoubleBackProc((ProcPtr)network_speaker_doubleback_procedure);
 			assert(doubleback_routine_descriptor);
-			
+
 			atexit(close_network_speaker);
 		}
 	}
-	
+
 	speaker= (struct speaker_definition *) NewPtr(sizeof(struct speaker_definition));
 	if ((error= MemError())==noErr)
 	{
@@ -103,23 +103,23 @@ OSErr open_network_speaker(
 		if ((error= MemError())==noErr)
 		{
 			SndDoubleBufferHeaderPtr header= speaker->header;
-			
+
 			header->dbhNumChannels= 1;
 			header->dbhSampleSize= 8;
 			header->dbhCompressionID= sixToOne;
 			header->dbhPacketSize= sixToOnePacketSize;
 			header->dbhSampleRate= rate22khz;
 			header->dbhDoubleBack= doubleback_routine_descriptor;
-			header->dbhBufferPtr[0]= (SndDoubleBufferPtr) NewPtrClear(sizeof(SndDoubleBuffer)+MAXIMUM_DOUBLE_BUFFER_SIZE);	
-			header->dbhBufferPtr[1]= (SndDoubleBufferPtr) NewPtrClear(sizeof(SndDoubleBuffer)+MAXIMUM_DOUBLE_BUFFER_SIZE);	
-			
+			header->dbhBufferPtr[0]= (SndDoubleBufferPtr) NewPtrClear(sizeof(SndDoubleBuffer)+MAXIMUM_DOUBLE_BUFFER_SIZE);
+			header->dbhBufferPtr[1]= (SndDoubleBufferPtr) NewPtrClear(sizeof(SndDoubleBuffer)+MAXIMUM_DOUBLE_BUFFER_SIZE);
+
 			if ((error= MemError())==noErr)
 			{
 				speaker->channel->qLength= stdQLength;
 #ifdef env68k
 				speaker->channel->userInfo= (long) get_a5();
 #endif
-				
+
 				error= SndNewChannel(&speaker->channel, sampledSynth, initMono|initMACE6,
 					NULL);
 				if (error==noErr)
@@ -133,7 +133,7 @@ OSErr open_network_speaker(
 	/* if something went wrong, zero the speaker definition (without freeing any of our memory
 		like we should) */
 	if (error!=noErr) speaker= (struct speaker_definition *) NULL;
-	
+
 	return error;
 }
 
@@ -143,20 +143,20 @@ void close_network_speaker(
 	if (speaker)
 	{
 		OSErr error;
-		
+
 		error= SndDisposeChannel(speaker->channel, TRUE);
 		warn(error==noErr);
-		
+
 		DisposePtr((Ptr)speaker->header->dbhBufferPtr[0]);
 		DisposePtr((Ptr)speaker->header->dbhBufferPtr[1]);
 		DisposePtr((Ptr)speaker->header);
 		DisposePtr((Ptr)speaker->channel);
 		DisposePtr((Ptr)speaker->queue);
 		DisposePtr((Ptr)speaker);
-		
+
 		speaker= (struct speaker_definition *) NULL;
 	}
-	
+
 	return;
 }
 
@@ -177,16 +177,16 @@ void queue_network_speaker_data(
 				speaker->state= _speaker_is_turning_on;
 				fill_network_speaker_buffer(speaker->header->dbhBufferPtr[0]);
 				break;
-			
+
 			case _speaker_is_on:
 			case _speaker_is_turning_on:
 				speaker->connection_status= 0;
 				break;
-			
+
 			default:
 				vhalt(csprintf(temporary, "what the hell is #%d!?", speaker->state));
 		}
-		
+
 		/* move incoming data into queue, NULL buffer means static */
 		if (speaker->queue_size+count<=MAXIMUM_QUEUE_SIZE)
 		{
@@ -198,7 +198,7 @@ void queue_network_speaker_data(
 			{
 				fill_buffer_with_static((unsigned char *)speaker->queue+speaker->queue_size, count);
 			}
-			
+
 			speaker->queue_size+= count;
 		}
 		else
@@ -211,7 +211,7 @@ void queue_network_speaker_data(
 			vpause(csprintf(temporary, "queue_net_speaker_data() is ignoring data: #%d+#%d>#%d", speaker->queue_size, count, MAXIMUM_QUEUE_SIZE));
 #endif
 		}
-	
+
 #ifdef SNDPLAYDOUBLEBUFFER_DOESNT_SUCK
 		switch (speaker->state)
 		{
@@ -220,10 +220,10 @@ void queue_network_speaker_data(
 				if (speaker->queue_size>=speaker->block_size)
 				{
 					OSErr error;
-					
+
 					error= SndPlayDoubleBuffer(speaker->channel, speaker->header);
 					vwarn(error==noErr, csprintf(temporary, "SndPlayDoubleBuffer(%p,%p)==#%d", speaker->channel, speaker->header, error));
-					
+
 					speaker->state= _speaker_is_on;
 				}
 				break;
@@ -241,19 +241,19 @@ void quiet_network_speaker(
 	{
 		SndCommand command;
 		OSErr error;
-		
+
 		command.cmd= flushCmd;
 		command.param1= 0;
 		command.param2= 0;
 		error= SndDoImmediate(speaker->channel, &command);
 		assert(error==noErr);
-		
+
 		command.cmd= quietCmd;
 		command.param1= 0;
 		command.param2= 0;
 		error= SndDoImmediate(speaker->channel, &command);
 		assert(error==noErr);
-		
+
 		/* speaker is off, no missed doublebacks, queue is empty, double buffers are not ready */
 		speaker->state= _speaker_is_off;
 		speaker->connection_status= 0;
@@ -279,17 +279,17 @@ void network_speaker_idle_proc(
 				if (speaker->queue_size>=speaker->block_size)
 				{
 					OSErr error;
-					
+
 					fill_network_speaker_buffer(speaker->header->dbhBufferPtr[1]);
 					error= SndPlayDoubleBuffer(speaker->channel, speaker->header);
 					vwarn(error==noErr, csprintf(temporary, "SndPlayDoubleBuffer(%p,%p)==#%d", speaker->channel, speaker->header, error));
-					
+
 					speaker->state= _speaker_is_on;
 				}
 				break;
 		}
 	}
-	
+
 	return;
 }
 
@@ -300,14 +300,14 @@ static void fill_buffer_with_static(
 	short count)
 {
 	word seed= speaker->random_seed;
-	
+
 	while ((count-=1)>=0)
 	{
 		*buffer++= seed;
 		if (seed&1) seed= (seed>>1)^0xb400; else seed= seed>>1;
 	}
 	speaker->random_seed= seed;
-	
+
 	return;
 }
 
@@ -318,9 +318,9 @@ static pascal void network_speaker_doubleback_procedure(
 #ifdef env68k
 	long old_a5= set_a5(channel->userInfo); /* set our a5 world */
 #endif
-	
+
 	fill_network_speaker_buffer(doubleBufferPtr);
-	
+
 #ifdef env68k
 	set_a5(old_a5); /* restore a5 */
 #endif
@@ -372,10 +372,10 @@ void fill_network_speaker_buffer(
 			doubleBufferPtr->dbFlags|= dbBufferReady;
 			doubleBufferPtr->dbNumFrames= speaker->block_size;
 			break;
-		
+
 		default:
 			vhalt(csprintf(temporary, "what the hell is #%d!?", speaker->state));
 	}
-	
+
 	return;
 }

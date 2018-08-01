@@ -1,7 +1,7 @@
 /*------------------------------------------------------------------------------
 #
 #	MacOS™ Sample Code
-#	
+#
 #	Written by: Eric3 Anderson
 #	 AppleLink: ERIC3
 #
@@ -34,8 +34,8 @@
 #	multisync displays on built-in, NuBus, and PCI based video. Display Manager 1.0
 #	is built into the Systems included with the first PowerMacs up through System 7.5.
 #	Display Manager 2.0 is included with the release of the new PCI based PowerMacs,
-#	and will be included in post 7.5 System Software releases. 
-#	
+#	and will be included in post 7.5 System Software releases.
+#
 #	It is a good idea to reset the screen(s) to the original setting before exit
 #	since the call to RVSetVideoAsScreenPrefs() may not do the right thing under
 #	Display Manager 1.0 with certain video drivers.
@@ -132,19 +132,19 @@ OSErr RVSetVideoRequest (VideoRequestRecPtr requestRecPtr)
 	{
 		if (requestRecPtr->displayMode && requestRecPtr->depthMode)
 		{
-			if (requestRecPtr->availBitDepth == 1)	// Based on avail bit depth, 
+			if (requestRecPtr->availBitDepth == 1)	// Based on avail bit depth,
 				isColor = KMonoDev;					// set the device to a mono device, or
 			else isColor = kColorDev;				// set the device to a color device
-			SetDeviceAttribute(requestRecPtr->screenDevice,gdDevType,isColor);		
-			
+			SetDeviceAttribute(requestRecPtr->screenDevice,gdDevType,isColor);
+
 			// see how many monitors we have, aMonitor will be nil if we have only one.
 			aMonitor = DMGetFirstScreenDevice (dmOnlyActiveDisplays);			// get the first guy
 			aMonitor = DMGetNextScreenDevice ( aMonitor, dmOnlyActiveDisplays );	// get the next guy
-			
+
 			if (nil == aMonitor || displayMgrVersion >= 0x00020000)
 			{
 				VDSwitchInfoRec switchInfo;
-				
+
 				err = DMGetDisplayMode(requestRecPtr->screenDevice, &switchInfo);
 				if (noErr == err)
 				{
@@ -200,7 +200,7 @@ OSErr RVSetVideoAsScreenPrefs (void)
 		DMBeginConfigureDisplays (&displaystate);	// Tell the world it is about to change
 		DMUseScreenPrefs (true, displaystate);		// Make the change
 		DMEndConfigureDisplays (displaystate);		// Tell the world the change is over
-		
+
 		return (noErr);	// we (maybe) set the world back to a known setting
 	}
 	return (-1);	// return a generic error
@@ -212,7 +212,7 @@ OSErr RVRequestVideoSetting (VideoRequestRecPtr requestRecPtr)
 	short							iCount = 0;					// just a counter of GDevices we have seen
 	DMDisplayModeListIteratorUPP	myModeIteratorProc = nil;	// for DM2.0 searches
 	SpBlock							spBlock;
-	Boolean							suppliedGDevice;	
+	Boolean							suppliedGDevice;
 	DisplayIDType					theDisplayID;				// for DM2.0 searches
 	DMListIndexType					theDisplayModeCount;		// for DM2.0 searches
 	DMListType						theDisplayModeList;			// for DM2.0 searches
@@ -235,9 +235,9 @@ OSErr RVRequestVideoSetting (VideoRequestRecPtr requestRecPtr)
 			walkDevice = DMGetFirstScreenDevice (dmOnlyActiveDisplays);			// for everybody
 			suppliedGDevice = false;
 		}
-		
+
 		myModeIteratorProc = NewDMDisplayModeListIteratorProc(ModeListIterator);	// for DM2.0 searches
-	
+
 		// Note that we are hosed if somebody changes the gdevice list behind our backs while we are iterating....
 		// ...now do the loop if we can start
 		if( walkDevice && myModeIteratorProc) do // start the search
@@ -282,7 +282,7 @@ void GetRequestTheDM1Way (VideoRequestRecPtr requestRecPtr, GDHandle walkDevice)
 	VPBlock			*vpData;
 	short			width;
 
-	myAuxDCEHandle = (AuxDCEHandle) GetDCtlEntry((**walkDevice).gdRefNum);	
+	myAuxDCEHandle = (AuxDCEHandle) GetDCtlEntry((**walkDevice).gdRefNum);
 	spBlock.spSlot = (**myAuxDCEHandle).dCtlSlot;
 	spBlock.spID = (**myAuxDCEHandle).dCtlSlotId;
 	spBlock.spExtDev = (**myAuxDCEHandle).dCtlExtDev;
@@ -292,17 +292,17 @@ void GetRequestTheDM1Way (VideoRequestRecPtr requestRecPtr, GDHandle walkDevice)
 	errorEndOfTimings = SGetSRsrc(&spBlock);			// get the spDrvrHW so we know the ID of this puppy. This is important
 														// since some video cards support more than one display, and the spDrvrHW
 														// ID can, and will, be used to differentiate them.
-	
+
 	if ( noErr == errorEndOfTimings )
 	{
 		// reinit the param block for the SGetTypeSRsrc loop, keep the spDrvrHW we just got
-		spBlock.spID = 0;								// start at zero, 
+		spBlock.spID = 0;								// start at zero,
 		spBlock.spTBMask = 2;							// 0b0010 - ignore DrvrSW - why ignore the SW side? Is it not important for video?
 		spBlock.spParamData = (1<<fall) + (1<<foneslot) + (1<<fnext);	// 0b0111 - this slot, enabled or disabled, so we even get 640x399 on Blackbird
 		spBlock.spCategory=catDisplay;
 		spBlock.spCType=typeVideo;
 		errorEndOfTimings = SGetTypeSRsrc(&spBlock);	// but only on 7.0 systems, not a problem since we require DM1.0
-		
+
 		// now, loop through all the timings for this GDevice
 		if ( noErr == errorEndOfTimings ) do
 		{
@@ -327,7 +327,7 @@ void GetRequestTheDM1Way (VideoRequestRecPtr requestRecPtr, GDHandle walkDevice)
 							vpData = (VPBlock*)spAuxBlock.spResult;
 							height = vpData->vpBounds.bottom;	// left and top are usually zero
 							width = vpData->vpBounds.right;
-							
+
 							if (FindBestMatch (requestRecPtr, vpData->vpPixelSize, vpData->vpBounds.right, vpData->vpBounds.bottom))
 							{
 								requestRecPtr->screenDevice = walkDevice;
@@ -341,7 +341,7 @@ void GetRequestTheDM1Way (VideoRequestRecPtr requestRecPtr, GDHandle walkDevice)
 								requestRecPtr->switchInfo.csPage = 0;
 								requestRecPtr->switchInfo.csBaseAddr = 0;
 								requestRecPtr->switchInfo.csReserved = 0;
-								
+
 							}
 
 							if (spAuxBlock.spResult) DisposePtr ((Ptr)spAuxBlock.spResult);	// toss this puppy when done
@@ -364,10 +364,10 @@ pascal void ModeListIterator(void *userData, DMListIndexType itemIndex, DMDispla
 	short					iCount;
 	ListIteratorDataRec		*myIterateData		= (ListIteratorDataRec*) userData;
 	DepthInfo				*myDepthInfo;
-	
+
 	// set user data in a round about way
 	myIterateData->displayModeTimingInfo		= *displaymodeInfo->displayModeTimingInfo;
-	
+
 	// now get the DMDepthInfo info into memory we own
 	depthCount = displaymodeInfo->displayModeDepthBlockInfo->depthBlockCount;
 	myDepthInfo = (DepthInfo*)NewPtrClear(depthCount * sizeof(DepthInfo));
@@ -379,9 +379,9 @@ pascal void ModeListIterator(void *userData, DMListIndexType itemIndex, DMDispla
 	// and fill out all the entries
 	if (depthCount) for (iCount=0; iCount < depthCount; iCount++)
 	{
-		myDepthInfo[iCount].depthSwitchInfo = 
+		myDepthInfo[iCount].depthSwitchInfo =
 			*displaymodeInfo->displayModeDepthBlockInfo->depthVPBlock[iCount].depthSwitchInfo;
-		myDepthInfo[iCount].depthVPBlock = 
+		myDepthInfo[iCount].depthVPBlock =
 			*displaymodeInfo->displayModeDepthBlockInfo->depthVPBlock[iCount].depthVPBlock;
 	}
 }
@@ -401,7 +401,7 @@ void GetRequestTheDM2Way (	VideoRequestRecPtr requestRecPtr,
 	for (jCount=0; jCount<theDisplayModeCount; jCount++)		// get info on all the resolution timings
 	{
 		DMGetIndexedDisplayModeFromList(*theDisplayModeList, jCount, 0, myModeIteratorProc, &searchData);
-		
+
 		// for all the depths for this resolution timing (mode)...
 		if (searchData.depthBlockCount) for (kCount = 0; kCount < searchData.depthBlockCount; kCount++)
 		{
@@ -414,14 +414,14 @@ void GetRequestTheDM2Way (	VideoRequestRecPtr requestRecPtr,
 				requestRecPtr->availBitDepth = searchData.depthBlocks[kCount].depthVPBlock.vpPixelSize;
 				requestRecPtr->availHorizontal = searchData.depthBlocks[kCount].depthVPBlock.vpBounds.right;
 				requestRecPtr->availVertical = searchData.depthBlocks[kCount].depthVPBlock.vpBounds.bottom;
-				
+
 				// now set the important info for DM to set the display
 				requestRecPtr->depthMode = searchData.depthBlocks[kCount].depthSwitchInfo.csMode;
 				requestRecPtr->displayMode = searchData.depthBlocks[kCount].depthSwitchInfo.csData;
 				requestRecPtr->switchInfo = searchData.depthBlocks[kCount].depthSwitchInfo;
 			}
 		}
-	
+
 		if (searchData.depthBlocks)
 		{
 			DisposePtr ((Ptr)searchData.depthBlocks);	// toss for this timing mode of this gdevice
@@ -441,19 +441,19 @@ Boolean FindBestMatch (VideoRequestRecPtr requestRecPtr, short bitDepth, unsigne
 			&&
 			(	(horizontal >= requestRecPtr->reqHorizontal &&
 				vertical >= requestRecPtr->reqVertical)
-				||														
-				!(requestRecPtr->requestFlags & 1<<kMaximizeResBit)	
+				||
+				!(requestRecPtr->requestFlags & 1<<kMaximizeResBit)
 			)
 			&&
-			(	bitDepth <= requestRecPtr->reqBitDepth ||	
-				!(requestRecPtr->requestFlags & 1<<kShallowDepthBit)		
+			(	bitDepth <= requestRecPtr->reqBitDepth ||
+				!(requestRecPtr->requestFlags & 1<<kShallowDepthBit)
 			)
 			&&
-			(	(horizontal == requestRecPtr->reqHorizontal &&	
+			(	(horizontal == requestRecPtr->reqHorizontal &&
 				vertical == requestRecPtr->reqVertical &&
 				bitDepth == requestRecPtr->reqBitDepth)
 				||
-				!(requestRecPtr->requestFlags & 1<<kAbsoluteRequestBit)	
+				!(requestRecPtr->requestFlags & 1<<kAbsoluteRequestBit)
 			)
 		)
 		{
@@ -466,7 +466,7 @@ Boolean FindBestMatch (VideoRequestRecPtr requestRecPtr, short bitDepth, unsigne
 		//		((depth is greater avail and depth is less/equal req) or kShallowDepth not set) and
 		//		(avail depth less reqested and new greater avail)
 		//		(request match or kAbsoluteRequest not set)
-		if	(	(	requestRecPtr->requestFlags & 1<<kBitDepthPriorityBit && 
+		if	(	(	requestRecPtr->requestFlags & 1<<kBitDepthPriorityBit &&
 					requestRecPtr->availBitDepth != requestRecPtr->reqBitDepth
 				)
 				&&
@@ -474,18 +474,18 @@ Boolean FindBestMatch (VideoRequestRecPtr requestRecPtr, short bitDepth, unsigne
 						bitDepth <= requestRecPtr->reqBitDepth
 					)
 					||
-					!(requestRecPtr->requestFlags & 1<<kShallowDepthBit)	
+					!(requestRecPtr->requestFlags & 1<<kShallowDepthBit)
 				)
 				&&
 				(	requestRecPtr->availBitDepth < requestRecPtr->reqBitDepth &&
-					bitDepth > requestRecPtr->availBitDepth	
+					bitDepth > requestRecPtr->availBitDepth
 				)
 				&&
-				(	(horizontal == requestRecPtr->reqHorizontal &&	
+				(	(horizontal == requestRecPtr->reqHorizontal &&
 					vertical == requestRecPtr->reqVertical &&
 					bitDepth == requestRecPtr->reqBitDepth)
 					||
-					!(requestRecPtr->requestFlags & 1<<kAbsoluteRequestBit)	
+					!(requestRecPtr->requestFlags & 1<<kAbsoluteRequestBit)
 				)
 			)
 		{
@@ -502,7 +502,7 @@ Boolean FindBestMatch (VideoRequestRecPtr requestRecPtr, short bitDepth, unsigne
 				)
 			{
 				// now we have a smaller or equal delta
-				//	if (h or v greater/equal to request or kMaximizeRes not set) 
+				//	if (h or v greater/equal to request or kMaximizeRes not set)
 				if (	(horizontal >= requestRecPtr->reqHorizontal &&
 						vertical >= requestRecPtr->reqVertical)
 						||
@@ -513,12 +513,12 @@ Boolean FindBestMatch (VideoRequestRecPtr requestRecPtr, short bitDepth, unsigne
 					//		(depth is less/equal or kShallowDepth not set) and
 					//		([h or v not equal] or [avail depth less reqested and new greater avail] or depth equal avail) and
 					//		(request match or kAbsoluteRequest not set)
-					if	(	(	requestRecPtr->availBitDepth == bitDepth ||			
+					if	(	(	requestRecPtr->availBitDepth == bitDepth ||
 								!(requestRecPtr->requestFlags & 1<<kBitDepthPriorityBit)
 							)
 							&&
-							(	bitDepth <= requestRecPtr->reqBitDepth ||	
-								!(requestRecPtr->requestFlags & 1<<kShallowDepthBit)		
+							(	bitDepth <= requestRecPtr->reqBitDepth ||
+								!(requestRecPtr->requestFlags & 1<<kShallowDepthBit)
 							)
 							&&
 							(	(requestRecPtr->availHorizontal != horizontal ||
@@ -530,11 +530,11 @@ Boolean FindBestMatch (VideoRequestRecPtr requestRecPtr, short bitDepth, unsigne
 								(bitDepth == requestRecPtr->reqBitDepth)
 							)
 							&&
-							(	(horizontal == requestRecPtr->reqHorizontal &&	
+							(	(horizontal == requestRecPtr->reqHorizontal &&
 								vertical == requestRecPtr->reqVertical &&
 								bitDepth == requestRecPtr->reqBitDepth)
 								||
-								!(requestRecPtr->requestFlags & 1<<kAbsoluteRequestBit)	
+								!(requestRecPtr->requestFlags & 1<<kAbsoluteRequestBit)
 							)
 						)
 					{

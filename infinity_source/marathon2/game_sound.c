@@ -147,7 +147,7 @@ struct channel_data
 	short sound_index; /* sound_index being played in this channel */
 
 	short identifier; /* unique sound identifier for the sound being played in this channel (object_index) */
-	struct sound_variables variables; /* variables of the sound being played */	
+	struct sound_variables variables; /* variables of the sound being played */
 	world_location3d *dynamic_source; /* can be NULL for immobile sounds */
 	world_location3d source; /* must be valid */
 
@@ -170,11 +170,11 @@ struct sound_manager_globals
 
 	short sound_source; // 8-bit, 16-bit
 	struct sound_definition *base_sound_definitions;
-	
+
 	word available_flags;
-	
+
 	long loaded_sounds_size;
-	
+
 	struct channel_data channels[MAXIMUM_SOUND_CHANNELS+MAXIMUM_AMBIENT_SOUND_CHANNELS];
 
 #ifdef mac
@@ -261,9 +261,9 @@ void initialize_sound_manager(
 	_sm_parameters= (struct sound_manager_parameters *) malloc(sizeof(struct sound_manager_parameters));
 	sound_definitions= (struct sound_definition *) malloc(NUMBER_OF_SOUND_SOURCES*NUMBER_OF_SOUND_DEFINITIONS*sizeof(struct sound_definition));
 	assert(_sm_globals && _sm_parameters && sound_definitions);
-	
+
 	initialize_machine_sound_manager(parameters);
-	
+
 	return;
 }
 
@@ -277,7 +277,7 @@ void load_sound(
 			_load_sound(sound);
 		}
 	}
-	
+
 	return;
 }
 
@@ -286,12 +286,12 @@ void load_sounds(
 	short count)
 {
 	short i;
-	
+
 	for (i= 0; i<count; ++i)
 	{
 		load_sound(sounds[i]);
 	}
-	
+
 	return;
 }
 
@@ -304,7 +304,7 @@ void sound_manager_idle_proc(
 		track_stereo_sounds();
 		cause_ambient_sound_source_update();
 	}
-	
+
 	return;
 }
 
@@ -318,7 +318,7 @@ void cause_ambient_sound_source_update(
 			update_ambient_sound_sources();
 		}
 	}
-	
+
 	return;
 }
 
@@ -336,7 +336,7 @@ void direct_play_sound(
 		struct sound_variables variables;
 		struct channel_data *channel;
 		world_location3d *listener= _sound_listener_proc();
-		
+
 		variables.priority= 0;
 		variables.volume= volume;
 
@@ -376,7 +376,7 @@ void direct_play_sound(
 			}
 		}
 	}
-	
+
 	return;
 }
 
@@ -395,7 +395,7 @@ void _play_sound(
 		struct channel_data *channel;
 
 		calculate_initial_sound_variables(sound_index, source, &variables, pitch);
-		
+
 		/* make sure the sound data is in memory */
 		if (_load_sound(sound_index))
 		{
@@ -404,7 +404,7 @@ void _play_sound(
 			{
 				/* set the volume and pitch in this channel */
 				instantiate_sound_variables(&variables, channel, TRUE);
-				
+
 				/* initialize the channel */
 				channel->flags= 0;
 				channel->callback_count= 0; // #MD
@@ -413,7 +413,7 @@ void _play_sound(
 				channel->identifier= identifier;
 				channel->dynamic_source= (identifier==NONE) ? (world_location3d *) NULL : source;
 				MARK_SLOT_AS_USED(channel);
-				
+
 				/* start the sound playing */
 				buffer_sound(channel, sound_index, pitch);
 
@@ -429,7 +429,7 @@ void _play_sound(
 			}
 		}
 	}
-	
+
 	return;
 }
 
@@ -439,10 +439,10 @@ void unload_all_sounds(
 	if (_sm_active)
 	{
 		stop_all_sounds();
-		
+
 		while (_release_least_useful_sound()!=NONE);
 	}
-	
+
 	return;
 }
 
@@ -459,7 +459,7 @@ void stop_sound(
 		if (identifier==NONE && sound_index==NONE)
 		{
 			// can’t fade to silence here
-			
+
 			// stop the ambient sound channels, too
 			if (_sm_parameters->flags&_ambient_sound_flag)
 			{
@@ -479,7 +479,7 @@ void stop_sound(
 			}
 		}
 	}
-	
+
 	return;
  }
 
@@ -488,12 +488,12 @@ boolean sound_is_playing(
 	short sound_index)
 {
 	boolean sound_playing= FALSE;
-	
+
 	if (_sm_active && _sm_globals->total_channel_count>0)
 	{
 		short i;
 		struct channel_data *channel;
-		
+
 		for (i= 0, channel= _sm_globals->channels; i<_sm_globals->total_channel_count; ++i, ++channel)
 		{
 			if (SLOT_IS_USED(channel) && channel->sound_index==sound_index)
@@ -501,10 +501,10 @@ boolean sound_is_playing(
 				sound_playing= TRUE;
 			}
 		}
-		
+
 		unlock_locked_sounds();
 	}
-	
+
 	return sound_playing;
 }
 
@@ -515,7 +515,7 @@ void orphan_sound(
 	{
 		short i;
 		struct channel_data *channel;
-		
+
 		for (i= 0, channel= _sm_globals->channels; i<_sm_parameters->channel_count; ++i, ++channel)
 		{
 			if (channel->identifier==identifier || identifier==NONE)
@@ -525,7 +525,7 @@ void orphan_sound(
 			}
 		}
 	}
-	
+
 	return;
 }
 
@@ -533,9 +533,9 @@ word available_sound_manager_flags(
 	word flags)
 {
 	word available_flags= _sm_active ? _sm_globals->available_flags : 0;
-	
+
 	if (!(flags&_stereo_flag)) available_flags&= ~(word)_dynamic_tracking_flag;
-	
+
 	return available_flags;
 }
 
@@ -543,12 +543,12 @@ void default_sound_manager_parameters(
 	struct sound_manager_parameters *parameters)
 {
 	memset(parameters, 0, sizeof(struct sound_manager_parameters));
-	
+
 	parameters->channel_count= MAXIMUM_SOUND_CHANNELS;
 	parameters->volume= DEFAULT_SOUND_LEVEL;
 	parameters->flags= _more_sounds_flag;
 	parameters->pitch= FIXED_ONE;
-	
+
 	return;
 }
 
@@ -560,9 +560,9 @@ boolean verify_sound_manager_parameters(
 	parameters->volume= PIN(parameters->volume, 0, NUMBER_OF_SOUND_VOLUME_LEVELS);
 	parameters->pitch= PIN(parameters->pitch, MINIMUM_SOUND_PITCH, MAXIMUM_SOUND_PITCH);
 
-	// adjust flags	
+	// adjust flags
 	parameters->flags&= _sm_globals->available_flags;
-	
+
 	return TRUE;
 }
 
@@ -570,7 +570,7 @@ short random_sound_index_to_sound_index(
 	short random_sound_index)
 {
 	struct random_sound_definition *definition= get_random_sound_definition(random_sound_index);
-	
+
 	return definition->sound_index;
 }
 
@@ -581,7 +581,7 @@ static struct sound_definition *get_sound_definition(
 	short sound_index)
 {
 	struct sound_definition *definition= _sm_globals->base_sound_definitions + sound_index;
-	
+
 	vassert(sound_index>=0 && sound_index<NUMBER_OF_SOUND_DEFINITIONS,
 		csprintf(temporary, "sound #%d is out of range [0,#%d)", sound_index, NUMBER_OF_SOUND_DEFINITIONS));
 
@@ -593,7 +593,7 @@ static struct ambient_sound_definition *get_ambient_sound_definition(
 {
 	vassert(ambient_sound_index>=0 && ambient_sound_index<NUMBER_OF_AMBIENT_SOUND_DEFINITIONS,
 		csprintf(temporary, "ambient sound #%d is out of range [0,#%d)", ambient_sound_index, NUMBER_OF_AMBIENT_SOUND_DEFINITIONS));
-	
+
 	return ambient_sound_definitions + ambient_sound_index;
 }
 
@@ -602,7 +602,7 @@ static struct random_sound_definition *get_random_sound_definition(
 {
 	vassert(random_sound_index>=0 && random_sound_index<NUMBER_OF_RANDOM_SOUND_DEFINITIONS,
 		csprintf(temporary, "random sound #%d is out of range [0,#%d)", random_sound_index, NUMBER_OF_RANDOM_SOUND_DEFINITIONS));
-	
+
 	return random_sound_definitions + random_sound_index;
 }
 
@@ -623,7 +623,7 @@ static void unlock_locked_sounds(
 	{
 		short i;
 		struct channel_data *channel;
-		
+
 		// if we're done playing a locked sound, dispose it
 		for (i= 0, channel= _sm_globals->channels; i<_sm_parameters->channel_count; ++i, ++channel)
 		{
@@ -633,7 +633,7 @@ static void unlock_locked_sounds(
 			}
 		}
 	}
-	
+
 	return;
 }
 
@@ -644,16 +644,16 @@ static void track_stereo_sounds(
 	{
 		short i;
 		struct channel_data *channel;
-		
+
 		// if we're done playing a locked sound, dispose it
 		for (i= 0, channel= _sm_globals->channels; i<_sm_parameters->channel_count; ++i, ++channel)
 		{
 			if (SLOT_IS_USED(channel) && channel_busy(channel) && !(channel->flags&_sound_is_local))
 			{
 				struct sound_variables variables= channel->variables;
-				
+
 				if (channel->dynamic_source) channel->source= *channel->dynamic_source;
-#ifdef SUPPORT_SOUND_SPROCKET				
+#ifdef SUPPORT_SOUND_SPROCKET
 				variables.useSprocketForSound = true;
 #endif
 				calculate_sound_variables(channel->sound_index, &channel->source, &variables);
@@ -670,7 +670,7 @@ static short get_random_sound_permutation(
 {
 	struct sound_definition *definition= get_sound_definition(sound_index);
 	short permutation;
-	
+
 	assert(definition->permutations>0);
 
 	if (_sm_parameters->flags&_more_sounds_flag)
@@ -698,7 +698,7 @@ static struct channel_data *best_channel(
 	struct channel_data *channel;
 	struct channel_data *best_channel;
 	struct sound_definition *definition= get_sound_definition(sound_index);
-	
+
 	best_channel= (struct channel_data *) NULL;
 	if (!definition->chance || (local_random()>definition->chance))
 	{
@@ -720,14 +720,14 @@ static struct channel_data *best_channel(
 							best_channel= (struct channel_data *) NULL;
 							break;
 						}
-						
+
 						if (!(definition->flags&_sound_does_not_self_abort))
 						{
 							best_channel= (channel->start_tick+MINIMUM_RESTART_TICKS<machine_tick_count()) ? channel : (struct channel_data *) NULL;
 							break;
 						}
 					}
-					
+
 					/* if we haven’t found an alternative channel or this channel is at a lower
 						volume than our previously best channel (which isn’t an unused channel),
 						then we’ve found a new best channel */
@@ -762,7 +762,7 @@ static struct channel_data *best_channel(
 		/* stop whatever sound is playing and unlock the old handle if necessary */
 		free_channel(best_channel);
 	}
-	
+
 	return best_channel;
 }
 
@@ -781,13 +781,13 @@ static short _release_least_useful_sound(
 			least_used_definition= definition;
 		}
 	}
-	
+
 	if (least_used_sound_index!=NONE)
 	{
 		stop_sound(NONE, least_used_sound_index);
 		dispose_sound(least_used_sound_index);
 	}
-	
+
 	return least_used_sound_index;
 }
 
@@ -799,17 +799,17 @@ static void free_channel(
 	if (SLOT_IS_USED(empty_channel))
 	{
 		short sound_index= empty_channel->sound_index;
-		
+
 		quiet_channel(empty_channel);
-	
+
 		assert(sound_index!=NONE);
 		empty_channel->sound_index= NONE;
 		MARK_SLOT_AS_FREE(empty_channel);
-		
+
 		// if anybody else is playing this sound_index, we can’t unlock the handle
 		if (!sound_is_playing(sound_index)) unlock_sound(sound_index);
 	}
-	
+
 	return;
 }
 
@@ -818,7 +818,7 @@ boolean _load_sound(
 {
 	struct sound_definition *definition= get_sound_definition(sound_index);
 	boolean successful= FALSE;
-		
+
 	if (definition->sound_code!=NONE &&
 		((_sm_parameters->flags&_ambient_sound_flag) || !(definition->flags&_sound_is_ambient)))
 	{
@@ -826,16 +826,16 @@ boolean _load_sound(
 		{
 			definition->hndl= read_sound_from_file(sound_index);
 			definition->last_played= machine_tick_count();
-			
+
 			while (_sm_globals->loaded_sounds_size>_sm_globals->total_buffer_size) _release_least_useful_sound();
 		}
-		
+
 		if (definition->hndl)
 		{
 			definition->permutations_played= 0;
 		}
 	}
-	
+
 	return definition->hndl ? TRUE : FALSE;
 }
 
@@ -886,7 +886,7 @@ static fixed calculate_pitch_modifier(
 	fixed pitch_modifier)
 {
 	struct sound_definition *definition= get_sound_definition(sound_index);
-	
+
 	if (!(definition->flags&_sound_cannot_change_pitch))
 	{
 		if (!(definition->flags&_sound_resists_pitch_changes))
@@ -898,7 +898,7 @@ static fixed calculate_pitch_modifier(
 	{
 		pitch_modifier= (pitch_modifier_override ? pitch_modifier_override : FIXED_ONE);
 	}
-	
+
 	return pitch_modifier;
 }
 
@@ -915,10 +915,10 @@ static void calculate_sound_variables(
 		world_distance distance= distance3d(&source->point, &listener->point);
 		world_distance dx= listener->point.x - source->point.x;
 		world_distance dy= listener->point.y - source->point.y;
-		
+
 		/* for now, a sound's priority is it's behavior_index */
 		variables->priority= definition->behavior_index;
-	
+
 		/* calculate the relative volume due to the given depth curve */
 		variables->volume= distance_to_volume(definition, distance, _sound_obstructed_proc(source));
 
@@ -932,7 +932,7 @@ static void calculate_sound_variables(
 		{
 			variables->left_volume= variables->right_volume= variables->volume;
 		}
-		
+
 #ifdef SUPPORT_SOUND_SPROCKET
 		if (variables->useSprocketForSound)
 		{
@@ -957,29 +957,29 @@ static void angle_and_volume_to_stereo_volume(
 		short maximum_volume= volume + (volume>>1);
 		short minimum_volume= volume>>2;
 		short middle_volume= volume-minimum_volume;
-		
+
 		switch (NORMALIZE_ANGLE(delta)>>(ANGULAR_BITS-2))
 		{
 			case 0: // rear right quarter [v,vmax] [v,vmin]
 				*left_volume= middle_volume + ((fraction*(maximum_volume-middle_volume))>>(ANGULAR_BITS-2));
 				*right_volume= middle_volume + ((fraction*(minimum_volume-middle_volume))>>(ANGULAR_BITS-2));
 				break;
-			
+
 			case 1: // front right quarter [vmax,vmid] [vmin,vmid]
 				*left_volume= maximum_volume + ((fraction*(volume-maximum_volume))>>(ANGULAR_BITS-2));
 				*right_volume= minimum_volume + ((fraction*(volume-minimum_volume))>>(ANGULAR_BITS-2));
 				break;
-			
+
 			case 2: // front left quarter [vmid,vmin] [vmid,vmax]
 				*left_volume= volume + ((fraction*(minimum_volume-volume))>>(ANGULAR_BITS-2));
 				*right_volume= volume + ((fraction*(maximum_volume-volume))>>(ANGULAR_BITS-2));
 				break;
-			
+
 			case 3: // rear left quarter [vmin,v] [vmax,v]
 				*left_volume= minimum_volume + ((fraction*(middle_volume-minimum_volume))>>(ANGULAR_BITS-2));
 				*right_volume= maximum_volume + ((fraction*(middle_volume-maximum_volume))>>(ANGULAR_BITS-2));
 				break;
-			
+
 			default:
 				halt();
 		}
@@ -1010,7 +1010,7 @@ static short distance_to_volume(
 	{
 		depth_curve= &behavior->unobstructed_curve;
 	}
-	
+
 	if (distance<=depth_curve->maximum_volume_distance)
 	{
 		volume= depth_curve->maximum_volume;
@@ -1027,12 +1027,12 @@ static short distance_to_volume(
 				(depth_curve->minimum_volume_distance-depth_curve->maximum_volume_distance);
 		}
 	}
-	
+
 	if ((flags&_sound_was_media_muffled) && !(definition->flags&_sound_cannot_be_media_obstructed))
 	{
 		volume>>= 1;
 	}
-	
+
 	return volume;
 }
 
@@ -1049,7 +1049,7 @@ struct ambient_sound_data
 	short sound_index;
 
 	struct sound_variables variables;
-	
+
 	struct channel_data *channel;
 };
 
@@ -1066,12 +1066,12 @@ static void update_ambient_sound_sources(
 	boolean channel_used[MAXIMUM_AMBIENT_SOUND_CHANNELS], sound_handled[MAXIMUM_PROCESSED_AMBIENT_SOUNDS];
 	short i, j;
 
-	// reset all local copies	
+	// reset all local copies
 	for (i= 0, ambient= ambient_sounds; i<MAXIMUM_PROCESSED_AMBIENT_SOUNDS; ++i, ++ambient)
 	{
 		ambient->flags= 0;
 		ambient->sound_index= NONE;
-		
+
 		sound_handled[i]= FALSE;
 	}
 
@@ -1079,7 +1079,7 @@ static void update_ambient_sound_sources(
 	{
 		channel_used[i]= FALSE;
 	}
-	
+
 	// accumulate up to MAXIMUM_PROCESSED_AMBIENT_SOUNDS worth of sounds
 	_sound_add_ambient_sources_proc(&ambient_sounds, add_one_ambient_sound_source);
 
@@ -1092,12 +1092,12 @@ static void update_ambient_sound_sources(
 	{
 		struct ambient_sound_data *lowest_priority;
 		short count;
-		
+
 		do
 		{
 			lowest_priority= (struct ambient_sound_data *) NULL;
 			count= 0;
-			
+
 			for (i= 0, ambient= ambient_sounds; i<MAXIMUM_PROCESSED_AMBIENT_SOUNDS; ++i, ++ambient)
 			{
 				if (SLOT_IS_USED(ambient))
@@ -1108,11 +1108,11 @@ static void update_ambient_sound_sources(
 					{
 						lowest_priority= ambient;
 					}
-					
+
 					count+= 1;
 				}
 			}
-			
+
 			if (count>MAXIMUM_AMBIENT_SOUND_CHANNELS)
 			{
 				assert(lowest_priority);
@@ -1122,7 +1122,7 @@ static void update_ambient_sound_sources(
 		}
 		while (count>MAXIMUM_AMBIENT_SOUND_CHANNELS);
 	}
-	
+
 	// update .variables of those sounds which we are already playing
 	for (i= 0, ambient= ambient_sounds; i<MAXIMUM_PROCESSED_AMBIENT_SOUNDS; ++i, ++ambient)
 	{
@@ -1136,15 +1136,15 @@ static void update_ambient_sound_sources(
 					ambient->variables.useSprocketForSound = false;
 #endif
 					instantiate_sound_variables(&ambient->variables, channel, FALSE);
-					
+
 					sound_handled[i]= channel_used[j]= TRUE;
-					
+
 					break;
 				}
 			}
 		}
 	}
-	
+
 	// allocate a channel for a sound we just started playing
 	for (i= 0, ambient= ambient_sounds; i<MAXIMUM_PROCESSED_AMBIENT_SOUNDS; ++i, ++ambient)
 	{
@@ -1156,7 +1156,7 @@ static void update_ambient_sound_sources(
 				{
 					// take over this channel for a new sound
 					if (SLOT_IS_USED(channel)) free_channel(channel);
-					
+
 					channel->flags= 0;
 					channel->callback_count= 2; // #MD as if two sounds had just stopped playing
 					channel->sound_index= ambient->sound_index;
@@ -1164,9 +1164,9 @@ static void update_ambient_sound_sources(
 					// channel->dynamic_source
 					// channel->source
 					MARK_SLOT_AS_USED(channel);
-					
+
 					channel_used[j]= TRUE;
-#ifdef SUPPORT_SOUND_SPROCKET					
+#ifdef SUPPORT_SOUND_SPROCKET
 					ambient->variables.useSprocketForSound = false;
 #endif
 					instantiate_sound_variables(&ambient->variables, channel, TRUE);
@@ -1176,7 +1176,7 @@ static void update_ambient_sound_sources(
 			}
 		}
 	}
-	
+
 	// remove those sounds which are no longer being played
 	for (i= 0, channel= AMBIENT_SOUND_CHANNELS; i<MAXIMUM_AMBIENT_SOUND_CHANNELS; ++i, ++channel)
 	{
@@ -1193,17 +1193,17 @@ static void update_ambient_sound_sources(
 		{
 			if (_load_sound(channel->sound_index))
 			{
-				// make sure at least two sounds are buffered at all times			
+				// make sure at least two sounds are buffered at all times
 				while (channel->callback_count) // #MD
 				{
 					buffer_sound(channel, channel->sound_index, FIXED_ONE);
-					
+
 					channel->callback_count-= 1;
 				}
 			}
 		}
 	}
-	
+
 	return;
 }
 
@@ -1223,23 +1223,23 @@ static void add_one_ambient_sound_source(
 	if (ambient_sound_index!=NONE)
 	{
 		short sound_index= get_ambient_sound_definition(ambient_sound_index)->sound_index;
-		
+
 		if (sound_index!=NONE)
 		{
 			struct sound_definition *definition= get_sound_definition(sound_index);
-			
+
 			if (definition->sound_code!=NONE)
 			{
 				struct sound_behavior_definition *behavior= get_sound_behavior_definition(definition->behavior_index);
 				struct ambient_sound_data *ambient;
 				short distance;
 				short i;
-			
+
 				if (source)
 				{
 					distance= distance3d(&listener->point, &source->point);
 				}
-			
+
 				for (i= 0, ambient= ambient_sounds;
 					i<MAXIMUM_PROCESSED_AMBIENT_SOUNDS;
 					++i, ++ambient)
@@ -1251,30 +1251,30 @@ static void add_one_ambient_sound_source(
 					else
 					{
 						MARK_SLOT_AS_USED(ambient);
-						
+
 						ambient->sound_index= sound_index;
-			
+
 						ambient->variables.priority= definition->behavior_index;
 						ambient->variables.volume= ambient->variables.left_volume= ambient->variables.right_volume= 0;
-			
+
 						break;
 					}
 				}
-				
+
 				if (i!=MAXIMUM_PROCESSED_AMBIENT_SOUNDS)
 				{
 					if (!source || distance<behavior->unobstructed_curve.minimum_volume_distance)
 					{
 						short volume, left_volume, right_volume;
-						
+
 						if (source)
 						{
 							world_distance dx= listener->point.x-source->point.x;
 							world_distance dy= listener->point.y-source->point.y;
-							
+
 							volume= distance_to_volume(definition, distance, _sound_obstructed_proc(source));
 							volume= (absolute_volume*volume)>>MAXIMUM_SOUND_VOLUME_BITS;
-							
+
 							if (dx || dy)
 							{
 								angle_and_volume_to_stereo_volume(arctangent(dx, dy) - listener->yaw,
@@ -1289,12 +1289,12 @@ static void add_one_ambient_sound_source(
 						{
 							volume= left_volume= right_volume= absolute_volume;
 						}
-						
+
 						{
 							short maximum_volume= MAX(MAXIMUM_AMBIENT_SOUND_VOLUME, volume);
 							short maximum_left_volume= MAX(MAXIMUM_AMBIENT_SOUND_VOLUME, left_volume);
 							short maximum_right_volume= MAX(MAXIMUM_AMBIENT_SOUND_VOLUME, right_volume);
-	
+
 							ambient->variables.volume= CEILING(ambient->variables.volume+volume, maximum_volume);
 							ambient->variables.left_volume= CEILING(ambient->variables.left_volume+left_volume, maximum_left_volume);
 							ambient->variables.right_volume= CEILING(ambient->variables.right_volume+right_volume, maximum_right_volume);
@@ -1308,6 +1308,6 @@ static void add_one_ambient_sound_source(
 			}
 		}
 	}
-	
+
 	return;
 }

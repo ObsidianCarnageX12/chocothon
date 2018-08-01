@@ -14,6 +14,7 @@
 *.xcoff
 *.lib
 *.fat
+*Lib
 
 # Archive files
 *.7z

@@ -45,7 +45,7 @@ struct rgb_color
 struct color_table
 {
 	short color_count;
-	
+
 	struct rgb_color colors[256];
 };
 
@@ -61,12 +61,12 @@ struct bitmap_definition
 {
 	short width, height; /* in pixels */
 	short bytes_per_row; /* if ==NONE this is a transparent RLE shape */
-	
+
 	short flags; /* [column_order.1] [unused.15] */
 	short bit_depth; /* should always be ==8 */
 
 	short unused[8];
-	
+
 	pixel8 *row_addresses[1];
 };
 

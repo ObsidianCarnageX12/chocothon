@@ -57,7 +57,7 @@ enum {
 /* Necessary globals, only for the key_setup_filter_proc */
 struct keyboard_setup_struct {
 	KeyMap old_key_map;
-	short *keycodes;	
+	short *keycodes;
 	short current_key_setup;
 #ifdef SUPPORT_INPUT_SPROCKET
 	ISpElementReference *isElements;
@@ -87,7 +87,7 @@ boolean configure_key_setup(
 	boolean data_is_bad;
 	ModalFilterUPP key_setup_filter_upp;
 	short current_key_set;
-	
+
 	if (RECTANGLE_WIDTH(&(*world_device)->gdRect)<640 || RECTANGLE_HEIGHT(&(*world_device)->gdRect)<480)
 	{
 		dialog = myGetNewDialog(dlogCONFIGURE_KEYS12, NULL, (WindowPtr) -1, 0);
@@ -98,10 +98,10 @@ boolean configure_key_setup(
 	}
 	assert(dialog);
 	key_setup_filter_upp= NewModalFilterProc(key_setup_filter_proc);
-	
+
 	/* Setup the keyboard dialog.. */
 	current_key_set= setup_key_dialog(dialog, keycodes);
-	
+
 	/* Select the text.. */
 	SelIText(dialog, iFORWARD, 0, SHORT_MAX);
 
@@ -122,7 +122,7 @@ boolean configure_key_setup(
 			Rect bounds;
 
 			ModalDialog(key_setup_filter_upp, &item_hit);
-			
+
 			switch(item_hit)
 			{
 				case iKEY_LAYOUT_POPUP:
@@ -131,14 +131,14 @@ boolean configure_key_setup(
 					if (menu_selection != _custom_keyboard_item && keyboard_setup_globals.current_key_setup != menu_selection)
 					{
 						set_default_keys(keycodes, menu_selection);
-						
+
 						// looks slightly nicer to deselect text before changing and reselecting it.
 						SelIText(dialog, ((DialogRecord *) dialog)->editField + 1, 0, 0);
 						keyboard_setup_globals.current_key_setup= setup_key_dialog(dialog, keycodes);
 						SelIText(dialog, ((DialogRecord *) dialog)->editField + 1, 0, SHORT_MAX);
 					}
 					break;
-					
+
 				default:
 					break;
 			}
@@ -169,7 +169,7 @@ boolean configure_key_setup(
 	DisposeDialog(dialog);
 
 	set_dialog_cursor_tracking(TRUE);
-			
+
 	return item_hit==iMOVED_OK;
 }
 
@@ -184,11 +184,11 @@ static pascal Boolean key_setup_filter_proc(
 	Point where;
 	GrafPtr old_port;
 	boolean handled= FALSE;
-	
+
 	GetPort(&old_port);
 	SetPort(dialog);
-	
-	/* preprocess events */	
+
+	/* preprocess events */
 	switch(event->what)
 	{
 		case nullEvent:
@@ -199,14 +199,14 @@ static pascal Boolean key_setup_filter_proc(
 				OSStatus theStatus = noErr;
 				ISpElementEvent theEvent;
 				Boolean wasEvent;
-				
+
 				theStatus = ISpGetGlobalElementList(&globalList);
 				assert(theStatus == noErr);
-				
+
 				// get event may return an error if there was a > 4 byte data, we ignore that data, so no error checking
 				// kinda a hack
 				ISpElementList_GetNextEvent(globalList, sizeof(ISpElementEvent), &theEvent, &wasEvent);
-				
+
 				if (wasEvent)
 				{
 					ISpElementInfo theInfo;
@@ -219,15 +219,15 @@ static pascal Boolean key_setup_filter_proc(
 					static ISpElementReference bogusAxis = nil;
 
 					current_edit_field= ((DialogRecord *) dialog)->editField + 1;
-					
+
 					ISpElement_GetInfo(theEvent.element, &theInfo);
-					
+
 					if (bogusAxis != nil)
 					{
 						// do something sometime to clear the bogus axis again if it is
 						// far enough back down...
 					}
-	
+
 					if ((theInfo.theKind == kISpElementKind_Button) && (theEvent.data == kISpButtonDown))
 					{
 						// ok, this was a button stuff it into our structure
@@ -246,17 +246,17 @@ static pascal Boolean key_setup_filter_proc(
 					else
 					{
 						setText = false;
-						
+
 						// handle axis and other stuff later
 						GetDItem(dialog, iKEY_LAYOUT_POPUP, &item_type, (Handle *) &control, &item_box);
 						SetCtlValue(control, _custom_keyboard_item+1);
 					}
-					
+
 					if (setText)
 					{
 						GetDItem(dialog, current_edit_field, &item_type, &item_handle, &item_box);
 						SetIText(item_handle, theInfo.theString);
-						
+
 						GetDItem(dialog, iKEY_LAYOUT_POPUP, &item_type, (Handle *) &control, &item_box);
 						SetCtlValue(control, _custom_keyboard_item+1);
 
@@ -282,7 +282,7 @@ static pascal Boolean key_setup_filter_proc(
 					keyboard_setup_globals.keycodes[current_edit_field - FIRST_KEY_ITEM]= keycode;
 					fill_in_key_name(dialog, keyboard_setup_globals.keycodes, current_edit_field - FIRST_KEY_ITEM);
 				}
-				
+
 				if (keycode != NONE)
 				{
 					// select the next item.
@@ -291,13 +291,13 @@ static pascal Boolean key_setup_filter_proc(
 				}
 				BlockMove(key_map, keyboard_setup_globals.old_key_map, sizeof(KeyMap));
 			}
-			
+
 			/* Change the keysetup if necessary */
-			keyboard_setup_globals.current_key_setup= 
+			keyboard_setup_globals.current_key_setup=
 				set_current_keyboard_layout(dialog, keyboard_setup_globals.keycodes);
 			if (event->what != nullEvent)	handled = TRUE;
 			break;
-			
+
 		case mouseDown:
 			where = event->where;
 			GlobalToLocal(&where);
@@ -309,7 +309,7 @@ static pascal Boolean key_setup_filter_proc(
 				handled = TRUE;
 			}
 			break;
-			
+
 		case updateEvt:
 			break;
 	}
@@ -320,7 +320,7 @@ static pascal Boolean key_setup_filter_proc(
 }
 
 static short setup_key_dialog(
-	DialogPtr dialog, 
+	DialogPtr dialog,
 	short *keycodes)
 {
 	short key, current_key_setup;
@@ -331,7 +331,7 @@ static short setup_key_dialog(
 	}
 
 	current_key_setup= set_current_keyboard_layout(dialog, keycodes);
-	
+
 	return current_key_setup;
 }
 
@@ -356,14 +356,14 @@ static short set_current_keyboard_layout(
 }
 
 static void fill_in_key_name(
-	DialogPtr dialog, 
-	short *keycodes, 
+	DialogPtr dialog,
+	short *keycodes,
 	short which)
 {
 	Rect item_box;
 	short item_type;
 	Handle item_handle;
-	
+
 	vassert(keycodes[which] >= 0 && keycodes[which] <= 0x7f,
 		csprintf(temporary, "which = %d, keycodes[which] = %d", which, keycodes[which]));
 	getpstr(temporary, strKEYCODES_TO_ASCII, keycodes[which]);
@@ -372,14 +372,14 @@ static void fill_in_key_name(
 }
 
 static short find_key_hit(
-	byte *key_map, 
+	byte *key_map,
 	byte *old_key_map)
 {
 	byte mask;
 	byte bit_count = 0;
 	short i;
 	short keycode = NONE;
-	
+
 	for (i = 0; i < 16; i++)
 	{
 		if (key_map[i] > old_key_map[i]) // an extra bit is set
@@ -390,7 +390,7 @@ static short find_key_hit(
 				mask >>= 1;
 				bit_count++;
 			}
-			keycode = (i * 8) + bit_count; 
+			keycode = (i * 8) + bit_count;
 			break;
 		}
 	}
@@ -410,7 +410,7 @@ static short find_key_hit(
 					error_message= keyIsUsedForSound;
 				}
 				break;
-				
+
 			case '-':
 			case '_':
 			case '+':
@@ -420,12 +420,12 @@ static short find_key_hit(
 					error_message=  keyIsUsedForMapZooming;
 				}
 				break;
-				
+
 			case '[':
 			case ']':
 				error_message= keyIsUsedForScrolling;
 				break;
-				
+
 			default:
 				switch(keycode)
 				{
@@ -443,21 +443,21 @@ static short find_key_hit(
 					case kcF12:
 						error_message= keyIsUsedAlready;
 						break;
-						
+
 					case 0x7f: /* This is the power key, which is not reliable... */
 						keycode = NONE;
 						break;
 				}
 				break;
 		}
-	
+
 		if (error_message != NONE)
 		{
 			alert_user(infoError, strERRORS, error_message, 0);
 			keycode= NONE;
 		}
 	}
-	
+
 	return keycode;
 }
 
@@ -465,7 +465,7 @@ static short find_duplicate_keycode(
 	short *keycodes)
 {
 	short i, j;
-	
+
 	for (i= 0; i<NUMBER_OF_KEYS; i++)
 	{
 		for (j= i+1; j<NUMBER_OF_KEYS; j++)
@@ -473,7 +473,7 @@ static short find_duplicate_keycode(
 			if (keycodes[i] == keycodes[j])	return j;
 		}
 	}
-	
+
 	return NONE;
 }
 
@@ -491,7 +491,7 @@ static short keycode_to_charcode(
 
 	// get the resource and lock it down
 	kchr_resource_id = GetScript(GetEnvirons(smKeyScript), smScriptKeys);
-	kchr_resource = GetResource('KCHR', (short) kchr_resource_id); // probably DONÕt want to release it.
+	kchr_resource = GetResource('KCHR', (short) kchr_resource_id); // probably DONâ€™t want to release it.
 	assert(kchr_resource);
 	locked = HGetState(kchr_resource) & 0x80;
 	HLock(kchr_resource);
@@ -506,7 +506,7 @@ static short keycode_to_charcode(
 
 	// unlock it, if that's the way the system had it.
 	if (!locked) HUnlock(kchr_resource);
-	
+
 	return charcode;
 }
 
@@ -514,7 +514,7 @@ static boolean is_pressed(
 	short key_code)
 {
 	KeyMap key_map;
-	
+
 	GetKeys(key_map);
 	return ((((byte*)key_map)[key_code>>3] >> (key_code & 7)) & 1);
 }

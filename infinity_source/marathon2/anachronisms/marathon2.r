@@ -22,10 +22,10 @@ Monday, March 28, 1994 3:08:23 PM
 
 #ifdef DEMO
 	#define SHORT_VERSION_STRING "v" VERSION
-	#define LONG_VERSION_STRING "v" VERSION " DEMO © 1994 Bungie Software Products Corp."
+	#define LONG_VERSION_STRING "v" VERSION " DEMO Â© 1994 Bungie Software Products Corp."
 #else
 	#define SHORT_VERSION_STRING "v" VERSION
-	#define LONG_VERSION_STRING "v" VERSION " © 1994 Bungie Software Products Corp."
+	#define LONG_VERSION_STRING "v" VERSION " Â© 1994 Bungie Software Products Corp."
 #endif
 
 #ifndef fat
@@ -72,7 +72,7 @@ include ":binaries:game.resource";
 type 'dbug' as 'STR ';
 resource 'dbug' (128)
 {
-	"iÕm sleeping my day away"
+	"iâ€™m sleeping my day away"
 };
 #endif
 

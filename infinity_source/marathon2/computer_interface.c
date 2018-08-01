@@ -198,12 +198,12 @@ struct player_terminal_data *get_player_terminal_data(
 /* ------------ private prototypes */
 static void draw_logon_text(Rect *bounds, struct static_preprocessed_terminal_data *terminal_text,
 	short current_group_index, short logon_shape_id);
-static void draw_computer_text(Rect *bounds, 
+static void draw_computer_text(Rect *bounds,
 	struct static_preprocessed_terminal_data *terminal_text, short current_group_index, short current_line);
 static void _draw_computer_text(char *base_text, short start_index, Rect *bounds,
 	struct static_preprocessed_terminal_data *terminal_text, short current_line);
 static void render_terminal(short player_index, struct view_terminal_data *data);
-static short find_group_type(struct static_preprocessed_terminal_data *data, 
+static short find_group_type(struct static_preprocessed_terminal_data *data,
 	short group_type);
 static void teleport_to_level(short level_number);
 static void teleport_to_polygon(short player_index, short polygon_index);
@@ -212,7 +212,7 @@ static struct terminal_groupings *get_indexed_grouping(
 static struct text_face_data *get_indexed_font_changes(
 	struct static_preprocessed_terminal_data *data, short index);
 static char *get_text_base(struct static_preprocessed_terminal_data *data);
-static void draw_terminal_borders(struct view_terminal_data *data, 
+static void draw_terminal_borders(struct view_terminal_data *data,
 	struct player_terminal_data *terminal_data, Rect *terminal_frame);
 static void next_terminal_state(short player_index);
 static void next_terminal_group(short player_index, struct static_preprocessed_terminal_data *terminal_text);
@@ -220,28 +220,28 @@ static get_date_string(char *date_string);
 static void present_checkpoint_text(Rect *frame,
 	struct static_preprocessed_terminal_data *terminal_text, short current_group_index,
 	short current_line);
-static boolean find_checkpoint_location(short checkpoint_index, world_point2d *location, 
+static boolean find_checkpoint_location(short checkpoint_index, world_point2d *location,
 	short *polygon_index);
 struct static_preprocessed_terminal_data *preprocess_text(char *text, short length);
 static void pre_build_groups(struct terminal_groupings *groups,
-	short *group_count, struct text_face_data *text_faces, short *text_face_count, 
+	short *group_count, struct text_face_data *text_faces, short *text_face_count,
 	char *base_text, short *base_length);
-static short matches_group(char *base_text, short length, short index, short possible_group, 
+static short matches_group(char *base_text, short length, short index, short possible_group,
 	short *permutation);
 static void	set_text_face(struct text_face_data *text_face);
 static void draw_line(char *base_text, short start_index, short end_index, Rect *bounds,
 	struct static_preprocessed_terminal_data *terminal_text, short *text_face_start_index,
 	short line_number);
-static boolean calculate_line(char *base_text, short width, short start_index, 
+static boolean calculate_line(char *base_text, short width, short start_index,
 	short text_end_index, short *end_index);
 static void handle_reading_terminal_keys(short player_index, long action_flags);
 static void calculate_bounds_for_object(Rect *frame, short flags, Rect *bounds, Rect *source);
 static void display_picture(short picture_id, Rect *frame, short flags);
-static void display_picture_with_text(struct player_terminal_data *terminal_data, 
+static void display_picture_with_text(struct player_terminal_data *terminal_data,
 	Rect *bounds, struct static_preprocessed_terminal_data *terminal_text, short current_lien);
 static short count_total_lines(char *base_text, short width, short start_index, short end_index);
 static void calculate_bounds_for_text_box(Rect *frame, short flags, Rect *bounds);
-static void goto_terminal_group(short player_index, struct static_preprocessed_terminal_data *terminal_text, 
+static void goto_terminal_group(short player_index, struct static_preprocessed_terminal_data *terminal_text,
 	short new_group_index);
 static boolean previous_terminal_group(short player_index, struct static_preprocessed_terminal_data *terminal_text);
 static void fill_terminal_with_static(Rect *bounds);
@@ -259,7 +259,7 @@ void initialize_terminal_manager(
 {
 	short index;
 
-	player_terminals= (struct player_terminal_data *) 
+	player_terminals= (struct player_terminal_data *)
 		malloc(MAXIMUM_NUMBER_OF_PLAYERS*sizeof(struct player_terminal_data));
 	assert(player_terminals);
 	memset(player_terminals, 0, MAXIMUM_NUMBER_OF_PLAYERS*sizeof(struct player_terminal_data));
@@ -290,8 +290,8 @@ void initialize_player_terminal_info(
 }
 
 void enter_computer_interface(
-	short player_index, 
-	short text_number, 
+	short player_index,
+	short text_number,
 	short completion_flag)
 {
 	struct player_terminal_data *terminal= get_player_terminal_data(player_index);
@@ -301,7 +301,7 @@ void enter_computer_interface(
 	if(dynamic_world->player_count==1)
 	{
 		short lines_per_page;
-	
+
 		/* Reset the lines per page to the actual value for whatever fucked up font that they have */
 		lines_per_page= calculate_lines_per_page();
 		if(lines_per_page != terminal_text->lines_per_page)
@@ -311,7 +311,7 @@ void enter_computer_interface(
 		}
 	}
 
-	/* Tell everyone that this player is in the computer interface.. */	
+	/* Tell everyone that this player is in the computer interface.. */
 	terminal->state= _reading_terminal;
 	terminal->phase= NONE;
 	terminal->current_group= NONE;
@@ -342,12 +342,12 @@ void update_player_for_terminal_mode(
 					if(--terminal->phase<=0)
 					{
 						struct static_preprocessed_terminal_data *terminal_text= get_indexed_terminal_data(terminal->terminal_id);
-						
+
 						next_terminal_group(player_index, terminal_text);
 					}
 				}
 				break;
-				
+
 			default:
 				break;
 		}
@@ -365,7 +365,7 @@ void update_player_keys_for_terminal(
 		case _reading_terminal:
 			handle_reading_terminal_keys(player_index, action_flags);
 			break;
-		
+
 		case _no_terminal_state:
 		default:
 			halt();
@@ -378,14 +378,14 @@ boolean player_in_terminal_mode(
 {
 	struct player_terminal_data *terminal= get_player_terminal_data(player_index);
 	boolean in_terminal_mode;
-	
+
 	if(terminal->state==_no_terminal_state)
 	{
 		in_terminal_mode= FALSE;
 	} else {
 		in_terminal_mode= TRUE;
 	}
-	
+
 	return in_terminal_mode;
 }
 
@@ -399,7 +399,7 @@ long calculate_terminal_data_length(
 	void)
 {
 	long length= dynamic_world->player_count*sizeof(struct player_terminal_data);
-	
+
 	return length;
 }
 
@@ -419,7 +419,7 @@ void _render_computer_interface(
 	struct view_terminal_data *data)
 {
 	struct player_terminal_data *terminal_data= get_player_terminal_data(current_player_index);
-	
+
 	assert(terminal_data->state != _no_terminal_state);
 	if(TERMINAL_IS_DIRTY(terminal_data))
 	{
@@ -429,42 +429,42 @@ void _render_computer_interface(
 
 		/* Get the terminal text.. */
 		terminal_text= get_indexed_terminal_data(terminal_data->terminal_id);
-	
+
 		switch(terminal_data->state)
 		{
 			case _reading_terminal:
 				/* Initialize it if it hasn't been done.. */
 				current_group= get_indexed_grouping(terminal_text, terminal_data->current_group);
-	
+
 				/* Draw the borders! */
 				draw_terminal_borders(data, terminal_data, &bounds);
 				switch(current_group->type)
 				{
 					case _logon_group:
 					case _logoff_group:
-						draw_logon_text(&bounds, terminal_text, terminal_data->current_group, 
+						draw_logon_text(&bounds, terminal_text, terminal_data->current_group,
 							current_group->permutation);
 						break;
-						
+
 					case _unfinished_group:
 					case _success_group:
 					case _failure_group:
 						dprintf("You shouldn't try to render this view.;g");
 						break;
-						
+
 					case _information_group:
 						/* Draw as normal... */
 						InsetRect(&bounds, 72-BORDER_INSET, 0); /* 1 inch in from each side */
-						draw_computer_text(&bounds, terminal_text, terminal_data->current_group, 
+						draw_computer_text(&bounds, terminal_text, terminal_data->current_group,
 							terminal_data->current_line);
 						break;
-						
+
 					case _checkpoint_group: // permutation is the goal to show
 						/* note that checkpoints can only be equal to one screenful.. */
 						present_checkpoint_text(&bounds, terminal_text, terminal_data->current_group,
 							terminal_data->current_line);
 						break;
-						
+
 					case _end_group:
 					case _interlevel_teleport_group: // permutation is level to go to
 					case _intralevel_teleport_group: // permutation is polygon to go to.
@@ -472,7 +472,7 @@ void _render_computer_interface(
 					case _tag_group:
 						// These are all handled elsewhere
 						break;
-						
+
 					case _movie_group:
 					case _track_group:
 						if(!game_is_networked)
@@ -482,16 +482,16 @@ void _render_computer_interface(
 							dprintf("On networked games, should we display a PICT here?;g");
 						}
 						break;
-					
+
 					case _pict_group:
-						display_picture_with_text(terminal_data, &bounds, terminal_text, 
+						display_picture_with_text(terminal_data, &bounds, terminal_text,
 							terminal_data->current_line);
 						break;
-			
+
 					case _static_group:
 						fill_terminal_with_static(&bounds);
 						break;
-						
+
 					case _camera_group:
 						break;
 
@@ -500,7 +500,7 @@ void _render_computer_interface(
 						break;
 				}
 				break;
-				
+
 			default:
 				halt();
 				break;
@@ -517,7 +517,7 @@ long build_terminal_action_flags(
 	short index;
 	struct terminal_key *key= terminal_keys;
 	struct player_terminal_data *terminal= get_player_terminal_data(local_player_index);
-	
+
 	raw_flags= 0;
 	for(index= 0; index<NUMBER_OF_TERMINAL_KEYS; ++index)
 	{
@@ -539,7 +539,7 @@ void dirty_terminal_view(
 	short player_index)
 {
 	struct player_terminal_data *terminal= get_player_terminal_data(player_index);
-	
+
 	if(terminal->state != _no_terminal_state)
 	{
 		SET_TERMINAL_IS_DIRTY(terminal, TRUE);
@@ -551,7 +551,7 @@ void abort_terminal_mode(
 	short player_index)
 {
 	struct player_terminal_data *terminal= get_player_terminal_data(player_index);
-	
+
 	if(terminal->state != _no_terminal_state)
 	{
 		terminal->state= _no_terminal_state;
@@ -560,7 +560,7 @@ void abort_terminal_mode(
 
 /* --------- local code */
 static void draw_logon_text(
-	Rect *bounds, 
+	Rect *bounds,
 	struct static_preprocessed_terminal_data *terminal_text,
 	short current_group_index,
 	short logon_shape_id)
@@ -568,13 +568,13 @@ static void draw_logon_text(
 	Rect picture_bounds= *bounds;
 	char *base_text= get_text_base(terminal_text);
 	short width;
-	struct terminal_groupings *current_group= get_indexed_grouping(terminal_text, 
+	struct terminal_groupings *current_group= get_indexed_grouping(terminal_text,
 		current_group_index);
-	
+
 	/* Draw the login emblem.. */
 	display_picture(logon_shape_id, &picture_bounds,  _center_object);
 
-	/* Use the picture bounds to create the logon text crap . */	
+	/* Use the picture bounds to create the logon text crap . */
 	/* The top has the font line height subtracted due to the fudge factor... */
 //	picture_bounds.top= picture_bounds.bottom-_get_font_line_height(_computer_interface_font)+5;
 	picture_bounds.top= picture_bounds.bottom;
@@ -588,12 +588,12 @@ static void draw_logon_text(
 
 		GetFont(&old_font);
 		SetFont(_get_font_spec(_computer_interface_font));
-	
+
 		width= TextWidth(base_text, current_group->start_index, current_group->length);
 		picture_bounds.left += (RECTANGLE_WIDTH(&picture_bounds)-width)/2;
 		SetFont(&old_font);
 	}
-	
+
 	_draw_computer_text(base_text, current_group_index, &picture_bounds, terminal_text, 0);
 
 	return;
@@ -601,14 +601,14 @@ static void draw_logon_text(
 
 /* returns true for phase chagne */
 static void draw_computer_text(
-	Rect *bounds, 
-	struct static_preprocessed_terminal_data *terminal_text, 
+	Rect *bounds,
+	struct static_preprocessed_terminal_data *terminal_text,
 	short current_group_index,
 	short current_line)
 {
 	char *base_text= get_text_base(terminal_text);
-	
-	_draw_computer_text(base_text, current_group_index, bounds, 
+
+	_draw_computer_text(base_text, current_group_index, bounds,
 		terminal_text, current_line);
 }
 
@@ -634,12 +634,12 @@ static void _draw_computer_text(
 	line_count= 0;
 	start_index= current_group->start_index;
 	end_index= current_group->length+current_group->start_index;
-	
+
 	/* eat the previous lines */
 	for(index= 0; index<current_line; ++index)
 	{
 		/* Calculate one line.. */
-		if(!calculate_line(base_text, RECTANGLE_WIDTH(bounds), start_index, current_group->start_index+current_group->length, 
+		if(!calculate_line(base_text, RECTANGLE_WIDTH(bounds), start_index, current_group->start_index+current_group->length,
 			&end_index))
 		{
 if(end_index>current_group->start_index+current_group->length)
@@ -665,7 +665,7 @@ if(end_index>current_group->start_index+current_group->length)
 		for(text_index= 0; text_index<terminal_text->font_changes_count; ++text_index)
 		{
 			struct text_face_data *font_face= get_indexed_font_changes(terminal_text, text_index);
-			
+
 			/* Go backwards from the scrolled starting location.. */
 			if(font_face->index>last_index && font_face->index<start_index)
 			{
@@ -674,7 +674,7 @@ if(end_index>current_group->start_index+current_group->length)
 				last_text_index= text_index;
 			}
 		}
-		
+
 // dprintf("last index: %d", last_text_index);
 		/* Figure out the font.. */
 		if(last_text_index==NONE)
@@ -683,14 +683,14 @@ if(end_index>current_group->start_index+current_group->length)
 			text_face.color= 0;
 			text_face.face= 0;
 		} else {
-			struct text_face_data *font_face= get_indexed_font_changes(terminal_text, 
+			struct text_face_data *font_face= get_indexed_font_changes(terminal_text,
 				last_text_index);
 			text_face= *font_face;
 		}
-	
+
 		/* Set the font.. */
 		set_text_face(&text_face);
-	
+
 		/* Draw what is one the screen */
 		for(index= 0; !done && index<terminal_text->lines_per_page; ++index)
 		{
@@ -706,7 +706,7 @@ if(end_index>current_group->start_index+current_group->length)
 	end_index= current_group->start_index+current_group->length;
 }
 				assert(end_index<=current_group->start_index+current_group->length);
-				draw_line(base_text, start_index, end_index, bounds, terminal_text, &last_text_index, 
+				draw_line(base_text, start_index, end_index, bounds, terminal_text, &last_text_index,
 					index);
 				start_index= end_index;
 			} else {
@@ -740,13 +740,13 @@ static short count_total_lines(
 		start_index= end_index;
 	}
 	SetFont(&old_font);
-	
+
 	return total_line_count;
 }
 
 #ifdef OBSOLETE
 static boolean calculate_line(
-	char *base_text, 
+	char *base_text,
 	short width,
 	short start_index,
 	short text_end_index,
@@ -765,40 +765,40 @@ static boolean calculate_line(
 			running_width+= CharWidth(base_text[index]);
 			index++;
 		}
-//dprintf("base: %x start: %d index: %d", base_text, start_index, index);		
-		
+//dprintf("base: %x start: %d index: %d", base_text, start_index, index);
+
 		/* Now go backwards, looking for whitespace to split on.. */
 		if(base_text[index]=='\n')
 		{
 			index++;
-		} 
+		}
 		else if(base_text[index])
 		{
 			short break_point= index;
 
-			while(break_point>start_index) 
+			while(break_point>start_index)
 			{
 				if(base_text[break_point]==' ') break; /* Non printing.. */
 				break_point--; /* this needs to be in front of the test.. */
 			}
-			
-			if(break_point!=start_index) 
+
+			if(break_point!=start_index)
 			{
 				index= break_point+1; /* Space at the end of the line.. */
 			} /* else punt.. */
 		}
 //dprintf("End: %d", index);
-		
+
 		*end_index= index;
 	} else {
 		done= TRUE;
 	}
-	
+
 	return done;
 }
 #else
 static boolean calculate_line(
-	char *base_text, 
+	char *base_text,
 	short width,
 	short start_index,
 	short text_end_index,
@@ -824,20 +824,20 @@ static boolean calculate_line(
 		{
 			done= TRUE;
 		}
-//dprintf("Code: %d Length: %d Start: %d TextEnd: %d End: %d Star Text: %x", code, 
+//dprintf("Code: %d Length: %d Start: %d TextEnd: %d End: %d Star Text: %x", code,
 //	text_end_index, start_index, text_end_index, *end_index, &base_text[start_index]);
 	} else {
 		done= TRUE;
 	}
-	
+
 	return done;
 }
 #endif
 
 static void draw_line(
-	char *base_text, 
-	short start_index, 
-	short end_index, 
+	char *base_text,
+	short start_index,
+	short end_index,
 	Rect *bounds,
 	struct static_preprocessed_terminal_data *terminal_text,
 	short *text_face_start_index,
@@ -849,13 +849,13 @@ static void draw_line(
 	short current_end= end_index;
 	struct text_face_data *face_data= NULL;
 
-	if((*text_face_start_index)==NONE) 
+	if((*text_face_start_index)==NONE)
 	{
 		text_index= 0;
 	} else {
 		text_index= (*text_face_start_index);
 	}
-	
+
 	/* Get to the first one that concerns us.. */
 	if(text_index<terminal_text->font_changes_count)
 	{
@@ -864,7 +864,7 @@ static void draw_line(
 			if(face_data->index<start_index) text_index++;
 		} while(face_data->index<start_index && text_index<terminal_text->font_changes_count);
 	}
-	
+
 	current_start= start_index;
 	MoveTo(bounds->left, bounds->top+line_height*(line_number+FUDGE_FACTOR));
 
@@ -915,17 +915,17 @@ static void	set_text_face(
 }
 
 static short find_group_type(
-	struct static_preprocessed_terminal_data *data, 
+	struct static_preprocessed_terminal_data *data,
 	short group_type)
 {
 	short index;
-	
+
 	for(index= 0; index<data->grouping_count; index++)
 	{
 		struct terminal_groupings *group= get_indexed_grouping(data, index);
 		if(group->type==group_type) break;
 	}
-	
+
 	return index;
 }
 
@@ -934,18 +934,18 @@ static void teleport_to_level(
 {
 	/* It doesn't matter which player we get. */
 	struct player_data *player= get_player_data(0);
-	
+
 	assert(level_number != 0);
 	player->teleporting_destination= -level_number;
 	player->delay_before_teleport= TICKS_PER_SECOND/2; // delay before we teleport.
 }
-			
+
 static void teleport_to_polygon(
 	short player_index,
 	short polygon_index)
 {
 	struct player_data *player= get_player_data(player_index);
-	
+
 	player->teleporting_destination= polygon_index;
 	assert(!player->delay_before_teleport);
 }
@@ -958,12 +958,12 @@ static void calculate_bounds_for_text_box(
 	if(flags & _center_object)
 	{
 		dprintf("splitting text not supported!");
-	} 
+	}
 	else if(flags & _draw_object_on_right)
 	{
 		calculate_bounds_for_object(frame, 0, bounds, NULL);
-	} 
-	else 
+	}
+	else
 	{
 		calculate_bounds_for_object(frame, _draw_object_on_right, bounds, NULL);
 	}
@@ -972,8 +972,8 @@ static void calculate_bounds_for_text_box(
 }
 
 static void display_picture_with_text(
-	struct player_terminal_data *terminal_data, 
-	Rect *bounds, 
+	struct player_terminal_data *terminal_data,
+	Rect *bounds,
 	struct static_preprocessed_terminal_data *terminal_text,
 	short current_line)
 {
@@ -1008,7 +1008,7 @@ static void display_picture(
 		OffsetRect(&bounds, -bounds.left, -bounds.top);
 		calculate_bounds_for_object(frame, flags, &screen_bounds, &bounds);
 
-		if(RECTANGLE_WIDTH(&bounds)<=RECTANGLE_WIDTH(&screen_bounds) && 
+		if(RECTANGLE_WIDTH(&bounds)<=RECTANGLE_WIDTH(&screen_bounds) &&
 			RECTANGLE_HEIGHT(&bounds)<=RECTANGLE_HEIGHT(&screen_bounds))
 		{
 			/* It fits-> center it. */
@@ -1020,7 +1020,7 @@ static void display_picture(
 				RECTANGLE_WIDTH(&bounds)-RECTANGLE_WIDTH(&screen_bounds))
 			{
 				short adjusted_width;
-				
+
 				adjusted_width= RECTANGLE_HEIGHT(&screen_bounds)*RECTANGLE_WIDTH(&bounds)/RECTANGLE_HEIGHT(&bounds);
 				bounds= screen_bounds;
 				InsetRect(&bounds, (RECTANGLE_WIDTH(&screen_bounds)-adjusted_width)/2, 0);
@@ -1028,7 +1028,7 @@ dprintf("Warning: Not large enough for pict: %d (height);g", picture_id);
 			} else {
 				/* Width is the predominant factor */
 				short adjusted_height;
-				
+
 				adjusted_height= RECTANGLE_WIDTH(&screen_bounds)*RECTANGLE_HEIGHT(&bounds)/RECTANGLE_WIDTH(&bounds);
 				bounds= screen_bounds;
 				InsetRect(&bounds, 0, (RECTANGLE_HEIGHT(&screen_bounds)-adjusted_height)/2);
@@ -1042,7 +1042,7 @@ dprintf("Warning: Not large enough for pict: %d (width);g", picture_id);
 		DrawPicture(picture, &bounds);
 		HUnlock((Handle) picture);
 
-		ReleaseResource((Handle) picture);	
+		ReleaseResource((Handle) picture);
 		/* And let the caller know where we drew the picture */
 		*frame= bounds;
 	} else {
@@ -1051,14 +1051,14 @@ dprintf("Warning: Not large enough for pict: %d (width);g", picture_id);
 		short width;
 
 		calculate_bounds_for_object(frame, flags, &bounds, NULL);
-	
+
 		EraseRect(&bounds);
 		getcstr(format_string, strERRORS, pictureNotFound);
 		sprintf(temporary, format_string, picture_id);
 		width= TextWidth(temporary, 0, strlen(temporary));
 
 		/* Center the error message.. */
-		MoveTo(bounds.left+(RECTANGLE_WIDTH(&bounds)-width)/2, 
+		MoveTo(bounds.left+(RECTANGLE_WIDTH(&bounds)-width)/2,
 			bounds.top+RECTANGLE_HEIGHT(&bounds)/2);
 		DrawText(temporary, 0, strlen(temporary));
 	}
@@ -1074,7 +1074,7 @@ static void fill_terminal_with_static(
 	static long seed= TickCount();
 	byte *base;
 	short x, y;
-	
+
 	base= base_address_of_gworld;
 	rowBytes= base_rowbytes;
 	for(y= bounds->top; y<bounds->bottom; ++y)
@@ -1105,7 +1105,7 @@ static struct static_preprocessed_terminal_data *get_indexed_terminal_data(
 		index--;
 	}
 
-	/* Note that this will only decode the text once. */	
+	/* Note that this will only decode the text once. */
 	decode_text(data);
 
 	return data;
@@ -1123,7 +1123,7 @@ static void decode_text(
 	if(terminal_text->flags & _text_is_encoded_flag)
 	{
 		encode_text(terminal_text);
-		
+
 		terminal_text->flags &= ~_text_is_encoded_flag;
 	}
 }
@@ -1143,17 +1143,17 @@ static void encode_text(
 	char *byte_offset;
 
 	length= terminal_text->total_length-
-		(sizeof(struct static_preprocessed_terminal_data) + 
+		(sizeof(struct static_preprocessed_terminal_data) +
 		terminal_text->grouping_count*sizeof(struct terminal_groupings)+
 		terminal_text->font_changes_count*sizeof(struct text_face_data));
-	
+
 	long_offset= (long *) text_base;
 	for(index= 0; index<length/sizeof(long); ++index)
 	{
 		(*long_offset) ^= 0xfeed;
 		long_offset++;
 	}
-	
+
 	/* And get the last bytes */
 	byte_offset= (char *) long_offset;
 	for(index= 0; index<length%sizeof(long); ++index)
@@ -1174,7 +1174,7 @@ static void draw_terminal_borders(
 	short top_message, bottom_left_message, bottom_right_message;
 	struct static_preprocessed_terminal_data *terminal_text= get_indexed_terminal_data(terminal_data->terminal_id);
 	struct terminal_groupings *current_group= get_indexed_grouping(terminal_text, terminal_data->current_group);
-	
+
 	switch(current_group->type)
 	{
 		case _logon_group:
@@ -1182,14 +1182,14 @@ static void draw_terminal_borders(
 			bottom_left_message= _computer_manufacturer;
 			bottom_right_message= _computer_address;
 			break;
-			
+
 		case _logoff_group:
 			top_message= _disconnecting_message;
 			bottom_left_message= _computer_manufacturer;
 			bottom_right_message= _computer_address;
 			break;
 
-		default:			
+		default:
 			top_message= _computer_terminal;
 			bottom_left_message= _scrolling_message;
 			bottom_right_message= _acknowledgement_message;
@@ -1197,7 +1197,7 @@ static void draw_terminal_borders(
 	}
 
 	/* First things first: draw the border.. */
-	/* Get the destination frame.. */	
+	/* Get the destination frame.. */
 	frame.top= data->top;
 	frame.bottom= data->bottom;
 	frame.left= data->left;
@@ -1209,7 +1209,7 @@ static void draw_terminal_borders(
 	/* Now letterbox it if necessary */
 	frame.top+= data->vertical_offset;
 	frame.bottom-= data->vertical_offset;
-	
+
 	/* Draw the top rectangle */
 	border= frame;
 	border.bottom= border.top+BORDER_HEIGHT;
@@ -1220,21 +1220,21 @@ static void draw_terminal_borders(
 	getcstr(temporary, strCOMPUTER_LABELS, top_message);
 	_draw_screen_text(temporary, (screen_rectangle *) &border, _center_vertical, _computer_interface_font, _computer_border_text_color);
 	get_date_string(temporary);
-	_draw_screen_text(temporary, (screen_rectangle *) &border, _right_justified | _center_vertical, 
+	_draw_screen_text(temporary, (screen_rectangle *) &border, _right_justified | _center_vertical,
 		_computer_interface_font, _computer_border_text_color);
-	
+
 	/* Draw the the bottom rectangle & text */
 	border= frame;
 	border.top= border.bottom-BORDER_HEIGHT;
 	_fill_screen_rectangle((screen_rectangle *) &border, _computer_border_background_text_color);
 	border.left += LABEL_INSET; border.right -= LABEL_INSET;
 	getcstr(temporary, strCOMPUTER_LABELS, bottom_left_message);
-	_draw_screen_text(temporary, (screen_rectangle *) &border, _center_vertical, _computer_interface_font, 
+	_draw_screen_text(temporary, (screen_rectangle *) &border, _center_vertical, _computer_interface_font,
 		_computer_border_text_color);
 	getcstr(temporary, strCOMPUTER_LABELS, bottom_right_message);
-	_draw_screen_text(temporary, (screen_rectangle *) &border, _right_justified | _center_vertical, 
+	_draw_screen_text(temporary, (screen_rectangle *) &border, _right_justified | _center_vertical,
 		_computer_interface_font, _computer_border_text_color);
-	
+
 	/* The screen rectangle minus the border.. */
 	*terminal_frame= frame;
 	InsetRect(terminal_frame, BORDER_INSET, BORDER_HEIGHT+BORDER_INSET);
@@ -1250,7 +1250,7 @@ static void next_terminal_state(
 	{
 #ifdef OBSOLETE
 	struct static_preprocessed_terminal_data *terminal_text;
-	
+
 		case _logging_in_terminal:
 			terminal->state= _reading_terminal;
 			terminal->phase= NONE; /* Different type.. */
@@ -1277,12 +1277,12 @@ static void next_terminal_state(
 			SET_TERMINAL_IS_DIRTY(terminal, TRUE);
 #ifndef PREPROCESSING_CODE
 			play_object_sound(player->object_index, _snd_computer_interface_logout);
-#endif			
+#endif
 #endif
 		case _reading_terminal:
 			initialize_player_terminal_info(player_index);
 			break;
-			
+
 		case _no_terminal_state:
 		default:
 			vhalt(csprintf(temporary, "What is %d?", terminal->state));
@@ -1298,14 +1298,14 @@ static boolean previous_terminal_group(
 {
 	struct player_terminal_data *terminal_data= get_player_terminal_data(player_index);
 	boolean success= FALSE;
-	
+
 	if(terminal_data->state==_reading_terminal)
 	{
 		short new_group_index= terminal_data->current_group-1;
 		boolean use_new_group= TRUE;
 		boolean done= TRUE;
-		
-		do 
+
+		do
 		{
 			if(new_group_index>=0)
 			{
@@ -1316,7 +1316,7 @@ static boolean previous_terminal_group(
 					case _end_group:
 						use_new_group= FALSE;
 						break;
-						
+
 					case _interlevel_teleport_group:
 					case _intralevel_teleport_group:
 						dprintf("This shouldn't happen!");
@@ -1327,24 +1327,24 @@ static boolean previous_terminal_group(
 						new_group_index--;
 						done= FALSE;
 						break;
-					
+
 					case _movie_group:
 					case _track_group:
 					case _checkpoint_group:
 					case _pict_group:
 					case _information_group:
 						break;
-						
+
 					case _camera_group:
 						break;
-						
+
 					case _unfinished_group:
 					case _success_group:
 					case _failure_group:
 					case _static_group:
 						use_new_group= FALSE;
 						break;
-					
+
 					default:
 						halt();
 						break;
@@ -1354,7 +1354,7 @@ static boolean previous_terminal_group(
 				use_new_group= FALSE;
 			}
 		} while(!done);
-		
+
 		if(use_new_group)
 		{
 			/* Go there.. */
@@ -1362,7 +1362,7 @@ static boolean previous_terminal_group(
 			success= TRUE;
 		}
 	}
-	
+
 	return success;
 }
 
@@ -1372,7 +1372,7 @@ static void next_terminal_group(
 {
 	struct player_terminal_data *terminal_data= get_player_terminal_data(player_index);
 	boolean update_line_count= FALSE;
-	
+
 	if(terminal_data->current_group==NONE)
 	{
 		update_line_count= TRUE;
@@ -1382,29 +1382,29 @@ static void next_terminal_group(
 			case _level_unfinished:
 				terminal_data->current_group= find_group_type(terminal_text, _unfinished_group);
 				break;
-				
+
 			case _level_finished:
 				terminal_data->current_group= find_group_type(terminal_text, _success_group);
-				if(terminal_data->current_group==terminal_text->grouping_count) 
+				if(terminal_data->current_group==terminal_text->grouping_count)
 				{
 					/* Fallback. */
 					terminal_data->current_group= find_group_type(terminal_text, _unfinished_group);
 					assert(terminal_data->current_group != terminal_text->grouping_count);
 				}
 				break;
-				
+
 			case _level_failed:
 				terminal_data->current_group= find_group_type(terminal_text, _failure_group);
-				if(terminal_data->current_group==terminal_text->grouping_count) 
+				if(terminal_data->current_group==terminal_text->grouping_count)
 				{
 					/* Fallback. */
 					terminal_data->current_group= find_group_type(terminal_text, _unfinished_group);
 					assert(terminal_data->current_group != terminal_text->grouping_count);
 				}
 				break;
-			
+
 			default:
-				vhalt(csprintf(temporary, "What is type %d?", 
+				vhalt(csprintf(temporary, "What is type %d?",
 					terminal_data->level_completion_state));
 				break;
 		}
@@ -1420,32 +1420,32 @@ static void next_terminal_group(
 			update_line_count= TRUE;
 		}
 	}
-	
+
 	if(update_line_count)
 	{
 		goto_terminal_group(player_index, terminal_text, terminal_data->current_group);
 	}
-	
+
 	SET_TERMINAL_IS_DIRTY(terminal_data, TRUE);
 
 	return;
 }
 
 static void goto_terminal_group(
-	short player_index, 
-	struct static_preprocessed_terminal_data *terminal_text, 
+	short player_index,
+	struct static_preprocessed_terminal_data *terminal_text,
 	short new_group_index)
 {
 	struct player_terminal_data *terminal_data= get_player_terminal_data(player_index);
 	struct player_data *player= get_player_data(player_index);
 	struct terminal_groupings *current_group;
-	
+
 	terminal_data->current_group= new_group_index;
-	
+
 	current_group= get_indexed_grouping(terminal_text, terminal_data->current_group);
 
 	terminal_data->current_line= 0;
-		
+
 	switch(current_group->type)
 	{
 		case _logon_group:
@@ -1455,7 +1455,7 @@ static void goto_terminal_group(
 			terminal_data->phase= LOG_DURATION_BEFORE_TIMEOUT;
 			terminal_data->maximum_line= current_group->maximum_line_count;
 			break;
-			
+
 		case _logoff_group:
 #ifndef PREPROCESSING_CODE
 			play_object_sound(player->object_index, _snd_computer_interface_logout);
@@ -1463,7 +1463,7 @@ static void goto_terminal_group(
 			terminal_data->phase= LOG_DURATION_BEFORE_TIMEOUT;
 			terminal_data->maximum_line= current_group->maximum_line_count;
 			break;
-			
+
 		case _interlevel_teleport_group:
 		case _intralevel_teleport_group:
 		case _sound_group:
@@ -1485,17 +1485,17 @@ static void goto_terminal_group(
 			} else {
 				/* Calculate this for ourselves. */
 				Rect text_bounds, bounds;
-	
+
 				/* The only thing we care about is the width. */
 				SetRect(&bounds, 0, 0, 640, 480);
 				InsetRect(&bounds, BORDER_INSET, BORDER_HEIGHT+BORDER_INSET);
 				calculate_bounds_for_text_box(&bounds, current_group->flags, &text_bounds);
 				terminal_data->maximum_line= count_total_lines(get_text_base(terminal_text),
-					RECTANGLE_WIDTH(&text_bounds), current_group->start_index, 
+					RECTANGLE_WIDTH(&text_bounds), current_group->start_index,
 					current_group->start_index+current_group->length);
 			}
 			break;
-			
+
 		case _information_group:
 			terminal_data->phase= NONE;
 			if(dynamic_world->player_count>1)
@@ -1505,10 +1505,10 @@ static void goto_terminal_group(
 			} else {
 				/* Calculate this for ourselves. */
 				short width= 640; // ••• sync (Must guarantee 100 high res!)
-	
-				width-= 2*(72-BORDER_INSET); /* 1 inch in from each side */				
-				terminal_data->maximum_line= count_total_lines(get_text_base(terminal_text), 
-					width, current_group->start_index, 
+
+				width-= 2*(72-BORDER_INSET); /* 1 inch in from each side */
+				terminal_data->maximum_line= count_total_lines(get_text_base(terminal_text),
+					width, current_group->start_index,
 					current_group->start_index+current_group->length);
 			}
 			break;
@@ -1529,7 +1529,7 @@ static void goto_terminal_group(
 		case _failure_group:
 			vwarn(0, "You shouldn't be coming to this group");
 			break;
-			
+
 		default:
 			halt();
 			break;
@@ -1546,15 +1546,15 @@ static get_date_string(
 	long seconds, game_time_passed;
 	DateTimeRec converted_date;
 	struct tm game_time;
-	
+
 	/* Treat the date as if it were recent. */
-	game_time_passed= LONG_MAX - dynamic_world->game_information.game_time_remaining;	
+	game_time_passed= LONG_MAX - dynamic_world->game_information.game_time_remaining;
 	seconds = 2882914937;
-	
+
 	/* convert the game seconds to machine seconds */
-	seconds += (game_time_passed/TICKS_PER_SECOND)*MACINTOSH_TICKS_PER_SECOND; 
+	seconds += (game_time_passed/TICKS_PER_SECOND)*MACINTOSH_TICKS_PER_SECOND;
 	Secs2Date(seconds, &converted_date);
-	
+
 	game_time.tm_sec= converted_date.second;
 	game_time.tm_min= converted_date.minute;
 	game_time.tm_hour= converted_date.hour;
@@ -1578,15 +1578,15 @@ static void present_checkpoint_text(
 	Rect bounds;
 	struct overhead_map_data overhead_data;
 	struct terminal_groupings *current_group;
-	
+
 	current_group= get_indexed_grouping(terminal_text, current_group_index);
 
 	// draw the overhead map.
 	bounds= *frame;
 	calculate_bounds_for_object(frame, current_group->flags, &bounds, NULL);
 	overhead_data.scale =  1;
-	
-	if(find_checkpoint_location(current_group->permutation, &overhead_data.origin, 
+
+	if(find_checkpoint_location(current_group->permutation, &overhead_data.origin,
 		&overhead_data.origin_polygon_index))
 	{
 		overhead_data.top= bounds.top;
@@ -1600,14 +1600,14 @@ static void present_checkpoint_text(
 	} else {
 		char format_string[128];
 		short width;
-	
+
 		EraseRect(&bounds);
 		getcstr(format_string, strERRORS, checkpointNotFound);
 		sprintf(temporary, format_string, current_group->permutation);
 		width= TextWidth(temporary, 0, strlen(temporary));
 
 		/* Center the error message.. */
-		MoveTo(bounds.left+(RECTANGLE_WIDTH(&bounds)-width)/2, 
+		MoveTo(bounds.left+(RECTANGLE_WIDTH(&bounds)-width)/2,
 			bounds.top+RECTANGLE_HEIGHT(&bounds)/2);
 		DrawText(temporary, 0, strlen(temporary));
 	}
@@ -1620,8 +1620,8 @@ static void present_checkpoint_text(
 }
 
 static boolean find_checkpoint_location(
-	short checkpoint_index, 
-	world_point2d *location, 
+	short checkpoint_index,
+	world_point2d *location,
 	short *polygon_index)
 {
 	boolean success= FALSE;
@@ -1629,7 +1629,7 @@ static boolean find_checkpoint_location(
 	short ii;
 	struct map_object *saved_object;
 	short match_count;
-	
+
 	location->x= location->y= match_count= 0;
 	for (ii = 0, saved_object= saved_objects; ii < dynamic_world->initial_objects_count; ii++, saved_object++)
 	{
@@ -1641,10 +1641,10 @@ static boolean find_checkpoint_location(
 			match_count++;
 		}
 	}
-	
+
 	if(match_count)
 	{
-		/* Now average.. */	
+		/* Now average.. */
 		location->x /= match_count;
 		location->y /= match_count;
 		*polygon_index= world_point_to_polygon_index(location);
@@ -1654,8 +1654,8 @@ static boolean find_checkpoint_location(
 #else
 #pragma unused(checkpoint_index, location, polygon_index)
 #endif
-	
-	return success;		
+
+	return success;
 }
 
 static void handle_reading_terminal_keys(
@@ -1671,7 +1671,7 @@ static void handle_reading_terminal_keys(
 	struct player_data *player= get_player_data(player_index);
 	short line_delta= 0;
 	boolean change_state= FALSE;
-	
+
 	current_group= get_indexed_grouping(terminal_text, terminal->current_group);
 	switch(current_group->type)
 	{
@@ -1685,24 +1685,24 @@ static void handle_reading_terminal_keys(
 		case _pict_group:
 		case _camera_group:
 		case _static_group:
-			if(action_flags & _terminal_up_arrow) 
+			if(action_flags & _terminal_up_arrow)
 			{
 				line_delta= -1;
-			} 
-			
+			}
+
 			if(action_flags & _terminal_down_arrow)
 			{
 				line_delta= 1;
-			} 
-			
+			}
+
 			if(action_flags & _terminal_page_down)
 			{
 #ifndef PREPROCESSING_CODE
 				play_object_sound(player->object_index, _snd_computer_interface_page);
 #endif
 				line_delta= terminal_text->lines_per_page;
-			} 
-			
+			}
+
 			if(action_flags & _terminal_page_up)
 			{
 #ifndef PREPROCESSING_CODE
@@ -1721,7 +1721,7 @@ static void handle_reading_terminal_keys(
 				line_delta= terminal_text->lines_per_page;
 				change_state= TRUE;
 			}
-			
+
 			if(action_flags & _any_abort_key_mask)
 			{
 				/* Abort! */
@@ -1733,16 +1733,16 @@ static void handle_reading_terminal_keys(
 		case _movie_group:
 		case _track_group:
 			break;
-			
+
 		case _end_group:
 			next_terminal_state(player_index);
 			aborted= TRUE;
 			break;
-		
+
 		case _interlevel_teleport_group: // permutation is level to go to
 #ifndef PREPROCESSING_CODE
 			teleport_to_level(current_group->permutation);
-#else	
+#else
 			dprintf("Terminal Editor: Teleporting to level: %d", current_group->permutation);
 #endif
 			initialize_player_terminal_info(player_index);
@@ -1752,7 +1752,7 @@ static void handle_reading_terminal_keys(
 		case _intralevel_teleport_group: // permutation is polygon to go to.
 #ifndef PREPROCESSING_CODE
 			teleport_to_polygon(player_index, current_group->permutation);
-#else	
+#else
 			dprintf("Terminal Editor: Teleporting to polygon: %d", current_group->permutation);
 #endif
 			initialize_player_terminal_info(player_index);
@@ -1785,7 +1785,7 @@ static void handle_reading_terminal_keys(
 
 	/* If we are dirty.. */
 	terminal->current_line+= line_delta;
-	if(!aborted && initial_group != terminal->current_group ||  
+	if(!aborted && initial_group != terminal->current_group ||
 		initial_line != terminal->current_line)
 	{
 		if(terminal->current_line<0)
@@ -1795,7 +1795,7 @@ static void handle_reading_terminal_keys(
 				terminal->current_line= 0;
 			}
 		}
-		
+
 		if(terminal->current_line>=terminal->maximum_line)
 		{
 			if(terminal->current_group+1>=terminal_text->grouping_count)
@@ -1804,14 +1804,14 @@ static void handle_reading_terminal_keys(
 				{
 					/* Go ahead an let the terminal group deal with it.. */
 					next_terminal_group(player_index, terminal_text);
-				} 
-				else 
+				}
+				else
 				{
 					/* renumber the lines */
 					terminal->current_line-= line_delta;
 				}
-			} 
-			else 
+			}
+			else
 			{
 				next_terminal_group(player_index, terminal_text);
 			}
@@ -1820,7 +1820,7 @@ static void handle_reading_terminal_keys(
 		SET_TERMINAL_IS_DIRTY(terminal, TRUE);
 	}
 }
-	
+
 static void calculate_bounds_for_object(
 	Rect *frame,
 	short flags,
@@ -1828,10 +1828,10 @@ static void calculate_bounds_for_object(
 	Rect *source)
 {
 	*bounds= *frame;
-	
+
 	if(source && flags & _center_object)
 	{
-		if(RECTANGLE_WIDTH(source)>RECTANGLE_WIDTH(frame) 
+		if(RECTANGLE_WIDTH(source)>RECTANGLE_WIDTH(frame)
 			|| RECTANGLE_HEIGHT(source)>RECTANGLE_HEIGHT(frame))
 		{
 			/* Just return the normal frame.  Aspect ratio will take care of us.. */
@@ -1839,12 +1839,12 @@ static void calculate_bounds_for_object(
 			InsetRect(bounds, (RECTANGLE_WIDTH(frame)-RECTANGLE_WIDTH(source))/2,
 				(RECTANGLE_HEIGHT(frame)-RECTANGLE_WIDTH(source))/2);
 		}
-	} 
+	}
 	else if(flags & _draw_object_on_right)
 	{
 		bounds->left= bounds->right - RECTANGLE_WIDTH(bounds)/2 + BORDER_INSET/2;
-	} 
-	else 
+	}
+	else
 	{
 		bounds->right= bounds->left + RECTANGLE_WIDTH(bounds)/2 - BORDER_INSET/2;
 	}
@@ -1880,12 +1880,12 @@ static struct group_header_data group_data[]= {
 
 #define MAXIMUM_GROUPS_PER_TERMINAL 15
 
-static void calculate_maximum_lines_for_groups(struct terminal_groupings *groups, 
+static void calculate_maximum_lines_for_groups(struct terminal_groupings *groups,
 	short group_count, char *text_base);
 
 /* Note that this is NOT a marathon function, but an editor function... */
 struct static_preprocessed_terminal_data *preprocess_text(
-	char *text, 
+	char *text,
 	short length)
 {
 	short group_count, text_face_count;
@@ -1925,7 +1925,7 @@ struct static_preprocessed_terminal_data *preprocess_text(
 	for(index= 0; index<group_count; ++index)
 	{
 		struct terminal_groupings *destination;
-		
+
 		destination= get_indexed_grouping(data_structure, index);
 		memcpy(destination, &groups[index], sizeof(struct terminal_groupings));
 	}
@@ -1933,7 +1933,7 @@ struct static_preprocessed_terminal_data *preprocess_text(
 	for(index= 0; index<text_face_count; ++index)
 	{
 		struct text_face_data *destination;
-		
+
 		destination= get_indexed_font_changes(data_structure, index);
 		memcpy(destination, &text_faces[index], sizeof(struct text_face_data));
 
@@ -1950,7 +1950,7 @@ struct static_preprocessed_terminal_data *preprocess_text(
 
 /* Life would be better if these were encoded like this for me.. */
 static void pre_build_groups(
-	struct terminal_groupings *groups, 
+	struct terminal_groupings *groups,
 	short *group_count,
 	struct text_face_data *text_faces,
 	short *text_face_count,
@@ -1983,27 +1983,27 @@ static void pre_build_groups(
 				if(first_char==group_data[possible_group].name[0])
 				{
 					short start_index, permutation;
-					
-					start_index= matches_group(base_text, data_length, index+1, possible_group, 
+
+					start_index= matches_group(base_text, data_length, index+1, possible_group,
 						&permutation);
 					if(start_index != NONE)
 					{
 						short destination_index;
-						
-						if(in_group) 
+
+						if(in_group)
 						{
 							/* Minus one, because we have the # included.. */
 							assert(grp_count+1<MAXIMUM_GROUPS_PER_TERMINAL);
 							groups[grp_count++].length= current_length;
 							base_text[index]= 0; // null out the end of each group.
 							destination_index= index+1;
-						} else {	
+						} else {
 							destination_index= index;
 						}
-						
+
 						assert(data_length-start_index>=0);
 						/* move it down-> check this! */
-						memmove(&base_text[destination_index], 
+						memmove(&base_text[destination_index],
 							&base_text[start_index], data_length-start_index);
 						data_length -= (start_index-destination_index);
 						groups[grp_count].flags= 0;
@@ -2023,21 +2023,21 @@ static void pre_build_groups(
 				index++;
 				current_length++;
 			}
-//			vassert(possible_group==NUMBER_OF_GROUP_TYPES || base_text[index]!='#', 
+//			vassert(possible_group==NUMBER_OF_GROUP_TYPES || base_text[index]!='#',
 //				csprintf(temporary, "Base: %x index: %d", base_text, index));
-		} 
+		}
 		else if(base_text[index]=='$')
 		{
 			boolean changed_font= TRUE;
 			short move_down_by;
-			
+
 			move_down_by= 2;
 			switch(base_text[index+1])
 			{
 				case 'B': /* Bold on! */
 					current_face |= _bold_text;
 					break;
-					
+
 				case 'b': /* bold off */
 					current_face &= ~_bold_text;
 					break;
@@ -2045,15 +2045,15 @@ static void pre_build_groups(
 				case 'I': /* Italic on */
 					current_face |= _italic_text;
 					break;
-					
+
 				case 'i': /* Italic off */
 					current_face &= ~_italic_text;
 					break;
-					
+
 				case 'U': /* Underline on */
 					current_face |= _underline_text;
 					break;
-					
+
 				case 'u': /* Underline off */
 					current_face &= ~_underline_text;
 					break;
@@ -2072,19 +2072,19 @@ static void pre_build_groups(
 							color_index= base_text[index+2]-'0';
 							move_down_by= 3;
 							break;
-							
+
 						default:
 							break;
 					}
 					break;
-					
+
 				default:
 					/* Pass it on through, unchanged */
 					changed_font= FALSE;
 					move_down_by= 0;
 					break;
 			}
-			
+
 			/* If we changed the font, move the text down.. */
 			if(changed_font)
 			{
@@ -2092,18 +2092,18 @@ static void pre_build_groups(
 				text_faces[face_count].index= index;
 				text_faces[face_count].color= color_index;
 				text_faces[face_count++].face= current_face;
-				
+
 				/* And move the data down by 2 characters.. */
-				memmove(&base_text[index], 
+				memmove(&base_text[index],
 					&base_text[index+move_down_by], data_length-index-move_down_by);
 				data_length -= move_down_by;
-	
+
 				/* Note that index doesn't change.. */
 			} else {
 				index++;
 				current_length++;
 			}
-		} 
+		}
 		else if (base_text[index]==';' && last_was_return)
 		{
 			short destination_index, start_index;
@@ -2114,8 +2114,8 @@ static void pre_build_groups(
 
 			/* Eat the return on the comment line. */
 			if(start_index<data_length && base_text[start_index]=='\n') start_index++;
-			
-			/* Nix the comment */			
+
+			/* Nix the comment */
 			memmove(&base_text[destination_index], &base_text[start_index], data_length-start_index);
 			data_length -= (start_index-destination_index);
 		} else {
@@ -2141,31 +2141,31 @@ static void pre_build_groups(
 
 /* Return NONE if it doesn't matches.. */
 static short matches_group(
-	char *base_text, 
+	char *base_text,
 	short length,
-	short index, 
-	short possible_group, 
+	short index,
+	short possible_group,
 	short *permutation)
 {
 	short start_index= NONE;
 
-	if(memcmp(&base_text[index], group_data[possible_group].name, 
+	if(memcmp(&base_text[index], group_data[possible_group].name,
 		strlen(group_data[possible_group].name))==0)
 	{
 		/* This is a match.  find the end... */
 		start_index= index+strlen(group_data[possible_group].name);
-		
+
 		if(group_data[possible_group].has_permutation)
 		{
 			/* Find the permutation... */
 			*permutation= atoi(&base_text[start_index]);
 		}
-		
+
 		/* Eat the rest of it.. */
 		while(start_index<length && base_text[start_index] != '\n') start_index++;
 		if(base_text[start_index]=='\n') start_index++;
 	}
-	
+
 	return start_index;
 }
 
@@ -2184,7 +2184,7 @@ static void find_all_permutations_of_type(
 	for(terminal_index= 0; terminal_index<terminal_count; terminal_index++)
 	{
 		short group_index;
-	
+
 		data= (struct static_preprocessed_terminal_data *) (terminals+offset);
 		for(group_index= 0; group_index<data->grouping_count; ++group_index)
 		{
@@ -2194,7 +2194,7 @@ static void find_all_permutations_of_type(
 				permutations[count++]= group->permutation;
 			}
 		}
-		
+
 		offset+= data->total_length;
 	}
 
@@ -2202,22 +2202,22 @@ static void find_all_permutations_of_type(
 }
 
 void find_all_picts_references_by_terminals(
-	byte *compiled_text, 
+	byte *compiled_text,
 	short terminal_count,
-	short *picts, 
+	short *picts,
 	short *picture_count)
 {
-	find_all_permutations_of_type((byte *) compiled_text, terminal_count, _pict_group, picts, 
+	find_all_permutations_of_type((byte *) compiled_text, terminal_count, _pict_group, picts,
 		picture_count);
 }
 
 void find_all_checkpoints_references_by_terminals(
-	byte *compiled_text, 
+	byte *compiled_text,
 	short terminal_count,
-	short *checkpoints, 
+	short *checkpoints,
 	short *checkpoint_count)
 {
-	find_all_permutations_of_type((byte *) compiled_text, terminal_count, _checkpoint_group, 
+	find_all_permutations_of_type((byte *) compiled_text, terminal_count, _checkpoint_group,
 		checkpoints, checkpoint_count);
 }
 
@@ -2228,9 +2228,9 @@ boolean terminal_has_finished_text_type(
 	boolean has_type= FALSE;
 	struct static_preprocessed_terminal_data *terminal_text= get_indexed_terminal_data(terminal_id);
 	short index;
-	
+
 	index= find_group_type(terminal_text, finished_type);
-	if(index==terminal_text->grouping_count) 
+	if(index==terminal_text->grouping_count)
 	{
 		has_type= FALSE;
 	} else {
@@ -2246,7 +2246,7 @@ static void calculate_maximum_lines_for_groups(
 	char *text_base)
 {
 	short index;
-	
+
 	for(index= 0; index<group_count; ++index)
 	{
 		switch(groups[index].type)
@@ -2264,39 +2264,39 @@ static void calculate_maximum_lines_for_groups(
 			case _end_group:
 				groups[index].maximum_line_count= 1; // any click or keypress gets us out.
 				break;
-	
+
 			case _unfinished_group:
 			case _success_group:
 			case _failure_group:
 				groups[index].maximum_line_count= 0; // should never get to one of these groups.
 				break;
-	
+
 			case _checkpoint_group:
 			case _pict_group:
 				{
 					Rect text_bounds, bounds;
-		
+
 					/* The only thing we care about is the width. */
 					SetRect(&bounds, 0, 0, 640, 480);
 					InsetRect(&bounds, BORDER_INSET, BORDER_HEIGHT+BORDER_INSET);
 					calculate_bounds_for_text_box(&bounds, groups[index].flags, &text_bounds);
 					groups[index].maximum_line_count= count_total_lines(text_base,
-						RECTANGLE_WIDTH(&text_bounds), groups[index].start_index, 
+						RECTANGLE_WIDTH(&text_bounds), groups[index].start_index,
 						groups[index].start_index+groups[index].length);
 				}
 				break;
-				
+
 			case _information_group:
 				{
 					short width= 640; // ••• sync (Must guarantee 100 high res!)
-	
-					width-= 2*(72-BORDER_INSET); /* 1 inch in from each side */				
-					groups[index].maximum_line_count= count_total_lines(text_base, 
-						width, groups[index].start_index, 
+
+					width-= 2*(72-BORDER_INSET); /* 1 inch in from each side */
+					groups[index].maximum_line_count= count_total_lines(text_base,
+						width, groups[index].start_index,
 						groups[index].start_index+groups[index].length);
 				}
 				break;
-				
+
 			default:
 				halt();
 				break;
@@ -2313,10 +2313,10 @@ static struct terminal_groupings *get_indexed_grouping(
 	short index)
 {
 	byte *start;
-	
+
 	assert(index>=0 && index<data->grouping_count);
 	start= (byte *) data;
-	start += sizeof(struct static_preprocessed_terminal_data) + 
+	start += sizeof(struct static_preprocessed_terminal_data) +
 		index*sizeof(struct terminal_groupings);
 
 	return (struct terminal_groupings *) start;
@@ -2330,7 +2330,7 @@ static struct text_face_data *get_indexed_font_changes(
 
 	assert(index>=0 && index<data->font_changes_count);
 	start= (byte *) data;
-	start += sizeof(struct static_preprocessed_terminal_data) + 
+	start += sizeof(struct static_preprocessed_terminal_data) +
 		data->grouping_count*sizeof(struct terminal_groupings)+
 		index*sizeof(struct text_face_data);
 
@@ -2343,7 +2343,7 @@ static char *get_text_base(
 	byte *start;
 
 	start= (byte *) data;
-	start += sizeof(struct static_preprocessed_terminal_data) + 
+	start += sizeof(struct static_preprocessed_terminal_data) +
 		data->grouping_count*sizeof(struct terminal_groupings)+
 		data->font_changes_count*sizeof(struct text_face_data);
 

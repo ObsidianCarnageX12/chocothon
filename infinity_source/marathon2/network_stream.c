@@ -3,9 +3,9 @@
 	network_stream.c
 	Saturday, September 30, 1995 1:24:52 AM- rdm created.
 
-	The goal of this file is to have a high-level stream interface that can be 
-	integrated into future products.  
-	
+	The goal of this file is to have a high-level stream interface that can be
+	integrated into future products.
+
 	Definition:
 	Stream- A method of communications that guarantees accurate, inorder delivery.
 	This implies ADSP for network transports, and some form of xmodem/something for
@@ -42,7 +42,7 @@ OSErr NetSendStreamPacket(
 {
 	OSErr error;
 	word packet_length;
-	
+
 	packet_length= NetStreamPacketLength(packet_type);
 	error= stream_write(&packet_type, sizeof(short));
 	if(!error)
@@ -59,7 +59,7 @@ OSErr NetReceiveStreamPacket(
 {
 	OSErr error;
 	word length;
-	
+
 	length= sizeof(short);
 	error= stream_read(packet_type, &length);
 	if(!error)
@@ -79,16 +79,16 @@ OSErr NetOpenStreamToPlayer(
 	switch(transport_type)
 	{
 		case kNetworkTransportType:
-			error= NetADSPOpenConnection(dspConnection, 
+			error= NetADSPOpenConnection(dspConnection,
 				NetGetPlayerADSPAddress(player_index));
 			break;
-			
+
 		case kModemTransportType:
 #ifdef USE_MODEM
 			assert(player_index<2); /* Only two players with a modem connection! */
 			error= noErr;
 			break;
-#endif			
+#endif
 		default:
 			halt();
 			break;
@@ -107,12 +107,12 @@ OSErr NetCloseStreamConnection(
 		case kNetworkTransportType:
 			error= NetADSPCloseConnection(dspConnection, abort);
 			break;
-			
+
 		case kModemTransportType:
 #ifdef USE_MODEM
 			error= noErr;
 			break;
-#endif			
+#endif
 		default:
 			halt();
 			break;
@@ -131,12 +131,12 @@ OSErr NetStreamEstablishConnectionEnd(
 		case kNetworkTransportType:
 			error= NetADSPEstablishConnectionEnd(&dspConnection);
 			break;
-			
+
 		case kModemTransportType:
 #ifdef USE_MODEM
 			initialize_modem_endpoint();
 			break;
-#endif			
+#endif
 		default:
 			halt();
 			break;
@@ -155,13 +155,13 @@ OSErr NetStreamDisposeConnectionEnd(
 		case kNetworkTransportType:
 			error= NetADSPDisposeConnectionEnd(dspConnection);
 			break;
-			
+
 		case kModemTransportType:
 #ifdef USE_MODEM
 			teardown_modem_endpoint();
 			error= noErr;
 			break;
-#endif			
+#endif
 		default:
 			halt();
 			break;
@@ -194,15 +194,15 @@ boolean NetStreamCheckConnectionStatus(
 	switch(transport_type)
 	{
 		case kNetworkTransportType:
-			connection_made= NetADSPCheckConnectionStatus(dspConnection, 
+			connection_made= NetADSPCheckConnectionStatus(dspConnection,
 				&adsp_end_address);
 			break;
-			
+
 		case kModemTransportType:
 #ifdef USE_MODEM
 			connection_made= FALSE;
 			break;
-#endif			
+#endif
 		default:
 			halt();
 			break;
@@ -221,13 +221,13 @@ OSErr NetStreamWaitForConnection(
 		case kNetworkTransportType:
 			error= NetADSPWaitForConnection(dspConnection);
 			break;
-			
+
 		case kModemTransportType:
 #ifdef USE_MODEM
 			error= noErr;
 			break;
 
-#endif			
+#endif
 		default:
 			halt();
 			break;
@@ -240,9 +240,9 @@ void NetGetStreamAddress(
 	AddrBlock *address)
 {
 	assert(transport_type==kNetworkTransportType);
-	
-	*address= adsp_end_address;	
-	
+
+	*address= adsp_end_address;
+
 	return;
 }
 
@@ -258,7 +258,7 @@ boolean NetTransportAvailable(
 	short type)
 {
 	boolean available;
-	
+
 	switch(type)
 	{
 		case kNetworkTransportType:
@@ -293,12 +293,12 @@ static OSErr stream_write(
 		case kNetworkTransportType:
 			error= NetADSPWrite(dspConnection, data, &length);
 			break;
-			
+
 		case kModemTransportType:
 #ifdef USE_MODEM
 			error= write_modem_endpoint(data, length, kNoTimeout);
 			break;
-#endif			
+#endif
 		default:
 			halt();
 			break;
@@ -318,12 +318,12 @@ static OSErr stream_read(
 		case kNetworkTransportType:
 			error= NetADSPRead(dspConnection, data, length);
 			break;
-			
+
 		case kModemTransportType:
 #ifdef USE_MODEM
 			error= read_modem_endpoint(data, *length, kNoTimeout);
 			break;
-#endif			
+#endif
 		default:
 			halt();
 			break;

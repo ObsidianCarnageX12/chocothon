@@ -13,7 +13,7 @@ Sunday, September 4, 1994 6:32:05 PM
 Saturday, September 24, 1994 10:33:19 AM
 	fixed some things, twice...
 Friday, October 7, 1994 3:13:22 PM
-	New interface.  Draws panels from PICT resources for memory consumption.  Inventory is 
+	New interface.  Draws panels from PICT resources for memory consumption.  Inventory is
 	different panels, which are switched to whenever you grab an item.  There is no scrolling.
 Tuesday, June 6, 1995 3:37:50 PM
 	Marathon II modifications.
@@ -113,18 +113,18 @@ enum {
 	_double_shotgun,
 	_missile,
 	_missile_casing,
-	
+
 	_network_compass_shape_nw,
 	_network_compass_shape_ne,
 	_network_compass_shape_sw,
 	_network_compass_shape_se,
 
 	_skull,
-	
+
 	_smg,
 	_smg_bullet,
 	_smg_casing,
-	
+
 	/* These are NOT done. */
 	_mike_button_unpressed,
 	_mike_button_pressed
@@ -143,7 +143,7 @@ enum { /* Passed to update_ammo_display_in_panel */
 };
 
 /* ------------ structures */
-struct weapon_interface_ammo_data 
+struct weapon_interface_ammo_data
 {
 	short type;
 	short screen_left;
@@ -157,7 +157,7 @@ struct weapon_interface_ammo_data
 	boolean right_to_left; /* Which way do the bullets go as they are used? */
 };
 
-struct weapon_interface_data 
+struct weapon_interface_data
 {
 	short item_id;
 	short weapon_panel_shape;
@@ -201,14 +201,14 @@ struct weapon_interface_data weapon_interface_definitions[]=
 			{ _unused_interface_data, 0, 0, 0, 0, 0, 0, NONE, NONE, TRUE}
 		}
 	},
-	
+
 	/* Harry, the .44 */
 	{
 		_i_magnum,
 		BUILD_DESCRIPTOR(_collection_interface, _magnum_panel),
 		432, 444,
 		420, NONE,
-		366, 517, 
+		366, 517,
 		TRUE,
 		{
 			{ _uses_bullets, 517, 412, 8, 1, 5, 14, BUILD_DESCRIPTOR(_collection_interface, _magnum_bullet), BUILD_DESCRIPTOR(_collection_interface, _magnum_casing), FALSE},
@@ -222,35 +222,35 @@ struct weapon_interface_data weapon_interface_definitions[]=
 		BUILD_DESCRIPTOR(_collection_interface, _zeus_panel),
 		431, 443,
 		401, NONE,
-		366, 475, 
+		366, 475,
 		FALSE,
 		{
 			{ _uses_energy, 414, 366, 20, 0, 38, 57, _energy_weapon_full_color, _energy_weapon_empty_color, TRUE},
 			{ _unused_interface_data, 450, 410, 50, 0, 62, 7, _energy_weapon_full_color, _energy_weapon_empty_color, TRUE}
 		}
 	},
-	
-	/* Arnold, the assault rifle */	
+
+	/* Arnold, the assault rifle */
 	{
 		_i_assault_rifle,
 		BUILD_DESCRIPTOR(_collection_interface, _assault_panel),
 		430, 452,
 		439, NONE, //••
-		366, 460, 
+		366, 460,
 		FALSE,
 		{
 			{ _uses_bullets, 391, 368, 13, 4, 4, 10, BUILD_DESCRIPTOR(_collection_interface, _assault_rifle_bullet), BUILD_DESCRIPTOR(_collection_interface, _assault_rifle_casing), TRUE},
 			{ _uses_bullets, 390, 413, 7, 1, 8, 12, BUILD_DESCRIPTOR(_collection_interface, _assault_rifle_grenade), BUILD_DESCRIPTOR(_collection_interface, _assault_rifle_grenade_casing), TRUE},
 		}
 	},
-		
-	/* John R., the missile launcher */	
+
+	/* John R., the missile launcher */
 	{
 		_i_missile_launcher,
 		BUILD_DESCRIPTOR(_collection_interface, _missile_panel),
 		433, 445,
 		426, NONE,
-		365, 419, 
+		365, 419,
 		FALSE,
 		{
 			{ _uses_bullets, 385, 376, 2, 1, 16, 49, BUILD_DESCRIPTOR(_collection_interface, _missile), BUILD_DESCRIPTOR(_collection_interface, _missile_casing), TRUE},
@@ -258,13 +258,13 @@ struct weapon_interface_data weapon_interface_definitions[]=
 		}
 	},
 
-	/* ???, the flame thrower */	
+	/* ???, the flame thrower */
 	{
 		_i_flamethrower,
 		BUILD_DESCRIPTOR(_collection_interface, _flamethrower_panel),
 		433, 445,
 		398, NONE,
-		363, 475, 
+		363, 475,
 		FALSE,
 		{
 			/* This weapon has 7 seconds of flamethrower carnage.. */
@@ -273,13 +273,13 @@ struct weapon_interface_data weapon_interface_definitions[]=
 		}
 	},
 
-	/* Predator, the alien shotgun */	
+	/* Predator, the alien shotgun */
 	{
 		_i_alien_shotgun,
 		BUILD_DESCRIPTOR(_collection_interface, _alien_weapon_panel),
 		418, 445,
 		395, 575,
-		359, 400, 
+		359, 400,
 		FALSE,
 		{
 			{ _unused_interface_data, 425, 411, 50, 0, 96, 7, _energy_weapon_full_color, _energy_weapon_empty_color, TRUE},
@@ -293,7 +293,7 @@ struct weapon_interface_data weapon_interface_definitions[]=
 		BUILD_DESCRIPTOR(_collection_interface, _single_shotgun),
 		432, 444,
 		420, NONE,
-		373, 451, 
+		373, 451,
 		TRUE,
 		{
 			{ _uses_bullets, 483, 411, 2, 1, 12, 16, BUILD_DESCRIPTOR(_collection_interface, _shotgun_bullet), BUILD_DESCRIPTOR(_collection_interface, _shotgun_casing), TRUE},
@@ -307,21 +307,21 @@ struct weapon_interface_data weapon_interface_definitions[]=
 		BUILD_DESCRIPTOR(_collection_interface, _skull),
 		432, 444,
 		402, NONE,
-		366, 465, 
+		366, 465,
 		FALSE,
 		{
 			{ _unused_interface_data, 451, 411, 2, 1, 12, 16, BUILD_DESCRIPTOR(_collection_interface, _shotgun_bullet), BUILD_DESCRIPTOR(_collection_interface, _shotgun_casing), TRUE},
 			{ _unused_interface_data, 483, 411, 2, 1, 12, 16, BUILD_DESCRIPTOR(_collection_interface, _shotgun_bullet), BUILD_DESCRIPTOR(_collection_interface, _shotgun_casing), TRUE}
 		}
 	},
-	
-	/* Arnold, the smg */	
+
+	/* Arnold, the smg */
 	{
 		_i_smg,
 		BUILD_DESCRIPTOR(_collection_interface, _smg),
 		430, 452,
 		439, NONE, //••
-		366, 460, 
+		366, 460,
 		FALSE,
 		{
 			{ _uses_bullets, 405, 382, 8, 4, 5, 10, BUILD_DESCRIPTOR(_collection_interface, _smg_bullet), BUILD_DESCRIPTOR(_collection_interface, _smg_casing), TRUE},
@@ -346,7 +346,7 @@ static short max_displayable_inventory_lines(void);
 static void draw_ammo_display_in_panel(short trigger_id);
 static void update_suit_energy(short time_elapsed);
 static void update_suit_oxygen(short time_elapsed);
-static void draw_inventory_item(char *text, short count, short offset, 
+static void draw_inventory_item(char *text, short count, short offset,
 	boolean erase_first, boolean valid_in_this_environment);
 static void draw_player_name(void);
 static void draw_message_area(short time_elapsed);
@@ -379,9 +379,9 @@ void draw_interface(
 		/* draw the frame */
 		draw_panels();
 	}
-		
+
 	validate_world_window();
-	
+
 	return;
 }
 
@@ -403,9 +403,9 @@ void update_interface(
 void mark_interface_collections(
 	boolean loading)
 {
-	loading ? mark_collection_for_loading(_collection_interface) : 
+	loading ? mark_collection_for_loading(_collection_interface) :
 		mark_collection_for_unloading(_collection_interface);
-	
+
 	return;
 }
 
@@ -441,12 +441,12 @@ void mark_player_inventory_screen_as_dirty(
 
 	set_current_inventory_screen(player_index, screen);
 	SET_INVENTORY_DIRTY_STATE(player, TRUE);
-	
+
 	return;
 }
 
 void mark_player_inventory_as_dirty(
-	short player_index, 
+	short player_index,
 	short dirty_item)
 {
 	struct player_data *player= get_player_data(player_index);
@@ -457,7 +457,7 @@ void mark_player_inventory_as_dirty(
 		short item_kind= get_item_kind(dirty_item);
 		short current_screen= GET_CURRENT_INVENTORY_SCREEN(player);
 
-		/* Don't change if it is a powerup, or you are in the network statistics screen */		
+		/* Don't change if it is a powerup, or you are in the network statistics screen */
 		if(item_kind != _powerup && item_kind != current_screen) // && current_screen!=_network_statistics)
 		{
 			/* Goto that type of item.. */
@@ -473,11 +473,11 @@ void mark_player_network_stats_as_dirty(
 	if (GET_GAME_OPTIONS()&_live_network_stats)
 	{
 		struct player_data *player= get_player_data(player_index);
-	
+
 		set_current_inventory_screen(player_index, _network_statistics);
 		SET_INVENTORY_DIRTY_STATE(player, TRUE);
 	}
-	
+
 	return;
 }
 
@@ -493,7 +493,7 @@ void set_interface_microphone_recording_state(
 	play_local_sound(sounds[state]);
 	if(!game_window_is_full_screen())
 	{
-		_draw_screen_shape(BUILD_DESCRIPTOR(_collection_interface, shapes[state]), 
+		_draw_screen_shape(BUILD_DESCRIPTOR(_collection_interface, shapes[state]),
 			rectangle, NULL);
 	}
 #endif
@@ -505,7 +505,7 @@ void scroll_inventory(
 	short mod_value, index, current_inventory_screen, section_count, test_inventory_screen;
 	short section_items[NUMBER_OF_ITEMS];
 	short section_counts[NUMBER_OF_ITEMS];
-	
+
 	current_inventory_screen= GET_CURRENT_INVENTORY_SCREEN(current_player);
 
 	if(dynamic_world->player_count>1)
@@ -520,8 +520,8 @@ void scroll_inventory(
 		for(index= 1; index<mod_value; ++index)
 		{
 			test_inventory_screen= (current_inventory_screen+index)%mod_value;
-			
-			assert(test_inventory_screen>=0 && test_inventory_screen<NUMBER_OF_ITEM_TYPES+1);			
+
+			assert(test_inventory_screen>=0 && test_inventory_screen<NUMBER_OF_ITEM_TYPES+1);
 			if(test_inventory_screen != NUMBER_OF_ITEM_TYPES)
 			{
 				calculate_player_item_array(current_player_index, test_inventory_screen,
@@ -529,10 +529,10 @@ void scroll_inventory(
 				if(section_count) break; /* Go tho this one! */
 			} else {
 				/* Network statistics! */
-				break; 
+				break;
 			}
 		}
-		
+
 		current_inventory_screen= test_inventory_screen;
 	} else {
 		/* Going down.. */
@@ -540,7 +540,7 @@ void scroll_inventory(
 		{
 			test_inventory_screen= (current_inventory_screen+index)%mod_value;
 
-			assert(test_inventory_screen>=0 && test_inventory_screen<NUMBER_OF_ITEM_TYPES+1);			
+			assert(test_inventory_screen>=0 && test_inventory_screen<NUMBER_OF_ITEM_TYPES+1);
 			if(test_inventory_screen != NUMBER_OF_ITEM_TYPES)
 			{
 				calculate_player_item_array(current_player_index, test_inventory_screen,
@@ -548,15 +548,15 @@ void scroll_inventory(
 				if(section_count) break; /* Go tho this one! */
 			} else {
 				/* Network statistics! */
-				break; 
+				break;
 			}
-		}		
+		}
 
 		current_inventory_screen= test_inventory_screen;
 	}
 	set_current_inventory_screen(current_player_index, current_inventory_screen);
 
-	SET_INVENTORY_DIRTY_STATE(current_player, TRUE);	
+	SET_INVENTORY_DIRTY_STATE(current_player, TRUE);
 }
 
 /* This function is only called from macintosh_game_window.c */
@@ -578,7 +578,7 @@ void update_everything(
 	{
 		draw_message_area(time_elapsed);
 	}
-	
+
 	return;
 }
 
@@ -596,10 +596,10 @@ static void update_suit_energy(
 
 		suit_energy = current_player->suit_energy%PLAYER_MAXIMUM_SUIT_ENERGY;
 
-		if(	!suit_energy && 
+		if(	!suit_energy &&
 			current_player->suit_energy==PLAYER_MAXIMUM_SUIT_ENERGY ||
-			current_player->suit_energy==2*PLAYER_MAXIMUM_SUIT_ENERGY || 
-			current_player->suit_energy==3*PLAYER_MAXIMUM_SUIT_ENERGY) 
+			current_player->suit_energy==2*PLAYER_MAXIMUM_SUIT_ENERGY ||
+			current_player->suit_energy==3*PLAYER_MAXIMUM_SUIT_ENERGY)
 		{
 			suit_energy= PLAYER_MAXIMUM_SUIT_ENERGY;
 		}
@@ -612,29 +612,29 @@ static void update_suit_energy(
 			background_shape_id= _double_energy_bar;
 			bar_shape_id= _triple_energy_bar;
 			bar_top_shape_id= _triple_energy_bar_right;
-		} 
+		}
 		else if(current_player->suit_energy>PLAYER_MAXIMUM_SUIT_ENERGY)
 		{
 			background_shape_id= _energy_bar;
 			bar_shape_id= _double_energy_bar;
 			bar_top_shape_id= _double_energy_bar_right;
-		} 
-		else 
+		}
+		else
 		{
 			background_shape_id= _empty_energy_bar;
 			bar_shape_id= _energy_bar;
 			bar_top_shape_id= _energy_bar_right;
 			if(current_player->suit_energy<0) actual_width= 0;
-		} 
+		}
 
-		draw_bar(shield_rect, actual_width, 
-			BUILD_DESCRIPTOR(_collection_interface, bar_top_shape_id), 
+		draw_bar(shield_rect, actual_width,
+			BUILD_DESCRIPTOR(_collection_interface, bar_top_shape_id),
 			BUILD_DESCRIPTOR(_collection_interface, bar_shape_id),
 			BUILD_DESCRIPTOR(_collection_interface, background_shape_id));
 
 		interface_state.shield_is_dirty= FALSE;
 	}
-	
+
 	return;
 }
 
@@ -649,16 +649,16 @@ static void update_suit_oxygen(
 		screen_rectangle *oxygen_rect= get_interface_rectangle(_oxygen_rect);
 		short width, actual_width;
 		short suit_oxygen;
-		
+
 		suit_oxygen= MIN(current_player->suit_oxygen, PLAYER_MAXIMUM_SUIT_OXYGEN);
 		width= oxygen_rect->right-oxygen_rect->left;
 		actual_width= (suit_oxygen*width)/PLAYER_MAXIMUM_SUIT_OXYGEN;
 
-		draw_bar(oxygen_rect, actual_width, 
-			BUILD_DESCRIPTOR(_collection_interface, _oxygen_bar_right), 
+		draw_bar(oxygen_rect, actual_width,
+			BUILD_DESCRIPTOR(_collection_interface, _oxygen_bar_right),
 			BUILD_DESCRIPTOR(_collection_interface, _oxygen_bar),
 			BUILD_DESCRIPTOR(_collection_interface, _empty_oxygen_bar));
-	
+
 		delay_time= DELAY_TICKS_BETWEEN_OXYGEN_REDRAW;
 		interface_state.oxygen_is_dirty= FALSE;
 	}
@@ -672,8 +672,8 @@ static void draw_player_name(
 	struct player_data *player= get_player_data(current_player_index);
 	screen_rectangle *player_name_rect= get_interface_rectangle(_player_name_rect);
 
-	_draw_screen_text(player->name, player_name_rect, 
-		_center_vertical | _center_horizontal, _player_name_font, 
+	_draw_screen_text(player->name, player_name_rect,
+		_center_vertical | _center_horizontal, _player_name_font,
 		player->color+PLAYER_COLOR_BASE_INDEX);
 }
 
@@ -688,16 +688,16 @@ static void update_motion_sensor(
 		}
 
 		motion_sensor_scan(time_elapsed);
-		
+
 		if (motion_sensor_has_changed())
 		{
 			screen_rectangle *destination= get_interface_rectangle(_motion_sensor_rect);
 
-			_draw_screen_shape_at_x_y(BUILD_DESCRIPTOR(_collection_interface, 
+			_draw_screen_shape_at_x_y(BUILD_DESCRIPTOR(_collection_interface,
 				_motion_sensor_mount), destination->left, destination->top);
 		}
 	}
-		
+
 	return;
 }
 
@@ -715,13 +715,13 @@ static void update_weapon_panel(
 
 		/* Now we have to erase, because the panel won't do it for us.. */
 		_fill_rect(destination, _inventory_background_color);
-	
+
 		if(desired_weapon != NONE)
 		{
 			assert(desired_weapon>=0 && desired_weapon<MAXIMUM_WEAPON_INTERFACE_DEFINITIONS);
 
 			definition= weapon_interface_definitions+desired_weapon;
-	
+
 			/* Check if it is a multi weapon - actually special cased for the magnum... */
 			if(definition->multi_weapon)
 			{
@@ -729,37 +729,37 @@ static void update_weapon_panel(
 				if(definition->item_id==_i_magnum)
 				{
 					/* Either way, draw the single */
-					_draw_screen_shape_at_x_y(definition->weapon_panel_shape, 
-						definition->standard_weapon_panel_left, 
+					_draw_screen_shape_at_x_y(definition->weapon_panel_shape,
+						definition->standard_weapon_panel_left,
 						definition->standard_weapon_panel_top);
 
 					if(current_player->items[definition->item_id]>1)
 					{
 						_draw_screen_shape_at_x_y(
-							BUILD_DESCRIPTOR(_collection_interface, _left_magnum), 
-							definition->standard_weapon_panel_left-MAGNUM_DELTA_X, 
+							BUILD_DESCRIPTOR(_collection_interface, _left_magnum),
+							definition->standard_weapon_panel_left-MAGNUM_DELTA_X,
 							definition->standard_weapon_panel_top);
-					} 
-					else 
+					}
+					else
 					{
 						/* Draw the empty one.. */
 						_draw_screen_shape_at_x_y(
-							BUILD_DESCRIPTOR(_collection_interface, _left_magnum_unusable), 
-							definition->standard_weapon_panel_left-MAGNUM_DELTA_X, 
+							BUILD_DESCRIPTOR(_collection_interface, _left_magnum_unusable),
+							definition->standard_weapon_panel_left-MAGNUM_DELTA_X,
 							definition->standard_weapon_panel_top);
 					}
-				} 
+				}
 				else if(definition->item_id==_i_shotgun)
 				{
 					if(current_player->items[definition->item_id]>1)
 					{
 						_draw_screen_shape_at_x_y(
-							BUILD_DESCRIPTOR(_collection_interface, _double_shotgun), 
-							definition->standard_weapon_panel_left, 
+							BUILD_DESCRIPTOR(_collection_interface, _double_shotgun),
+							definition->standard_weapon_panel_left,
 							definition->standard_weapon_panel_top-12);
 					} else {
-						_draw_screen_shape_at_x_y(definition->weapon_panel_shape, 
-							definition->standard_weapon_panel_left, 
+						_draw_screen_shape_at_x_y(definition->weapon_panel_shape,
+							definition->standard_weapon_panel_left,
 							definition->standard_weapon_panel_top);
 					}
 				}
@@ -767,12 +767,12 @@ static void update_weapon_panel(
 				/* Slam it to the screen! */
 				if(definition->weapon_panel_shape != NONE)
 				{
-					_draw_screen_shape_at_x_y(definition->weapon_panel_shape, 
-						definition->standard_weapon_panel_left, 
+					_draw_screen_shape_at_x_y(definition->weapon_panel_shape,
+						definition->standard_weapon_panel_left,
 						definition->standard_weapon_panel_top);
 				}
 			}
-		
+
 			/* Get the weapon name.. */
 			if(desired_weapon != _weapon_ball)
 			{
@@ -780,7 +780,7 @@ static void update_weapon_panel(
 				getcstr(weapon_name, strWEAPON_NAME_LIST, desired_weapon);
 			} else {
 				short item_index;
-				
+
 				/* Which ball do they actually have? */
 				for(item_index= BALL_ITEM_BASE; item_index<BALL_ITEM_BASE+MAXIMUM_NUMBER_OF_PLAYERS; ++item_index)
 				{
@@ -798,18 +798,18 @@ static void update_weapon_panel(
 			{
 				source.left= definition->weapon_name_start_x;
 			}
-			
+
 			if(definition->weapon_name_end_x != NONE)
 			{
 				source.right= definition->weapon_name_end_x;
 			}
-			
+
 			_draw_screen_text(weapon_name, &source, _center_horizontal|_center_vertical|_wrap_text,
 				_weapon_name_font, _inventory_text_color);
-				
+
 			/* And make sure that the ammo knows it needs to update */
 			interface_state.ammo_is_dirty= TRUE;
-		} 
+		}
 		interface_state.weapon_is_dirty= FALSE;
 	}
 }
@@ -841,10 +841,10 @@ static void update_inventory_panel(
 		screen_rectangle text_rectangle;
 		short total_inventory_line_count= count_inventory_lines(current_player_index);
 		short max_lines= max_displayable_inventory_lines();
-	
+
 		/* Recalculate and redraw.. */
 		item_type= GET_CURRENT_INVENTORY_SCREEN(current_player);
-					
+
 		/* Reset the row.. */
 		current_row= 0;
 		if(item_type!=_network_statistics)
@@ -863,19 +863,19 @@ static void update_inventory_panel(
 		{
 			long seconds= dynamic_world->game_information.game_time_remaining/TICKS_PER_SECOND;
 			screen_rectangle destination;
-			
+
 			sprintf(temporary, "% 2d:%02d", seconds/60, seconds%60);
 
 			calculate_inventory_rectangle_from_offset(&destination, current_row-1);
 			destination.top -= 2;		//<6/17/96 AMR> Sick hack
 			destination.bottom -= 2;
 
-			/* Now draw the text. */	
+			/* Now draw the text. */
 			destination.left+= TEXT_INSET;
 			_draw_screen_text(temporary, &destination, _right_justified, _interface_font,
 				_inventory_text_color);
 		}
-				
+
 		/* Erase the panel.. */
 		text_rectangle= *destination;
 		text_rectangle.top+= _get_font_line_height(_interface_font);
@@ -884,16 +884,16 @@ static void update_inventory_panel(
 		if(item_type==_network_statistics)
 		{
 			struct player_ranking_data rankings[MAXIMUM_NUMBER_OF_PLAYERS];
-	
+
 			calculate_player_rankings(rankings);
-		
+
 			/* Calculate the network statistics. */
 			for(loop= 0; loop<dynamic_world->player_count; ++loop)
 			{
 				screen_rectangle dest_rect;
 				struct player_data *player= get_player_data(rankings[loop].player_index);
 				short width;
-				
+
 				calculate_inventory_rectangle_from_offset(&dest_rect, current_row++);
 				calculate_ranking_text(temporary, rankings[loop].ranking);
 
@@ -901,13 +901,13 @@ static void update_inventory_panel(
 				width= _text_width(temporary, _interface_font);
 				dest_rect.right-= width;
 				dest_rect.left+= TEXT_INSET;
-				_draw_screen_text(player->name, &dest_rect, _center_vertical, 
+				_draw_screen_text(player->name, &dest_rect, _center_vertical,
 					_interface_font, PLAYER_COLOR_BASE_INDEX+player->color);
 
 				/* Now draw the ranking_text */
 				dest_rect.right+= width;
 				dest_rect.left= dest_rect.right-width;
-				_draw_screen_text(temporary, &dest_rect, _center_vertical, 
+				_draw_screen_text(temporary, &dest_rect, _center_vertical,
 					_interface_font, PLAYER_COLOR_BASE_INDEX+player->color);
 			}
 		} else {
@@ -915,14 +915,14 @@ static void update_inventory_panel(
 			for(loop= 0; loop<section_count && current_row<max_lines; ++loop)
 			{
 				boolean valid_in_this_environment;
-			
+
 				/* Draw the item */
 				get_item_name(temporary, section_items[loop], (section_counts[loop]!=1));
 				valid_in_this_environment= item_valid_in_current_environment(section_items[loop]);
 				draw_inventory_item(temporary, section_counts[loop], current_row++, FALSE, valid_in_this_environment);
 			}
 		}
-		
+
 		SET_INVENTORY_DIRTY_STATE(current_player, FALSE);
 	}
 
@@ -932,7 +932,7 @@ static void update_inventory_panel(
 /* Draw the text in the rectangle, starting at the given offset, on the */
 /* far left.  Headers also have their backgrounds erased first */
 static void draw_inventory_header(
-	char *text, 
+	char *text,
 	short offset)
 {
 	screen_rectangle destination;
@@ -942,21 +942,21 @@ static void draw_inventory_header(
 	/* Erase.. */
 	_fill_rect(&destination, _inventory_header_background_color);
 
-	/* Now draw the text. */	
+	/* Now draw the text. */
 	destination.left+= TEXT_INSET;
 	_draw_screen_text(text, &destination, _center_vertical, _interface_font,
 		_inventory_text_color);
-		
+
 	return;
 }
 
 static void calculate_inventory_rectangle_from_offset(
-	screen_rectangle *r, 
+	screen_rectangle *r,
 	short offset)
 {
 	screen_rectangle *inventory_rect= get_interface_rectangle(_inventory_rect);
 	short line_height= _get_font_line_height(_interface_font);
-	
+
 	*r= *inventory_rect;
 	r->top += offset*line_height;
 	r->bottom= r->top + line_height;
@@ -966,7 +966,7 @@ static short max_displayable_inventory_lines(
 	void)
 {
 	screen_rectangle *destination= get_interface_rectangle(_inventory_rect);
-	
+
 	return (destination->bottom-destination->top)/_get_font_line_height(_interface_font);
 }
 
@@ -991,7 +991,7 @@ static void	draw_bar(
 	/* Draw the top bit.. */
 	if(width>2*TOP_OF_BAR_WIDTH)
 	{
-		_draw_screen_shape_at_x_y(top_piece, rectangle->left+width-TOP_OF_BAR_WIDTH, 
+		_draw_screen_shape_at_x_y(top_piece, rectangle->left+width-TOP_OF_BAR_WIDTH,
 			rectangle->top);
 	} else {
 		destination= *rectangle;
@@ -1000,7 +1000,7 @@ static void	draw_bar(
 		destination.left= rectangle->left+width/2+width%2;
 		destination.right= destination.left+width/2;
 
-		source= destination;			
+		source= destination;
 		_offset_screen_rect(&source, -source.left+TOP_OF_BAR_WIDTH-width/2, -source.top);
 		_draw_screen_shape(top_piece, &destination, &source);
 	}
@@ -1008,11 +1008,11 @@ static void	draw_bar(
 	/* Copy the bar.. */
 	bar_section= *rectangle;
 	bar_section.right= bar_section.left+width-TOP_OF_BAR_WIDTH;
-	
+
 	if(bar_section.left<bar_section.right)
 	{
 		screen_rectangle bar_section_source= bar_section;
-		
+
 		_offset_screen_rect(&bar_section_source, -rectangle->left, -rectangle->top);
 		_draw_screen_shape(full_bar, &bar_section, &bar_section_source);
 	}
@@ -1039,7 +1039,7 @@ static void draw_ammo_display_in_panel(
 		} else {
 			ammunition_count= get_player_weapon_ammo_count(current_player_index, desired_weapon, _secondary_weapon);
 		}
-		
+
 		/* IF we have ammo for this trigger.. */
 		if(current_ammo_data->type!=_unused_interface_data && ammunition_count!=NONE)
 		{
@@ -1052,19 +1052,19 @@ static void draw_ammo_display_in_panel(
 				/* Pin it.. */
 				ammunition_count= PIN(ammunition_count, 0, current_ammo_data->ammo_across);
 				fill_height= (ammunition_count*(current_ammo_data->delta_y-2))/current_ammo_data->ammo_across;
-				
-				/* Setup the energy left bar... */				
+
+				/* Setup the energy left bar... */
 				bounds.left= current_ammo_data->screen_left;
 				bounds.right= current_ammo_data->screen_left+current_ammo_data->delta_x;
 				bounds.bottom= current_ammo_data->screen_top+current_ammo_data->delta_y;
 				bounds.top= current_ammo_data->screen_top;
-				
+
 				/* Frame the rectangle */
 				_frame_rect(&bounds, current_ammo_data->bullet);
-				
+
 				/* Inset the rectangle.. */
 				bounds.left+=1; bounds.right-=1; bounds.bottom-= 1; bounds.top+=1;
-				
+
 				/* Fill with the full stuff.. */
 				bounds.top= bounds.bottom-fill_height;
 				_fill_rect(&bounds, current_ammo_data->bullet);
@@ -1072,27 +1072,27 @@ static void draw_ammo_display_in_panel(
 				/* Now erase the rest of the rectangle */
 				bounds.bottom= bounds.top;
 				bounds.top= current_ammo_data->screen_top+1;
-				
+
 				/* Fill it. */
 				_fill_rect(&bounds, current_ammo_data->empty_bullet);
-				
+
 				/* We be done.. */
 			} else {
 				/* Uses ammunition, a little trickier.. */
 				short row, x, y;
 				screen_rectangle destination, source;
 				short max, partial_row_count;
-				
+
 				x= current_ammo_data->screen_left;
 				y= current_ammo_data->screen_top;
-				
+
 				destination.left= x;
 				destination.top= y;
-				
+
 				/* Pin it.. */
 				max= current_ammo_data->ammo_down*current_ammo_data->ammo_across;
 				ammunition_count= PIN(ammunition_count, 0, max);
-									
+
 				/* Draw all of the full rows.. */
 				for(row=0; row<(ammunition_count/current_ammo_data->ammo_across); ++row)
 				{
@@ -1100,7 +1100,7 @@ static void draw_ammo_display_in_panel(
 						x, y);
 					y+= current_ammo_data->delta_y;
 				}
-				
+
 				/* Draw the partially used row.. */
 				partial_row_count= ammunition_count%current_ammo_data->ammo_across;
 				if(partial_row_count)
@@ -1115,9 +1115,9 @@ static void draw_ammo_display_in_panel(
 						source= destination;
 						_offset_screen_rect(&source, -source.left, -source.top);
 						_draw_screen_shape(current_ammo_data->bullet, &destination, &source);
-						
+
 						/* Draw the used part of the row.. */
-						destination.left= destination.right, 
+						destination.left= destination.right,
 						destination.right= destination.left+(current_ammo_data->ammo_across-partial_row_count)*current_ammo_data->delta_x;
 						source= destination;
 						_offset_screen_rect(&source, -source.left, -source.top);
@@ -1130,7 +1130,7 @@ static void draw_ammo_display_in_panel(
 						source= destination;
 						_offset_screen_rect(&source, -source.left, -source.top);
 						_draw_screen_shape(current_ammo_data->empty_bullet, &destination, &source);
-						
+
 						/* Draw the unused part of the row */
 						destination.left= destination.right;
 						destination.right= destination.left+(partial_row_count*current_ammo_data->delta_x);
@@ -1140,7 +1140,7 @@ static void draw_ammo_display_in_panel(
 					}
 					y+= current_ammo_data->delta_y;
 				}
-				
+
 				/* Draw the remaining rows. */
 				x= current_ammo_data->screen_left;
 				for(row=0; row<(max-ammunition_count)/current_ammo_data->ammo_across; ++row)
@@ -1155,9 +1155,9 @@ static void draw_ammo_display_in_panel(
 }
 
 static void draw_inventory_item(
-	char *text, 
-	short count, 
-	short offset, 
+	char *text,
+	short count,
+	short offset,
 	boolean erase_first,
 	boolean valid_in_this_environment)
 {
@@ -1203,7 +1203,7 @@ static void draw_message_area(
 	if(time_elapsed==NONE)
 	{
 		_draw_screen_shape_at_x_y(
-			BUILD_DESCRIPTOR(_collection_interface, _network_panel), 
+			BUILD_DESCRIPTOR(_collection_interface, _network_panel),
 			MESSAGE_AREA_X_OFFSET, MESSAGE_AREA_Y_OFFSET);
 		draw_player_name();
 	}
@@ -1214,12 +1214,12 @@ static void set_current_inventory_screen(
 	short screen)
 {
 	struct player_data *player= get_player_data(player_index);
-	
+
 	assert(screen>=0 && screen<7);
-	
+
 	player->interface_flags&= ~INVENTORY_MASK_BITS;
 	player->interface_flags|= screen;
 	player->interface_decay= 5*TICKS_PER_SECOND;
-	
+
 	return;
 }

@@ -8,7 +8,7 @@ Wednesday, December 19, 1990 9:15:38 AM
 	Notice that it is pretty much a bad thing if we don't find the
 	resource, because we don't create it (and somebody will be trying
 	to use a NULL handle!).  This is now fixed.
-	
+
 ERRORS.C (minotaur)
 Friday, April 6, 1990 9:06:12 PM
 
@@ -151,10 +151,10 @@ RGBColor system_colors[NUMBER_OF_SYSTEM_COLORS]=
 	{0x0000, 0x0000, 0x0000},
 	{0x0000, 0x0000, 0x0000},
 	{0xCCCC, 0xCCCC, 0xFFFF},
-	
+
 	/* highlight color (will be changed) */
 	{0xB000, 0xB000, 0xFFFF},
-	
+
 	/* grays */
 	{0x2666, 0x2666, 0x2666}, /* 15% */
 	{0x5555, 0x5555, 0x5555}, /* 33% */
@@ -164,7 +164,7 @@ RGBColor system_colors[NUMBER_OF_SYSTEM_COLORS]=
 	{0xBAE0, 0xBAE0, 0xBAE0}, /* 73% */
 	{0xDDDD, 0xDDDD, 0xDDDD}, /* 87% */
 	{0xEEEE, 0xEEEE, 0xEEEE}, /* 93% */
-	
+
 	/* active apple colors */
 	{0, 48059, 0},
 	{65535, 65535, 0},
@@ -174,7 +174,7 @@ RGBColor system_colors[NUMBER_OF_SYSTEM_COLORS]=
 	{0, 0, 56797},  /* was 0,0,56797, changed to 0,30146,52428 to fix apple, now back.  the old
 						color was needed to make the apple stay in color, and is added as
 						‘stupidColor1’ below */
-	
+
 	/* inactive apple colors */
 	{0x6666, 0xCCCC, 0x6666},
 	{0xFFFF, 0xFFFF, 0x6666},
@@ -182,7 +182,7 @@ RGBColor system_colors[NUMBER_OF_SYSTEM_COLORS]=
 	{0xFFFF, 0x6666, 0x6666},
 	{0xFFFF, 0x6666, 0xCCCC},
 	{0x6666, 0x6666, 0xFFFF}, /* changed green from 0xFFFF */
-	
+
 	{0,30146,52428}
 };
 
@@ -225,10 +225,10 @@ void initialize_system_colors(
 				system_colors[windowHighlight]= (*default_wctb)->ctTable[wHighlightColor].rgb;
 			}
 		}
-		
+
 		/* we can’t dispose of this, because other people are using it */
 	}
-	
+
 	/* interpolate to get the two shades between the highlight and lowlight */
 	SetRGBColor(system_colors+window33Percent,
 		(2*(long)system_colors[windowLowlight].red+(long)system_colors[windowHighlight].red)/3,
@@ -249,7 +249,7 @@ void hold_for_visible_delay(
 	void)
 {
 	long start= TickCount();
-	
+
 	while(TickCount()<start+VISIBLE_DELAY);
 }
 
@@ -259,13 +259,13 @@ void get_window_frame(
 {
 	GrafPtr old_port;
 	Point corner;
-	
+
 	GetPort(&old_port);
 	SetPort(window);
 	SetPt(&corner, 0, 0);
 	LocalToGlobal(&corner);
 	SetPort(old_port);
-	
+
 	*frame= window->portRect;
 	OffsetRect(frame, corner.h-frame->left, corner.v-frame->top);
 
@@ -279,10 +279,10 @@ void modify_menu_item(
 	short check)
 {
 	MenuHandle menu_handle;
-	
+
 	menu_handle= GetMHandle(menu);
 	assert(menu_handle);
-	
+
 	if (status)
 	{
 		EnableItem(menu_handle, item);
@@ -291,12 +291,12 @@ void modify_menu_item(
 	{
 		DisableItem(menu_handle, item);
 	}
-	
+
 	if (check!=NONE)
 	{
 		CheckItem(menu_handle, item, check);
 	}
-	
+
 	return;
 }
 
@@ -308,7 +308,7 @@ void _assertion_failure(
 {
 	Str255 buffer;
 
-#ifdef DEBUG	
+#ifdef DEBUG
 #ifdef env68k
 	if (MacJmp)
 	{
@@ -324,7 +324,7 @@ void _assertion_failure(
 		ParamText(buffer, "\p-1", "", "");
 		Alert(fatal ? alrtFATAL_ERROR : alrtNONFATAL_ERROR, (ModalFilterUPP) NULL);
 	}
-	
+
 	if (fatal)
 	{
 		exit(-1);
@@ -342,25 +342,25 @@ void alert_user(
 	short identifier)
 {
 	char buffer[50];
-	
+
 	psprintf(buffer, "%d", identifier);
 	ParamText(getpstr(temporary, resource_number, error_number), buffer, "", "");
-	
+
 	switch(type)
 	{
 		case fatalError:
 			Alert(alrtFATAL_ERROR, (ModalFilterUPP) NULL);
 			ParamText("", "", "", "");
 			exit(-1);
-		
+
 		case infoError:
 			Alert(alrtNONFATAL_ERROR, (ModalFilterUPP) NULL);
 			break;
-		
+
 		default:
 			halt();
 	}
-	
+
 	ParamText("", "", "", "");
 	return;
 }
@@ -388,12 +388,12 @@ long whats_on_top(
 	void)
 {
 	WindowPtr window= FrontWindow(); /* FLOATS */
-	
+
 	if (window)
 	{
 		return GetWRefCon(window);
 	}
-	
+
 	return NONE;
 }
 
@@ -408,7 +408,7 @@ OSErr choose_new_file(
 	Point location;
 	SFReply reply;
 	OSErr error;
-	
+
 	SetPt(&location, 40, 60);
 	SFPutFile(location, prompt, file_name, (DlgHookProcPtr) NULL, &reply);
 	if (reply.good)
@@ -418,7 +418,7 @@ OSErr choose_new_file(
 		{
 			strncpy(file_name, reply.fName, *reply.fName+1);
 			*reference_number= reply.vRefNum;
-			
+
 			error= FSOpen(reply.fName, reply.vRefNum, file_handle);
 		}
 	}
@@ -426,7 +426,7 @@ OSErr choose_new_file(
 	{
 		error= userCanceledErr;
 	}
-	
+
 	return error;
 }
 
@@ -453,7 +453,7 @@ OSErr choose_and_open_file(
 			break;
 		}
 	}
-	
+
 	SetPt(&location, 40, 60);
 	SFGetFile(location, (char *) NULL, NULL, count, filetypes, NULL, &reply);
 
@@ -468,7 +468,7 @@ OSErr choose_and_open_file(
 	{
 		error= userCanceledErr;
 	}
-	
+
 	return error;
 }
 
@@ -477,7 +477,7 @@ void mark_for_update(
 	Rect *rectangle)
 {
 	GrafPtr old_port;
-	
+
 	GetPort(&old_port);
 	SetPort(port);
 
@@ -486,7 +486,7 @@ void mark_for_update(
 	InvalRect(rectangle);
 
 	SetPort(old_port);
-	
+
 	return;
 }
 
@@ -499,7 +499,7 @@ RGBColor *SetRGBColor(
 	color->red= red;
 	color->green= green;
 	color->blue= blue;
-	
+
 	return color;
 }
 
@@ -509,10 +509,10 @@ boolean wait_for_mouse_to_move(
 {
 	Point mouse;
 	Rect bounds;
-	
+
 	SetRect(&bounds, -threshold, -threshold, threshold, threshold);
 	OffsetRect(&bounds, origin.h, origin.v);
-	
+
 	do
 	{
 		GetMouse(&mouse);
@@ -522,7 +522,7 @@ boolean wait_for_mouse_to_move(
 		}
 	}
 	while(Button());
-	
+
 	return FALSE;
 }
 
@@ -537,7 +537,7 @@ void stay_awake(
 		last_fake_keyboard_event= TickCount();
 		PostEvent(keyDown, 0);
 	}
-	
+
 	return;
 }
 
@@ -575,7 +575,7 @@ void draw_popup_frame(
 	MoveTo(bounds->left+3, bounds->bottom);
 	LineTo(bounds->right, bounds->bottom);
 	LineTo(bounds->right, bounds->top+3);
-	
+
 	for (i=0;i<POPUP_ARROW_HEIGHT;++i)
 	{
 		MoveTo(bounds->right-POPUP_ARROW_WIDTH-POPUP_ARROW_OFFSET+i, y+i);
@@ -593,10 +593,10 @@ char *getpstr(
 	Handle strings= GetResource('STR#', resource_number);
 	short count;
 	byte *string_address;
-	
+
 	assert(strings);
 	assert(string_number>=0&&string_number<**((short**)strings));
-	
+
 	HLock(strings);
 	count= 0;
 	string_address= ((byte *)*strings)+2;
@@ -606,7 +606,7 @@ char *getpstr(
 	}
 	pstrcpy(buffer, string_address);
 	HUnlock(strings);
-	
+
 	return buffer;
 }
 
@@ -617,7 +617,7 @@ char *getcstr(
 {
 	getpstr(buffer, resource_number, string_number);
 	p2cstr(buffer);
-	
+
 	return buffer;
 }
 
@@ -633,24 +633,24 @@ char *strupr(
 	char *string)
 {
 	char *p;
-	
+
 	for (p=string;*p;p++)
 	{
 		*p= toupper(*p);
 	}
-	
+
 	return string;
 }
 char *strlwr(
 	char *string)
 {
 	char *p;
-	
+
 	for (p=string;*p;p++)
 	{
 		*p= tolower(*p);
 	}
-	
+
 	return string;
 }
 
@@ -665,7 +665,7 @@ void build_zoom_rectangle(
 	Rect zoomed, unzoomed;
 	Rect device_bounds;
 	short bias;
-	
+
 	window_state= (WStateDataHandle) (((CWindowRecord *)window)->dataHandle);
 	zoomed= (*window_state)->stdState;
 	unzoomed= (*window_state)->userState;
@@ -673,13 +673,13 @@ void build_zoom_rectangle(
 	/* official Apple source sends the title bar along with this rectangle, but that isn’t useful */
 	device= MostDevice(&unzoomed);
 	if (!device) device= GetMainDevice();
-	
+
 	bias= unzoomed.top-(*((WindowPeek)window)->strucRgn)->rgnBBox.top-1;
 	if (device==GetMainDevice()) bias+= GetMBarHeight();
 	device_bounds= (*device)->gdRect;
 	InsetRect(&device_bounds, 3, 3);
 	device_bounds.top+= bias;
-	
+
 	zoomed= *bounds;
 	OffsetRect(&zoomed, unzoomed.left-zoomed.left, unzoomed.top-zoomed.top);
 	if (RECTANGLE_HEIGHT(&zoomed)>RECTANGLE_HEIGHT(&device_bounds))
@@ -702,9 +702,9 @@ void build_zoom_rectangle(
 		if (zoomed.right>device_bounds.right) OffsetRect(&zoomed, device_bounds.right-zoomed.right, 0);
 		if (zoomed.left<device_bounds.left) OffsetRect(&zoomed, device_bounds.left-zoomed.left, 0);
 	}
-	
+
 	(*window_state)->stdState= zoomed;
-	
+
 	return;
 }
 
@@ -720,11 +720,11 @@ void ScaleRect(
 	long horizontal_scale, vertical_scale;
 	Rect new_rectangle;
 	short width, height;
-	
+
 	/* the largest value will be the constraint (or, the axis we can peg) */
 	horizontal_scale= (RECTANGLE_WIDTH(source)*LONG_ONE)/RECTANGLE_WIDTH(bounds);
 	vertical_scale= (RECTANGLE_HEIGHT(source)*LONG_ONE)/RECTANGLE_HEIGHT(bounds);
-	
+
 	if (horizontal_scale>vertical_scale)
 	{
 		width= RECTANGLE_WIDTH(bounds);
@@ -735,12 +735,12 @@ void ScaleRect(
 		height= RECTANGLE_HEIGHT(bounds);
 		width= (height*RECTANGLE_WIDTH(source))/RECTANGLE_HEIGHT(source);
 	}
-	
+
 	SetRect(&new_rectangle, 0, 0, width, height);
 	OffsetRect(&new_rectangle, bounds->left + (RECTANGLE_WIDTH(bounds)-width)/2,
 		bounds->top + (RECTANGLE_HEIGHT(bounds)-height)/2);
 	*destination= new_rectangle;
-	
+
 	return;
 }
 
@@ -752,7 +752,7 @@ void AdjustRect(
 	short mode)
 {
 	Rect result;
-	
+
 	result= *source;
 	switch (mode)
 	{
@@ -764,13 +764,13 @@ void AdjustRect(
 			OffsetRect(&result, bounds->left+(RECTANGLE_WIDTH(bounds)-RECTANGLE_WIDTH(source))/2-source->left,
 				bounds->top+(RECTANGLE_HEIGHT(bounds)-RECTANGLE_HEIGHT(source))/3-source->top);
 			break;
-		
+
 		default:
 			halt();
 	}
-	
+
 	*destination= result;
-	
+
 	return;
 }
 
@@ -786,15 +786,15 @@ int prsprintf(
 	va_list arglist;
 	int return_value;
 	short length;
-	
+
 	getcstr(format, resource_number, string_number);
-	
+
 	va_start(arglist, string_number);
 	return_value= vsprintf(buffer+1, format, arglist);
 	va_end(arglist);
-	
+
 	*buffer= ((length= strlen(buffer+1))>255) ? 255 : length;
-	
+
 	return return_value;
 }
 
@@ -809,7 +809,7 @@ int rsprintf(
 	int return_value;
 
 	getcstr(format, resource_number, string_number);
-	
+
 	va_start(arglist, string_number);
 	return_value= vsprintf(buffer, format, arglist);
 	va_end(arglist);
@@ -832,13 +832,13 @@ int dprintf(
 	char buffer[257]; /* [length byte] + [255 string bytes] + [null] */
 	va_list arglist;
 	int return_value;
-	
+
 	if (debug_status)
 	{
 		va_start(arglist, format);
 		return_value= vsprintf(buffer+1, format, arglist);
 		va_end(arglist);
-		
+
 		*buffer= strlen(buffer+1);
 #ifdef DEBUG
 #ifdef env68k
@@ -859,7 +859,7 @@ int dprintf(
 	{
 		return_value= 0;
 	}
-	
+
 	return return_value;
 }
 
@@ -871,13 +871,13 @@ int psprintf(
 	va_list arglist;
 	int return_value;
 	short length;
-	
+
 	va_start(arglist, format);
 	return_value= vsprintf(buffer+1, format, arglist);
 	va_end(arglist);
-	
+
 	*buffer= ((length= strlen(buffer+1))>255) ? 255 : length;
-	
+
 	return return_value;
 }
 
@@ -887,11 +887,11 @@ char *csprintf(
 	...)
 {
 	va_list arglist;
-	
+
 	va_start(arglist, format);
 	vsprintf(buffer, format, arglist);
 	va_end(arglist);
-	
+
 	return buffer;
 }
 
@@ -900,11 +900,11 @@ OSErr FSFlush(
 {
 	ParamBlockRec block;
 	OSErr error;
-	
+
 	block.fileParam.ioCompletion= (ProcPtr) NULL;
 	block.fileParam.ioFRefNum= handle;
 	block.fileParam.ioFVersNum= 0;
-	
+
 	error= PBFlushFile(&block, FALSE);
 	if (error==noErr)
 	{
@@ -912,26 +912,26 @@ OSErr FSFlush(
 		block.fileParam.ioVRefNum= 0;
 		error= PBFlushVol(&block, FALSE);
 	}
-	
+
 	return error;
 }
 
 void GetNewTextSpec(
 	TextSpecPtr font_info,
-	short resource_number, 
+	short resource_number,
 	short font_index)
 {
 	Handle resource;
-	
+
 	resource= GetResource('finf', resource_number);
 	assert(resource);
 
 	/* First short is the count */
 	assert(font_index>=0 && font_index<*((short *) *resource));
-	
+
 	/* Get to the right one.. */
 	*font_info= *((TextSpecPtr)(*resource+sizeof(short))+font_index);
-	
+
 	return;
 }
 
@@ -941,7 +941,7 @@ void SetFont(
 	TextFont(font_info->font);
 	TextFace(font_info->face);
 	TextSize(font_info->size);
-	
+
 	return;
 }
 
@@ -949,11 +949,11 @@ void GetFont(
 	TextSpecPtr font_info)
 {
 	GrafPtr port;
-	
+
 	GetPort(&port);
 	font_info->font= port->txFont;
 	font_info->face= port->txFace;
 	font_info->size= port->txSize;
-	
+
 	return;
 }

@@ -17,14 +17,14 @@ typedef boolean (*myTMTaskProcPtr)(void);
 struct myTMTask
 {
 	TMTask tmTask;
-	
+
 #ifdef env68k
 	long a5;
 #endif
 
 	long period;
 	myTMTaskProcPtr procedure;
-	
+
 	boolean active;
 	boolean useExtendedTM;
 };

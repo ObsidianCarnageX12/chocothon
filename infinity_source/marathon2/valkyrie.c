@@ -61,7 +61,7 @@ we need a way to determine which a) model valkyrie is installed and b) on what d
 struct valkyrie_data
 {
 	VBLTask vbl;
-	
+
 	GDHandle device;
 	Rect video_frame;
 	pixel8 transparent;
@@ -102,18 +102,18 @@ void valkyrie_initialize(
 #ifdef DEBUG
 	{
 		Rect intersection;
-		
+
 		SectRect(frame, &(*device)->gdRect, &intersection);
 		assert(EqualRect(frame, &intersection)); // must lie entirely on the given gdevice
 		assert(device==GetMainDevice()); // assume valkyrie owns main device; this may not be true
 	}
 #endif
-	
+
 	if (!valkyrie)
 	{
 		valkyrie= (struct valkyrie_data *) NewPtr(sizeof(struct valkyrie_data));
 		assert(valkyrie);
-		
+
 		valkyrie->vbl_upp= NewVBLProc(vbl_proc);
 		assert(valkyrie->vbl_upp);
 
@@ -122,11 +122,11 @@ void valkyrie_initialize(
 		valkyrie->vbl.vblAddr= valkyrie->vbl_upp;
 		valkyrie->vbl.vblCount= 1;
 		valkyrie->vbl.vblPhase= 0;
-		
+
 		error= SlotVInstall((QElemPtr)&valkyrie->vbl, GetSlotFromGDevice(device));
 		assert(error==noErr);
 	}
-	
+
 	valkyrie->video_frame= *frame;
 	valkyrie->device= device;
 	valkyrie->transparent= transparent;
@@ -134,9 +134,9 @@ void valkyrie_initialize(
 
 	/* cleanup from the last guy */
 	VALKYRIESubsystemConfigurationRegister= 0; /* RGB-space */
-	
+
 	valkyrie_erase_video_buffers();
-	
+
 	/* do initialization specifically relevant to us */
 	VALKYRIEVideoInControlRegister= 0;
 	VALKYRIEVideoFieldStartingXPixelRegister= 0;
@@ -145,7 +145,7 @@ void valkyrie_initialize(
 	VALKYRIEVideoWindowYStartRegister= frame->top;
 	VALKYRIEVideoWindowWidthRegister= RECTANGLE_WIDTH(frame);
 	VALKYRIEVideoWindowHeightRegister= RECTANGLE_HEIGHT(frame);
-	
+
 	VALKYRIECLUTColorKeyRegister= transparent;
 
 	/* give them the first invisible video buffer, free; we’ll only start waiting for refreshes
@@ -160,7 +160,7 @@ void valkyrie_begin(
 {
 	valkyrie->visible_video_buffer= 0;
 	VALKYRIEVideoInControlRegister= videoBuffer0|windowActive|pixelDouble;
-	
+
 	return;
 }
 
@@ -168,7 +168,7 @@ void valkyrie_end(
 	void)
 {
 	VALKYRIEVideoInControlRegister= 0;
-	
+
 	return;
 }
 
@@ -178,16 +178,16 @@ void valkyrie_restore(
 	if (valkyrie)
 	{
 		OSErr error;
-	
+
 		error= SlotVRemove((QElemPtr)&valkyrie->vbl, GetSlotFromGDevice(valkyrie->device));
 		assert(error==noErr);
-	
+
 		VALKYRIEVideoInControlRegister= 0;
-	
+
 		DisposePtr((Ptr)valkyrie);
 		valkyrie= (struct valkyrie_data *) NULL;
 	}
-	
+
 	return;
 }
 
@@ -195,7 +195,7 @@ void valkyrie_initialize_invisible_video_buffer(
 	struct bitmap_definition *bitmap)
 {
 	assert(valkyrie);
-	
+
 	bitmap->flags= 0;
 	bitmap->width= RECTANGLE_WIDTH(&valkyrie->video_frame);
 	bitmap->height= RECTANGLE_HEIGHT(&valkyrie->video_frame);
@@ -214,16 +214,16 @@ void valkyrie_switch_to_invisible_video_buffer(
 	void)
 {
 	assert(valkyrie);
-	
-	VALKYRIEVideoInControlRegister= windowActive | 
+
+	VALKYRIEVideoInControlRegister= windowActive |
 		(valkyrie->pixel_doubling ? pixelDouble : 0) |
 		(valkyrie->visible_video_buffer ? videoBuffer0 : videoBuffer1);
 	valkyrie->visible_video_buffer= !valkyrie->visible_video_buffer;
-	
+
 	/* wake up the vbl task so when know when the next refresh has ocurred (in case the
 		caller asks for the invisible video buffer too soon) */
 	valkyrie->refresh= FALSE;
-	
+
 	return;
 }
 
@@ -232,15 +232,15 @@ void valkyrie_erase_video_buffers(
 	void)
 {
 	short row;
-	
+
 	assert(valkyrie);
-	
+
 	for (row= 0; row<VALKYRIEVideoBufferHeight; ++row)
 	{
 		memset((void*)((byte*)VALKYRIETranslatedVideoBuffer0 + row*VALKYRIETranslatedVideoBufferRowBytes), 0, VALKYRIEVideoBufferWidth*sizeof(pixel16));
 		memset((void*)((byte*)VALKYRIETranslatedVideoBuffer1 + row*VALKYRIETranslatedVideoBufferRowBytes), 0, VALKYRIEVideoBufferWidth*sizeof(pixel16));
 	}
-	
+
 	return;
 }
 
@@ -253,7 +253,7 @@ void valkyrie_erase_graphic_key_frame(
 		byte *base= (byte *)(*pixmap)->baseAddr;
 		short bytes_per_row= (*pixmap)->rowBytes&0x3fff;
 		short row;
-		
+
 		for (row= valkyrie->video_frame.top; row<valkyrie->video_frame.bottom; ++row)
 		{
 			memset(base + bytes_per_row*(row - (*valkyrie->device)->gdRect.top) +
@@ -261,7 +261,7 @@ void valkyrie_erase_graphic_key_frame(
 				transparent_color_index, RECTANGLE_WIDTH(&valkyrie->video_frame));
 		}
 	}
-	
+
 	return;
 }
 
@@ -274,7 +274,7 @@ void valkyrie_change_video_clut(
 	{
 		valkyrie_change_clut(&VALKYRIECLUTVideoDataRegister, color_table);
 	}
-	
+
 	return;
 }
 
@@ -287,7 +287,7 @@ void valkyrie_change_graphic_clut(
 	{
 		valkyrie_change_clut(&VALKYRIECLUTGraphicDataRegister, color_table);
 	}
-	
+
 	return;
 }
 
@@ -299,7 +299,7 @@ boolean machine_has_valkyrie(
 	if (MatchGDSpec(spec)==GetMainDevice())
 	{
 		long machine_type;
-		
+
 		Gestalt(gestaltMachineType, &machine_type);
 		switch (machine_type)
 		{
@@ -332,7 +332,7 @@ void valkyrie_change_clut(
 	for (i= 0; i<=(*color_table)->ctSize; ++i)
 	{
 		UnsignedWide ms;
-		
+
 		*clut_register= (*color_table)->ctTable[i].rgb.red>>8;
 #ifdef envppc
 		Microseconds(&ms);
@@ -346,7 +346,7 @@ void valkyrie_change_clut(
 		Microseconds(&ms);
 #endif
 	}
-	
+
 	return;
 }
 
@@ -364,6 +364,6 @@ static void vbl_proc(
 
 	valkyrie->refresh= TRUE;
 	valkyrie->vbl.vblCount= 1;
-	
+
 	return;
 }

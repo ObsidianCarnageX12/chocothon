@@ -71,7 +71,7 @@ struct fade_definition
 	fixed initial_transparency, final_transparency; /* in [0,FIXED_ONE] */
 
 	short period;
-	
+
 	word flags;
 	short priority; // higher is higher
 };
@@ -82,13 +82,13 @@ struct fade_definition
 struct fade_data
 {
 	word flags; /* [active.1] [unused.15] */
-	
+
 	short type;
 	short fade_effect_type;
-	
+
 	long start_tick;
 	long last_update_tick;
-	
+
 	struct color_table *original_color_table;
 	struct color_table *animated_color_table;
 };
@@ -115,7 +115,7 @@ static struct fade_definition fade_definitions[NUMBER_OF_FADE_TYPES]=
 	{tint_color_table, {0, 0, 0}, FIXED_ONE, 0, 3*MACHINE_TICKS_PER_SECOND/2, _full_screen_flag, 0}, /* _long_cinematic_fade_in */
 	{tint_color_table, {0, 0, 0}, 0, FIXED_ONE, MACHINE_TICKS_PER_SECOND/2, _full_screen_flag, 0}, /* _cinematic_fade_out */
 	{tint_color_table, {0, 0, 0}, 0, 0, 0, _full_screen_flag, 0}, /* _end_cinematic_fade_out */
-	
+
 	{tint_color_table, {65535, 0, 0}, (3*FIXED_ONE)/4, 0, MACHINE_TICKS_PER_SECOND/4, 0, 0}, /* _fade_red */
 	{tint_color_table, {65535, 0, 0}, FIXED_ONE, 0, (3*MACHINE_TICKS_PER_SECOND)/4, 0, 25}, /* _fade_big_red */
 	{tint_color_table, {0, 65535, 0}, FIXED_ONE_HALF, 0, MACHINE_TICKS_PER_SECOND/4, 0, 0}, /* _fade_bonus */
@@ -183,10 +183,10 @@ void initialize_fades(
 	/* allocate and initialize space for our fade_data structure */
 	fade= (struct fade_data *) malloc(sizeof(struct fade_data));
 	assert(fade);
-	
+
 	SET_FADE_ACTIVE_STATUS(fade, FALSE);
 	fade->fade_effect_type= NONE;
-	
+
 	return;
 }
 
@@ -200,12 +200,12 @@ boolean update_fades(
 		boolean update= FALSE;
 		fixed transparency;
 		short phase;
-		
+
 		if ((phase= tick_count-fade->start_tick)>=definition->period)
 		{
 			transparency= definition->final_transparency;
 			SET_FADE_ACTIVE_STATUS(fade, FALSE);
-			
+
 			update= TRUE;
 		}
 		else
@@ -214,14 +214,14 @@ boolean update_fades(
 			{
 				transparency= definition->initial_transparency + (phase*(definition->final_transparency-definition->initial_transparency))/definition->period;
 				if (definition->flags&_random_transparency_flag) transparency+= FADES_RANDOM()%(definition->final_transparency-transparency);
-				
+
 				update= TRUE;
 			}
 		}
-		
+
 		if (update) recalculate_and_display_color_table(fade->type, transparency, fade->original_color_table, fade->animated_color_table);
 	}
-	
+
 	return FADE_IS_ACTIVE(fade) ? TRUE : FALSE;
 }
 
@@ -231,7 +231,7 @@ void set_fade_effect(
 	if (fade->fade_effect_type!=type)
 	{
 		fade->fade_effect_type= type;
-		
+
 		if (!FADE_IS_ACTIVE(fade))
 		{
 			if (type==NONE)
@@ -244,7 +244,7 @@ void set_fade_effect(
 			}
 		}
 	}
-	
+
 	return;
 }
 
@@ -252,7 +252,7 @@ void start_fade(
 	short type)
 {
 	explicit_start_fade(type, world_color_table, visible_color_table);
-	
+
 	return;
 }
 
@@ -268,7 +268,7 @@ void explicit_start_fade(
 	if (FADE_IS_ACTIVE(fade))
 	{
 		struct fade_definition *old_definition= get_fade_definition(fade->type);
-		
+
 		if (old_definition->priority>definition->priority) do_fade= FALSE;
 		if (tick_count-fade->start_tick<MINIMUM_FADE_RESTART_TICKS && fade->type==type) do_fade= FALSE;
 	}
@@ -276,7 +276,7 @@ void explicit_start_fade(
 	if (do_fade)
 	{
 		SET_FADE_ACTIVE_STATUS(fade, FALSE);
-	
+
 		recalculate_and_display_color_table(type, definition->initial_transparency, original_color_table, animated_color_table);
 		if (definition->period)
 		{
@@ -287,7 +287,7 @@ void explicit_start_fade(
 			SET_FADE_ACTIVE_STATUS(fade, TRUE);
 		}
 	}
-	
+
 	return;
 }
 
@@ -297,13 +297,13 @@ void stop_fade(
 	if (FADE_IS_ACTIVE(fade))
 	{
 		struct fade_definition *definition= get_fade_definition(fade->type);
-		
+
 		recalculate_and_display_color_table(fade->type, definition->final_transparency,
 			fade->original_color_table, fade->animated_color_table);
-		
+
 		SET_FADE_ACTIVE_STATUS(fade, FALSE);
 	}
-	
+
 	return;
 }
 
@@ -318,9 +318,9 @@ void full_fade(
 	struct color_table *original_color_table)
 {
 	struct color_table animated_color_table;
-	
+
 	memcpy(&animated_color_table, original_color_table, sizeof(struct color_table));
-	
+
 #if !DRAW_SPROCKET_SUPPORT
 	explicit_start_fade(type, original_color_table, &animated_color_table);
 	while (update_fades())
@@ -333,7 +333,7 @@ short get_fade_period(
 	short type)
 {
 	struct fade_definition *definition= get_fade_definition(type);
-	
+
 	return definition->period;
 }
 
@@ -346,10 +346,10 @@ void gamma_correct_color_table(
 	float gamma;
 	struct rgb_color *uncorrected= uncorrected_color_table->colors;
 	struct rgb_color *corrected= corrected_color_table->colors;
-	
+
 	assert(gamma_level>=0 && gamma_level<NUMBER_OF_GAMMA_LEVELS);
 	gamma= actual_gamma_values[gamma_level];
-	
+
 	corrected_color_table->color_count= uncorrected_color_table->color_count;
 	for (i= 0; i<uncorrected_color_table->color_count; ++i, ++corrected, ++uncorrected)
 	{
@@ -357,7 +357,7 @@ void gamma_correct_color_table(
 		corrected->green= pow(uncorrected->green/65535.0, gamma)*65535.0;
 		corrected->blue= pow(uncorrected->blue/65535.0, gamma)*65535.0;
 	}
-	
+
 	return;
 }
 
@@ -367,7 +367,7 @@ static struct fade_definition *get_fade_definition(
 	short index)
 {
 	assert(index>=0 && index<NUMBER_OF_FADE_TYPES);
-	
+
 	return fade_definitions + index;
 }
 
@@ -375,7 +375,7 @@ static struct fade_effect_definition *get_fade_effect_definition(
 	short index)
 {
 	assert(index>=0 && index<NUMBER_OF_FADE_EFFECT_TYPES);
-	
+
 	return fade_effect_definitions + index;
 }
 
@@ -386,13 +386,13 @@ static void recalculate_and_display_color_table(
 	struct color_table *animated_color_table)
 {
 	boolean full_screen= FALSE;
-	
+
 	/* if a fade effect is active, apply it first */
 	if (fade->fade_effect_type!=NONE)
 	{
 		struct fade_effect_definition *effect_definition= get_fade_effect_definition(fade->fade_effect_type);
 		struct fade_definition *definition= get_fade_definition(effect_definition->fade_type);
-		
+
 		definition->proc(original_color_table, animated_color_table, &definition->color, effect_definition->transparency);
 		original_color_table= animated_color_table;
 	}
@@ -401,12 +401,12 @@ static void recalculate_and_display_color_table(
 	{
 		struct fade_definition *definition= get_fade_definition(type);
 
-		definition->proc(original_color_table, animated_color_table, &definition->color, transparency);	
+		definition->proc(original_color_table, animated_color_table, &definition->color, transparency);
 		full_screen= (definition->flags&_full_screen_flag) ? TRUE : FALSE;
 	}
-	
+
 	animate_screen_clut(animated_color_table, full_screen);
-	
+
 	return;
 }
 
@@ -430,7 +430,7 @@ static void tint_color_table(
 		adjusted->green= unadjusted->green + (((color->green-unadjusted->green)*adjusted_transparency)>>(FIXED_FRACTIONAL_BITS-ADJUSTED_TRANSPARENCY_DOWNSHIFT));
 		adjusted->blue= unadjusted->blue + (((color->blue-unadjusted->blue)*adjusted_transparency)>>(FIXED_FRACTIONAL_BITS-ADJUSTED_TRANSPARENCY_DOWNSHIFT));
 	}
-	
+
 	return;
 }
 
@@ -451,7 +451,7 @@ static void randomize_color_table(
 		transparency set */
 	for (mask= 0;~mask & adjusted_transparency;mask= (mask<<1)|1)
 		; /* empty loop body */
-	
+
 	animated_color_table->color_count= original_color_table->color_count;
 	for (i= 0; i<original_color_table->color_count; ++i, ++adjusted, ++unadjusted)
 	{
@@ -459,7 +459,7 @@ static void randomize_color_table(
 		adjusted->green= unadjusted->green + (FADES_RANDOM()&mask);
 		adjusted->blue= unadjusted->blue + (FADES_RANDOM()&mask);
 	}
-	
+
 	return;
 }
 
@@ -473,7 +473,7 @@ static void negate_color_table(
 	short i;
 	struct rgb_color *unadjusted= original_color_table->colors;
 	struct rgb_color *adjusted= animated_color_table->colors;
-	
+
 	transparency= FIXED_ONE-transparency;
 	animated_color_table->color_count= original_color_table->color_count;
 	for (i= 0; i<original_color_table->color_count; ++i, ++adjusted, ++unadjusted)
@@ -488,7 +488,7 @@ static void negate_color_table(
 			CEILING((unadjusted->blue^color->blue)+transparency, (long)unadjusted->blue) :
 			FLOOR((unadjusted->blue^color->blue)-transparency, (long)unadjusted->blue);
 	}
-	
+
 	return;
 }
 
@@ -501,17 +501,17 @@ static void dodge_color_table(
 	short i;
 	struct rgb_color *unadjusted= original_color_table->colors;
 	struct rgb_color *adjusted= animated_color_table->colors;
-	
+
 	animated_color_table->color_count= original_color_table->color_count;
 	for (i= 0; i<original_color_table->color_count; ++i, ++adjusted, ++unadjusted)
 	{
 		long component;
-		
+
 		component= 0xffff - (((color->red^0xffff)*unadjusted->red)>>FIXED_FRACTIONAL_BITS) - transparency, adjusted->red= CEILING(component, unadjusted->red);
 		component= 0xffff - (((color->green^0xffff)*unadjusted->green)>>FIXED_FRACTIONAL_BITS) - transparency, adjusted->green= CEILING(component, unadjusted->green);
 		component= 0xffff - (((color->blue^0xffff)*unadjusted->blue)>>FIXED_FRACTIONAL_BITS) - transparency, adjusted->blue= CEILING(component, unadjusted->blue);
 	}
-	
+
 	return;
 }
 
@@ -524,13 +524,13 @@ static void burn_color_table(
 	short i;
 	struct rgb_color *unadjusted= original_color_table->colors;
 	struct rgb_color *adjusted= animated_color_table->colors;
-	
+
 	transparency= FIXED_ONE-transparency;
 	animated_color_table->color_count= original_color_table->color_count;
 	for (i= 0; i<original_color_table->color_count; ++i, ++adjusted, ++unadjusted)
 	{
 		long component;
-		
+
 		component= ((color->red*unadjusted->red)>>FIXED_FRACTIONAL_BITS) + transparency, adjusted->red= CEILING(component, unadjusted->red);
 		component= ((color->green*unadjusted->green)>>FIXED_FRACTIONAL_BITS) + transparency, adjusted->green= CEILING(component, unadjusted->green);
 		component= ((color->blue*unadjusted->blue)>>FIXED_FRACTIONAL_BITS) + transparency, adjusted->blue= CEILING(component, unadjusted->blue);
@@ -549,15 +549,15 @@ static void soft_tint_color_table(
 	struct rgb_color *unadjusted= original_color_table->colors;
 	struct rgb_color *adjusted= animated_color_table->colors;
 	word adjusted_transparency= transparency>>ADJUSTED_TRANSPARENCY_DOWNSHIFT;
-	
+
 	animated_color_table->color_count= original_color_table->color_count;
 	for (i= 0; i<original_color_table->color_count; ++i, ++adjusted, ++unadjusted)
 	{
 		word intensity;
-		
+
 		intensity= MAX(unadjusted->red, unadjusted->green);
 		intensity= MAX(intensity, unadjusted->blue)>>ADJUSTED_TRANSPARENCY_DOWNSHIFT;
-		
+
 		adjusted->red= unadjusted->red + (((((color->red*intensity)>>(FIXED_FRACTIONAL_BITS-ADJUSTED_TRANSPARENCY_DOWNSHIFT))-unadjusted->red)*adjusted_transparency)>>(FIXED_FRACTIONAL_BITS-ADJUSTED_TRANSPARENCY_DOWNSHIFT));
 		adjusted->green= unadjusted->green + (((((color->green*intensity)>>(FIXED_FRACTIONAL_BITS-ADJUSTED_TRANSPARENCY_DOWNSHIFT))-unadjusted->green)*adjusted_transparency)>>(FIXED_FRACTIONAL_BITS-ADJUSTED_TRANSPARENCY_DOWNSHIFT));
 		adjusted->blue= unadjusted->blue + (((((color->blue*intensity)>>(FIXED_FRACTIONAL_BITS-ADJUSTED_TRANSPARENCY_DOWNSHIFT))-unadjusted->blue)*adjusted_transparency)>>(FIXED_FRACTIONAL_BITS-ADJUSTED_TRANSPARENCY_DOWNSHIFT));

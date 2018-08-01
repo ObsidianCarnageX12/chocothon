@@ -2,7 +2,7 @@
 NETWORK_NAMES.C
 Sunday, June 26, 1994 5:45:49 PM
 Friday, July 15, 1994 11:03:22 AM
-	allocated name table entry in the system heap, to prevent problems if the name isn't 
+	allocated name table entry in the system heap, to prevent problems if the name isn't
 	unregistered before the application exits. (ajr, suggested by jgj.)
 */
 
@@ -40,7 +40,7 @@ the name.  only one name can be registered at a time through NetRegisterName().
 	---> name (pascal string, can be NULL and will be replaced with user name)
 	---> type (pascal string)
 	---> socket number
-	
+
 	<--- error
 */
 
@@ -73,7 +73,7 @@ OSErr NetRegisterName(
 	/* Calculate the adjusted type */
 	{
 		Str255 version_text;
-		
+
 		psprintf((char *)version_text, "%d", version);
 		pstrcpy((char *)adjusted_type, (char *)type);
 		pstrcat(adjusted_type, version_text);
@@ -88,13 +88,13 @@ OSErr NetRegisterName(
 		myMPPPBPtr->NBP.parm.verifyFlag= TRUE; /* verify this name doesn’t already exist */
 		myMPPPBPtr->NBP.interval= 2; /* retry every 2*8 == 16 ticks */
 		myMPPPBPtr->NBP.count= 4; /* retry 4 times ( == 64 ticks) */
-	
+
 		error= PRegisterName(myMPPPBPtr, FALSE);
-		
+
 		DisposePtr((Ptr)myMPPPBPtr);
 	}
 #endif
-	
+
 	return error;
 }
 
@@ -126,11 +126,11 @@ OSErr NetUnRegisterName(
 		if (error==noErr)
 		{
 			myMPPPBPtr->NBP.nbpPtrs.entityPtr= (Ptr) &myNTEName->nt.entityData; /* can’t just give back names table entry */
-			
+
 			error= PRemoveName(myMPPPBPtr, FALSE);
-		
+
 			DisposePtr((Ptr)myMPPPBPtr);
-	
+
 			DisposePtr((Ptr)myNTEName);
 			myNTEName= (NamesTableEntryPtr) NULL;
 		}
