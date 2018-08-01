@@ -58,12 +58,12 @@ short new_effect(
 	{
 		struct effect_data *effect;
 		struct effect_definition *definition;
-	
+
 		definition= get_effect_definition(type);
 		if (definition->flags&_sound_only)
 		{
 			struct shape_animation_data *animation= get_shape_animation_data(BUILD_DESCRIPTOR(definition->collection, definition->shape));
-			
+
 			play_world_sound(polygon_index, origin, animation->first_frame_sound);
 		}
 		else
@@ -73,18 +73,18 @@ short new_effect(
 				if (SLOT_IS_FREE(effect))
 				{
 					short object_index= new_map_object3d(origin, polygon_index, BUILD_DESCRIPTOR(definition->collection, definition->shape), facing);
-					
+
 					if (object_index!=NONE)
 					{
 						struct object_data *object= get_object_data(object_index);
-						
+
 						effect->type= type;
 						effect->flags= 0;
 						effect->object_index= object_index;
 						effect->data= 0;
 						effect->delay= definition->delay ? random()%definition->delay : 0;
 						MARK_SLOT_AS_USED(effect);
-						
+
 						SET_OBJECT_OWNER(object, _object_is_effect);
 						object->sound_pitch= definition->sound_pitch;
 						if (effect->delay) SET_OBJECT_INVISIBILITY(object, TRUE);
@@ -94,14 +94,14 @@ short new_effect(
 					{
 						effect_index= NONE;
 					}
-					
+
 					break;
 				}
 			}
 			if (effect_index==MAXIMUM_EFFECTS_PER_MAP) effect_index= NONE;
 		}
 	}
-	
+
 	return effect_index;
 }
 
@@ -111,14 +111,14 @@ void update_effects(
 {
 	struct effect_data *effect;
 	short effect_index;
-	
+
 	for (effect_index= 0, effect= effects; effect_index<MAXIMUM_EFFECTS_PER_MAP; ++effect_index, ++effect)
 	{
 		if (SLOT_IS_USED(effect))
 		{
 			struct object_data *object= get_object_data(effect->object_index);
 			struct effect_definition *definition= get_effect_definition(effect->type);
-			
+
 			if (effect->delay)
 			{
 				/* handle invisible, delayed effects */
@@ -132,25 +132,25 @@ void update_effects(
 			{
 				/* update our object’s animation */
 				animate_object(effect->object_index);
-				
+
 				/* if the effect’s animation has terminated and we’re supposed to deactive it, do so */
 				if (((GET_OBJECT_ANIMATION_FLAGS(object)&_obj_last_frame_animated)&&(definition->flags&_end_when_animation_loops)) ||
 					((GET_OBJECT_ANIMATION_FLAGS(object)&_obj_transfer_mode_finished)&&(definition->flags&_end_when_transfer_animation_loops)))
 				{
 					remove_effect(effect_index);
-					
+
 					/* if we’re supposed to make another item visible, do so */
 					if (definition->flags&_make_twin_visible)
 					{
 						struct object_data *object= get_object_data(effect->data);
-						
+
 						SET_OBJECT_INVISIBILITY(object, FALSE);
 					}
 				}
 			}
 		}
 	}
-	
+
 	return;
 }
 
@@ -158,11 +158,11 @@ void remove_effect(
 	short effect_index)
 {
 	struct effect_data *effect;
-	
+
 	effect= get_effect_data(effect_index);
 	remove_map_object(effect->object_index);
 	MARK_SLOT_AS_FREE(effect);
-	
+
 	return;
 }
 
@@ -171,20 +171,20 @@ void remove_all_nonpersistent_effects(
 {
 	struct effect_data *effect;
 	short effect_index;
-	
+
 	for (effect_index= 0, effect= effects; effect_index<MAXIMUM_EFFECTS_PER_MAP; ++effect_index, ++effect)
 	{
 		if (SLOT_IS_USED(effect))
 		{
 			struct effect_definition *definition= get_effect_definition(effect->type);
-			
+
 			if (definition->flags&(_end_when_animation_loops|_end_when_transfer_animation_loops))
 			{
 				remove_effect(effect_index);
 			}
 		}
 	}
-	
+
 	return;
 }
 
@@ -199,7 +199,7 @@ void mark_effect_collections(
 		/* mark the effect collection */
 		loading ? mark_collection_for_loading(definition->collection) : mark_collection_for_unloading(definition->collection);
 	}
-	
+
 	return;
 }
 
@@ -207,16 +207,16 @@ void teleport_object_out(
 	short object_index)
 {
 	struct object_data *object= get_object_data(object_index);
-	
+
 	if (!OBJECT_IS_INVISIBLE(object))
 	{
 		short effect_index= new_effect(&object->location, object->polygon, _effect_teleport_object_out, object->facing);
-		
+
 		if (effect_index!=NONE)
 		{
 			struct effect_data *effect= get_effect_data(effect_index);
 			struct object_data *effect_object= get_object_data(effect->object_index);
-			
+
 			// make the effect look like the object
 			effect_object->shape= object->shape;
 			effect_object->sequence= object->sequence;
@@ -224,14 +224,14 @@ void teleport_object_out(
 			effect_object->transfer_period= TELEPORTING_MIDPOINT;
 			effect_object->transfer_phase= 0;
 			effect_object->flags|= object->flags&(_object_is_enlarged|_object_is_tiny);
-			
+
 			// make the object invisible
 			SET_OBJECT_INVISIBILITY(object, TRUE);
 
 			play_object_sound(effect->object_index, _snd_teleport_out); /* teleport in sound, at destination */
 		}
 	}
-	
+
 	return;
 }
 
@@ -253,7 +253,7 @@ void teleport_object_in(
 			}
 		}
 	}
-	
+
 	if (object_index!=NONE)
 	{
 		struct object_data *object= get_object_data(object_index);
@@ -262,10 +262,10 @@ void teleport_object_in(
 		if (effect_index!=NONE)
 		{
 			struct object_data *effect_object;
-			
+
 			effect= get_effect_data(effect_index);
 			effect->data= object_index;
-			
+
 			effect_object= get_object_data(effect->object_index);
 			effect_object->shape= object->shape;
 			effect_object->transfer_mode= _xfer_fold_in;
@@ -274,7 +274,7 @@ void teleport_object_in(
 			effect_object->flags|= object->flags&(_object_is_enlarged|_object_is_tiny);
 		}
 	}
-	
+
 	return;
 }
 
@@ -283,12 +283,12 @@ struct effect_data *get_effect_data(
 	short effect_index)
 {
 	struct effect_data *effect;
-	
+
 	vassert(effect_index>=0&&effect_index<MAXIMUM_EFFECTS_PER_MAP, csprintf(temporary, "effect index #%d is out of range", effect_index));
-	
+
 	effect= effects+effect_index;
 	vassert(SLOT_IS_USED(effect), csprintf(temporary, "effect index #%d (%p) is unused", effect_index, effect));
-	
+
 	return effect;
 }
 #endif
@@ -300,7 +300,7 @@ struct effect_definition *get_effect_definition(
 	short type)
 {
 	assert(type>=0&&type<NUMBER_OF_EFFECT_TYPES);
-	
+
 	return effect_definitions+type;
 }
 #endif

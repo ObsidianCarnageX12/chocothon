@@ -1,7 +1,7 @@
 /*
 	crc.h
 	Sunday, March 5, 1995 6:25:36 PM
-	
+
 	Calculate the 32 bit CRC for a given file.
 */
 

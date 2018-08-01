@@ -25,7 +25,7 @@ enum /* dialog reference numbers */
 	refNETWORK_GATHER_DIALOG,
 	refNETWORK_JOIN_DIALOG,
 	refNETWORK_CARNAGE_DIALOG,
-	
+
 	LAST_DIALOG_REFCON= refNETWORK_CARNAGE_DIALOG,
 	FIRST_DIALOG_REFCON= refPREFERENCES_DIALOG
 };
@@ -48,14 +48,14 @@ struct screen_mode_data
 {
 	short size;
 	short acceleration;
-	
+
 	boolean high_resolution;
 	boolean texture_floor, texture_ceiling;
 	boolean draw_every_other_line;
-	
+
 	short bit_depth;  // currently 8 or 16
 	short gamma_level;
-	
+
 	short unused[6];	// two shorts removed for preferences use
 };
 

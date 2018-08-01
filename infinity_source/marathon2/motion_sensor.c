@@ -60,15 +60,15 @@ Monday, December 5, 1994 9:19:55 PM  (Jason)
 struct entity_data
 {
 	word flags; /* [slot_used.1] [slot_being_removed.1] [unused.14] */
-	
+
 	short monster_index;
 	shape_descriptor shape;
-	
+
 	short remove_delay; /* only valid if this entity is being removed [0,NUMBER_OF_PREVIOUS_LOCATIONS) */
-	
+
 	point2d previous_points[NUMBER_OF_PREVIOUS_LOCATIONS];
 	boolean visible_flags[NUMBER_OF_PREVIOUS_LOCATIONS];
-	
+
 	world_point3d last_location;
 	angle last_facing;
 };
@@ -134,19 +134,19 @@ void initialize_motion_sensor(
 	friendly_shapes= friends;
 	alien_shapes= aliens;
 	compass_shapes= compasses;
-	
+
 	entities= (struct entity_data *) malloc(MAXIMUM_MOTION_SENSOR_ENTITIES*sizeof(struct entity_data));
 	assert(entities);
-	
+
 	sensor_region= (struct region_data *) malloc(side_length*sizeof(struct region_data));
 	assert(sensor_region);
-	
+
 	/* precalculate the sensor region */
-	precalculate_sensor_region(side_length);	
+	precalculate_sensor_region(side_length);
 
 	/* reset_motion_sensor() should be called before the motion sensor is used, but after it’s
 		shapes are loaded (because it will do bitmap copying) */
-		
+
 	return;
 }
 
@@ -161,13 +161,13 @@ void reset_motion_sensor(
 
 	get_shape_bitmap_and_shading_table(mount_shape, &mount, (void **) NULL, NONE);
 	get_shape_bitmap_and_shading_table(virgin_mount_shapes, &virgin_mount, (void **) NULL, NONE);
-	
+
 	assert(mount->width==virgin_mount->width);
 	assert(mount->height==virgin_mount->height);
 	bitmap_window_copy(virgin_mount, mount, 0, 0, mount->width, mount->height);
 
 	for (i= 0; i<MAXIMUM_MOTION_SENSOR_ENTITIES; ++i) MARK_SLOT_AS_FREE(entities+i);
-	
+
 	network_compass_state= _network_compass_all_off;
 
 	return;
@@ -187,14 +187,14 @@ void motion_sensor_scan(
 	{
 		struct monster_data *monster;
 		short monster_index;
-		
+
 		for (monster_index=0,monster=monsters;monster_index<MAXIMUM_MONSTERS_PER_MAP;++monster,++monster_index)
 		{
 			if (SLOT_IS_USED(monster)&&(MONSTER_IS_PLAYER(monster)||MONSTER_IS_ACTIVE(monster)))
 			{
 				struct object_data *object= get_object_data(monster->object_index);
 				world_distance distance= guess_distance2d((world_point2d *) &object->location, (world_point2d *) &owner_object->location);
-				
+
 				if (distance<MOTION_SENSOR_RANGE && OBJECT_IS_VISIBLE_TO_MOTION_SENSOR(object))
 				{
 //					dprintf("found valid monster #%d", monster_index);
@@ -202,7 +202,7 @@ void motion_sensor_scan(
 				}
 			}
 		}
-		
+
 		ticks_since_last_rescan= MOTION_SENSOR_RESCAN_FREQUENCY;
 	}
 
@@ -212,11 +212,11 @@ void motion_sensor_scan(
 		erase_all_entity_blips();
 		if (dynamic_world->player_count>1) draw_network_compass();
 		draw_all_entity_blips();
-		
+
 		ticks_since_last_update= MOTION_SENSOR_UPDATE_FREQUENCY;
 		motion_sensor_changed= TRUE;
 	}
-	
+
 	return;
 }
 
@@ -225,9 +225,9 @@ boolean motion_sensor_has_changed(
 	void)
 {
 	boolean changed= motion_sensor_changed;
-	
+
 	if (changed) motion_sensor_changed= FALSE;
-	
+
 	return changed;
 }
 
@@ -245,14 +245,14 @@ static void draw_network_compass(
 {
 	short new_state= get_network_compass_state(motion_sensor_player_index);
 	short difference= (new_state^network_compass_state)|new_state;
-	
+
 	if (difference&_network_compass_nw) draw_or_erase_unclipped_shape(36, 36, compass_shapes, new_state&_network_compass_nw);
 	if (difference&_network_compass_ne) draw_or_erase_unclipped_shape(61, 36, compass_shapes+1, new_state&_network_compass_ne);
 	if (difference&_network_compass_se) draw_or_erase_unclipped_shape(61, 61, compass_shapes+3, new_state&_network_compass_se);
 	if (difference&_network_compass_sw) draw_or_erase_unclipped_shape(36, 61, compass_shapes+2, new_state&_network_compass_sw);
-	
+
 	network_compass_state= new_state;
-	
+
 	return;
 }
 
@@ -278,7 +278,7 @@ static void erase_all_entity_blips(
 			{
 				struct object_data *object= get_object_data(get_monster_data(entity->monster_index)->object_index);
 				world_distance distance= guess_distance2d((world_point2d *) &object->location, (world_point2d *) &owner_object->location);
-				
+
 				/* verify that we’re still in range (and mark us as being removed if we’re not */
 				if (distance>MOTION_SENSOR_RANGE || !OBJECT_IS_VISIBLE_TO_MOTION_SENSOR(object))
 				{
@@ -295,17 +295,17 @@ static void erase_all_entity_blips(
 			/* erase the blip specified by NUMBER_OF_PREVIOUS_LOCATIONS-1 */
 			if (entity->visible_flags[NUMBER_OF_PREVIOUS_LOCATIONS-1]) erase_entity_blip(&entity->previous_points[NUMBER_OF_PREVIOUS_LOCATIONS-1], entity->shape);
 
-			/* adjust the arrays to make room for new entries */			
+			/* adjust the arrays to make room for new entries */
 			memmove(entity->visible_flags+1, entity->visible_flags, (NUMBER_OF_PREVIOUS_LOCATIONS-1)*sizeof(boolean));
 			memmove(entity->previous_points+1, entity->previous_points, (NUMBER_OF_PREVIOUS_LOCATIONS-1)*sizeof(point2d));
 			entity->visible_flags[0]= FALSE;
-				
+
 			/* if we’re not being removed, make room for a new location and calculate it */
 			if (!SLOT_IS_BEING_REMOVED(entity))
 			{
 				struct monster_data *monster= get_monster_data(entity->monster_index);
 				struct object_data *object= get_object_data(monster->object_index);
-				
+
 				/* remember if this entity is visible or not */
 				if (object->transfer_mode!=_xfer_invisibility && object->transfer_mode!=_xfer_subtle_invisibility &&
 					(!(static_world->environment_flags&_environment_magnetic) || !((dynamic_world->tick_count+4*monster->object_index)&FLICKER_FREQUENCY)))
@@ -314,12 +314,12 @@ static void erase_all_entity_blips(
 						object->location.z!=entity->last_location.z || object->facing!=entity->last_facing)
 					{
 						entity->visible_flags[0]= TRUE;
-	
+
 						entity->last_location= object->location;
 						entity->last_facing= object->facing;
 					}
 				}
-				
+
 				/* calculate the 2d position on the motion sensor */
 				entity->previous_points[0]= *(point2d *)&object->location;
 				transform_point2d((world_point2d *)&entity->previous_points[0], (world_point2d *)&owner_object->location, NORMALIZE_ANGLE(owner_object->facing+QUARTER_CIRCLE));
@@ -330,7 +330,7 @@ static void erase_all_entity_blips(
 			{
 				/* erase the blip specified by entity->remove_delay */
 				if (entity->visible_flags[entity->remove_delay]) erase_entity_blip(&entity->previous_points[entity->remove_delay], entity->shape);
-				
+
 				/* if this is the last point of an entity which was being removed; mark it as unused */
 				if ((entity->remove_delay+= 1)>=NUMBER_OF_PREVIOUS_LOCATIONS)
 				{
@@ -339,7 +339,7 @@ static void erase_all_entity_blips(
 			}
 		}
 	}
-	
+
 	return;
 }
 
@@ -362,7 +362,7 @@ static void draw_all_entity_blips(
 			}
 		}
 	}
-	
+
 	return;
 }
 
@@ -377,11 +377,11 @@ static void draw_or_erase_unclipped_shape(
 	get_shape_bitmap_and_shading_table(mount_shape, &mount, (void **) NULL, NONE);
 	get_shape_bitmap_and_shading_table(virgin_mount_shapes, &virgin_mount, (void **) NULL, NONE);
 	get_shape_bitmap_and_shading_table(shape, &blip, (void **) NULL, NONE);
-	
+
 	draw ?
 		unclipped_solid_sprite_copy(blip, mount, x, y) :
 		bitmap_window_copy(virgin_mount, mount, x, y, x+blip->width, y+blip->height);
-	
+
 	return;
 }
 
@@ -391,7 +391,7 @@ static void erase_entity_blip(
 {
 	struct bitmap_definition *mount, *virgin_mount, *blip;
 	short x, y;
-	
+
 	get_shape_bitmap_and_shading_table(mount_shape, &mount, (void **) NULL, NONE);
 	get_shape_bitmap_and_shading_table(virgin_mount_shapes, &virgin_mount, (void **) NULL, NONE);
 	get_shape_bitmap_and_shading_table(shape, &blip, (void **) NULL, NONE);
@@ -409,14 +409,14 @@ static void draw_entity_blip(
 	shape_descriptor shape)
 {
 	struct bitmap_definition *mount, *blip;
-	
+
 	get_shape_bitmap_and_shading_table(mount_shape, &mount, (void **) NULL, NONE);
 	get_shape_bitmap_and_shading_table(shape, &blip, (void **) NULL, NONE);
 
 	clipped_transparent_sprite_copy(blip, mount, sensor_region,
 		location->x + (motion_sensor_side_length>>1) - (blip->width>>1),
 		location->y + (motion_sensor_side_length>>1) - (blip->height>>1));
-	
+
 	return;
 }
 
@@ -428,7 +428,7 @@ static short find_or_add_motion_sensor_entity(
 {
 	struct entity_data *entity;
 	short entity_index, best_unused_index;
-	
+
 	best_unused_index= NONE;
 	for (entity_index=0,entity=entities;entity_index<MAXIMUM_MOTION_SENSOR_ENTITIES;++entity_index,++entity)
 	{
@@ -445,7 +445,7 @@ static short find_or_add_motion_sensor_entity(
 	if (entity_index==MAXIMUM_MOTION_SENSOR_ENTITIES)
 	{
 		/* not found; add new entity if we can */
-		
+
 		if (best_unused_index!=NONE)
 		{
 			struct monster_data *monster= get_monster_data(monster_index);
@@ -453,7 +453,7 @@ static short find_or_add_motion_sensor_entity(
 			short i;
 
 			entity= entities+best_unused_index;
-			
+
 			entity->flags= 0;
 			entity->monster_index= monster_index;
 			entity->shape= get_motion_sensor_entity_shape(monster_index);
@@ -462,13 +462,13 @@ static short find_or_add_motion_sensor_entity(
 			entity->last_facing= object->facing;
 			entity->remove_delay= 0;
 			MARK_SLOT_AS_USED(entity);
-			
+
 //			dprintf("new index, pointer: %d, %p", best_unused_index, entity);
 		}
-		
+
 		entity_index= best_unused_index;
 	}
-	
+
 	return entity_index;
 }
 
@@ -481,13 +481,13 @@ static void precalculate_sensor_region(
 
 	/* save length for assert() during rendering */
 	motion_sensor_side_length= side_length;
-	
+
 	/* precompute [x0,x1] clipping values for each y value in the circular sensor */
 	for (i=0;i<side_length;++i)
 	{
 		double y= i - half_side_length;
 		double x= sqrt(r*r-y*y);
-		
+
 		if (x>=r) x= r-1.0;
 		sensor_region[i].x0= half_side_length-x;
 		sensor_region[i].x1= x+half_side_length;
@@ -508,27 +508,27 @@ static void bitmap_window_copy(
 {
 	short count;
 	short y;
-	
+
 	assert(x0<=x1&&y0<=y1);
 
 	if (x0<0) x0= 0;
 	if (y0<0) y0= 0;
 	if (x1>source->width) x1= source->width;
 	if (y1>source->height) y1= source->height;
-	
+
 	assert(source->width==destination->width);
 	assert(source->height==destination->height);
 	assert(destination->width==motion_sensor_side_length);
 	assert(destination->height==motion_sensor_side_length);
-	
+
 	for (y=y0;y<y1;++y)
 	{
 		register pixel8 *read= source->row_addresses[y]+x0;
 		register pixel8 *write= destination->row_addresses[y]+x0;
-		
+
 		for (count=x1-x0;count>0;--count) *write++= *read++;
 	}
-	
+
 	return;
 }
 
@@ -540,7 +540,7 @@ static void clipped_transparent_sprite_copy(
 	short y0)
 {
 	short height, y;
-	
+
 	assert(destination->width==motion_sensor_side_length);
 	assert(destination->height==motion_sensor_side_length);
 
@@ -553,22 +553,22 @@ static void clipped_transparent_sprite_copy(
 		height+= y0;
 	}
 
-	while ((height-= 1)>=0)	
+	while ((height-= 1)>=0)
 	{
 		register pixel8 pixel, *read, *write;
 		register short width= source->width;
 		short clip_left= region[y0+y].x0, clip_right= region[y0+y].x1;
 		short offset= 0;
-		
+
 		if (x0<clip_left) offset= clip_left-x0, width-= offset;
 		if (x0+offset+width>clip_right) width= clip_right-x0-offset;
 
 		assert(y>=0&&y<source->height);
 		assert(y0+y>=0&&y0+y<destination->height);
-		
+
 		read= source->row_addresses[y]+offset;
 		write= destination->row_addresses[y0+y]+x0+offset;
-		
+
 		while ((width-= 1)>=0)
 		{
 			if (pixel= *read++) *write++= pixel; else write+= 1;
@@ -576,7 +576,7 @@ static void clipped_transparent_sprite_copy(
 
 		y+= 1;
 	}
-	
+
 	return;
 }
 
@@ -591,22 +591,22 @@ static void unclipped_solid_sprite_copy(
 	y= 0;
 	height= source->height;
 
-	while ((height-= 1)>=0)	
+	while ((height-= 1)>=0)
 	{
 		register pixel8 *read, *write;
 		register short width= source->width;
 
 		assert(y>=0&&y<source->height);
 		assert(y0+y>=0&&y0+y<destination->height);
-		
+
 		read= source->row_addresses[y];
 		write= destination->row_addresses[y0+y]+x0;
-		
+
 		while ((width-= 1)>=0) *write++= *read++;
 
 		y+= 1;
 	}
-	
+
 	return;
 }
 
@@ -615,12 +615,12 @@ static shape_descriptor get_motion_sensor_entity_shape(
 {
 	struct monster_data *monster= get_monster_data(monster_index);
 	shape_descriptor shape;
-	
+
 	if (MONSTER_IS_PLAYER(monster))
 	{
 		struct player_data *player= get_player_data(monster_index_to_player_index(monster_index));
 		struct player_data *owner= get_player_data(motion_sensor_player_index);
-		
+
 		shape= ((player->team==owner->team && !(GET_GAME_OPTIONS()&_force_unique_teams)) || GET_GAME_TYPE()==_game_of_cooperative_play) ?
 			friendly_shapes : enemy_shapes;
 	}
@@ -638,12 +638,12 @@ static shape_descriptor get_motion_sensor_entity_shape(
 			case _vacuum_civilian_assimilated:
 				shape= friendly_shapes;
 				break;
-			
+
 			default:
 				shape= alien_shapes;
 				break;
 		}
 	}
-	
+
 	return shape;
 }

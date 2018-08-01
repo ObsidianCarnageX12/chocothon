@@ -79,7 +79,7 @@ short new_item(
 	{
 		if (definition->invalid_environments & _environment_network) add_item= FALSE;
 		if (get_item_kind(type)==_ball && !current_game_has_balls()) add_item= FALSE;
-	} 
+	}
 	else
 	{
 		if (definition->invalid_environments & _environment_single_player) add_item= FALSE;
@@ -92,17 +92,17 @@ short new_item(
 		if (object_index!=NONE)
 		{
 			struct object_data *object= get_object_data(object_index);
-			
+
 			SET_OBJECT_OWNER(object, _object_is_item);
 			object->permutation= type;
-		
+
 			if ((location->flags&_map_object_is_network_only) && dynamic_world->player_count<=1)
 			{
 //				dprintf("killed #%d;g;", type);
 				SET_OBJECT_INVISIBILITY(object, TRUE);
 				object->permutation= NONE;
 			}
-#if 1			
+#if 1
 			else if ((get_item_kind(type)==_ball) && !static_world->ball_in_play)
 			{
 				static_world->ball_in_play= TRUE;
@@ -118,7 +118,7 @@ short new_item(
 	{
 		object_index= NONE;
 	}
-	
+
 	return object_index;
 }
 
@@ -145,10 +145,10 @@ void trigger_nearby_items(
 					break;
 			}
 		}
-		
+
 		polygon_index= flood_map(NONE, LONG_MAX, item_trigger_cost_function, _breadth_first, (void *) NULL);
 	}
-	
+
 	return;
 }
 
@@ -162,13 +162,13 @@ short find_player_ball_color(
 
 	for(index= BALL_ITEM_BASE; ball_color==NONE && index<BALL_ITEM_BASE+MAXIMUM_NUMBER_OF_PLAYERS; ++index)
 	{
-		if(player->items[index]>0) 
+		if(player->items[index]>0)
 		{
 			ball_color= index-BALL_ITEM_BASE;
 		}
 	}
 
-	return ball_color;	
+	return ball_color;
 }
 
 void get_item_name(
@@ -180,7 +180,7 @@ void get_item_name(
 
 	getcstr(buffer, strITEM_NAME_LIST, plural ? definition->plural_name_id :
 		definition->singular_name_id);
-	
+
 	return;
 }
 
@@ -189,7 +189,7 @@ void get_header_name(
 	short type)
 {
 	getcstr(buffer, strHEADER_NAME_LIST, type);
-	
+
 	return;
 }
 
@@ -203,7 +203,7 @@ void calculate_player_item_array(
 	struct player_data *player= get_player_data(player_index);
 	short loop;
 	short count= 0;
-	
+
 	for(loop=0; loop<NUMBER_OF_DEFINED_ITEMS; ++loop)
 	{
 		if (loop==_i_knife) continue;
@@ -217,9 +217,9 @@ void calculate_player_item_array(
 			}
 		}
 	}
-	
+
 	*array_count= count;
-	
+
 	return;
 }
 
@@ -230,13 +230,13 @@ short count_inventory_lines(
 	boolean types[NUMBER_OF_ITEM_TYPES];
 	short count= 0;
 	short loop;
-	
+
 	/* Clean out the header array, so we can count properly */
 	for(loop=0; loop<NUMBER_OF_ITEM_TYPES; ++loop)
 	{
 		types[loop]= FALSE;
 	}
-	
+
 	for(loop=0; loop<NUMBER_OF_DEFINED_ITEMS; ++loop)
 	{
 		if (loop==_i_knife) continue;
@@ -246,13 +246,13 @@ short count_inventory_lines(
 			types[get_item_kind(loop)]= TRUE;
 		}
 	}
-	
+
 	/* Now add in the header lines.. */
 	for(loop= 0; loop<NUMBER_OF_ITEM_TYPES; ++loop)
 	{
 		if(types[loop]) count++;
 	}
-	
+
 	return count;
 }
 
@@ -275,7 +275,7 @@ void swipe_nearby_items(
 	for (i=0;i<polygon->neighbor_count;++i)
 	{
 		struct polygon_data *neighboring_polygon= get_polygon_data(*neighbor_indexes++);
-		
+
 		if (!POLYGON_IS_DETACHED(neighboring_polygon))
 		{
 			next_object= neighboring_polygon->first_object;
@@ -283,14 +283,14 @@ void swipe_nearby_items(
 			while(next_object != NONE)
 			{
 				object= get_object_data(next_object);
-				if (GET_OBJECT_OWNER(object)==_object_is_item && !OBJECT_IS_INVISIBLE(object)) 
+				if (GET_OBJECT_OWNER(object)==_object_is_item && !OBJECT_IS_INVISIBLE(object))
 				{
 					if (guess_distance2d((world_point2d *) &player->location, (world_point2d *) &object->location)<=MAXIMUM_ARM_REACH)
 					{
 						world_distance radius, height;
-						
+
 						get_monster_dimensions(player->monster_index, &radius, &height);
-		
+
 						if (object->location.z >= player->location.z - MAXIMUM_ARM_REACH && object->location.z <= player->location.z + height &&
 							test_item_retrieval(player_object->polygon, &player_object->location, &object->location))
 						{
@@ -303,12 +303,12 @@ void swipe_nearby_items(
 						}
 					}
 				}
-				
+
 				next_object= object->next_object;
 			}
 		}
 	}
-	
+
 	return;
 }
 
@@ -316,7 +316,7 @@ void mark_item_collections(
 	boolean loading)
 {
 	mark_collection(_collection_items, loading);
-	
+
 	return;
 }
 
@@ -326,7 +326,7 @@ boolean unretrieved_items_on_map(
 	boolean found_item= FALSE;
 	struct object_data *object;
 	short object_index;
-	
+
 	for (object_index= 0, object= objects; object_index<MAXIMUM_OBJECTS_PER_MAP; ++object_index, ++object)
 	{
 		if (SLOT_IS_USED(object) && GET_OBJECT_OWNER(object)==_object_is_item)
@@ -338,7 +338,7 @@ boolean unretrieved_items_on_map(
 			}
 		}
 	}
-	
+
 	return found_item;
 }
 
@@ -352,7 +352,7 @@ boolean item_valid_in_current_environment(
 	{
 		valid= FALSE;
 	}
-	
+
 	return valid;
 }
 
@@ -360,7 +360,7 @@ short get_item_kind(
 	short item_id)
 {
 	struct item_definition *definition= get_item_definition(item_id);
-	
+
 	return definition->item_kind;
 }
 
@@ -374,7 +374,7 @@ short get_item_shape(
 
 boolean try_and_add_player_item(
 	short player_index,
-	short type) 
+	short type)
 {
 	struct item_definition *definition= get_item_definition(type);
 	struct player_data *player= get_player_data(player_index);
@@ -392,34 +392,34 @@ boolean try_and_add_player_item(
 				success= TRUE;
 			}
 			break;
-		
+
 		case _ball:
-			/* Note that you can only carry ONE ball (ever) */	
+			/* Note that you can only carry ONE ball (ever) */
 			if(find_player_ball_color(player_index)==NONE)
 			{
 				player->items[type]= 1;
-				
+
 				/* Load the ball weapon.. */
 				process_new_item_for_reloading(player_index, _i_red_ball);
-				
+
 				/* Tell the interface to redraw next time it has to */
 				mark_player_inventory_as_dirty(player_index, type);
 				success= TRUE;
 			}
 			grabbed_sound_index= NONE;
 			break;
-		
+
 		case _weapon:
 		case _ammunition:
 		case _item:
-			/* Increment the count */	
+			/* Increment the count */
 			assert(type>=0 && type<NUMBER_OF_ITEMS);
 			if(player->items[type]==NONE)
 			{
 				/* just got the first one.. */
 				player->items[type]= 1;
 				success= TRUE;
-			} 
+			}
 			else if(player->items[type]+1<=definition->maximum_count_per_player ||
 				(dynamic_world->game_information.difficulty_level==_total_carnage_level && definition->item_kind==_ammunition))
 			{
@@ -436,21 +436,21 @@ boolean try_and_add_player_item(
 			{
 				/* Reload or whatever.. */
 				process_new_item_for_reloading(player_index, type);
-					
+
 				/* Tell the interface to redraw next time it has to */
 				mark_player_inventory_as_dirty(player_index, type);
 			}
 			break;
-		
+
 		default:
 			halt();
 	}
-	
+
 	/* Play the pickup sound */
 	if (success && player_index==current_player_index)
 	{
 		play_local_sound(grabbed_sound_index);
-	
+
 		/* Flash screen */
 		start_fade(_fade_bonus);
 	}
@@ -465,7 +465,7 @@ struct item_definition *get_item_definition(
 	short type)
 {
 	vassert(type>=0 && type<NUMBER_OF_DEFINED_ITEMS, csprintf(temporary, "#%d is not a valid item type.", type));
-	
+
 	return item_definitions+type;
 }
 #endif
@@ -480,30 +480,30 @@ static long item_trigger_cost_function(
 //	struct polygon_data *source_polygon= get_polygon_data(source_polygon_index);
 //	struct line_data *line= get_line_data(line_index);
 	long cost= 1;
-	
+
 	#pragma unused (unused,source_polygon_index,line_index)
 
 	if (destination_polygon->type==_polygon_is_zone_border) cost= -1;
-	
+
 	return cost;
 }
 
 static boolean get_item(
 	short player_index,
-	short object_index) 
+	short object_index)
 {
 	struct player_data *player= get_player_data(player_index);
-	struct object_data *object= get_object_data(object_index);	
+	struct object_data *object= get_object_data(object_index);
 	boolean success;
 
 	assert(GET_OBJECT_OWNER(object)==_object_is_item);
-	
+
 	if (success= try_and_add_player_item(player_index, object->permutation))
 	{
 		/* remove it */
 		remove_map_object(object_index);
 	}
-	
+
 	return success;
 }
 
@@ -519,7 +519,7 @@ static boolean test_item_retrieval(
 	{
 		short line_index= find_line_crossed_leaving_polygon(polygon_index, (world_point2d *) location1,
 			(world_point2d *) location2);
-		
+
 		if (line_index!=NONE)
 		{
 			polygon_index= find_adjacent_polygon(polygon_index, line_index);
@@ -527,11 +527,11 @@ static boolean test_item_retrieval(
 			if (polygon_index!=NONE)
 			{
 				struct polygon_data *polygon= get_polygon_data(polygon_index);
-				
+
 				if (polygon->type==_polygon_is_platform)
 				{
 					struct platform_data *platform= get_platform_data(polygon->permutation);
-					
+
 					if (PLATFORM_IS_MOVING(platform)) valid_retrieval= FALSE;
 				}
 			}
@@ -542,6 +542,6 @@ static boolean test_item_retrieval(
 		}
 	}
 	while (polygon_index!=NONE && valid_retrieval);
-	
+
 	return valid_retrieval;
 }

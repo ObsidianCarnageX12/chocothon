@@ -50,7 +50,7 @@ void main(
 	{
 		FSSpec original, new, delta;
 		OSErr error;
-		
+
 		strcpy(temporary, argv[1]);
 		c2pstr(temporary);
 		/* Boot drive, desktop.. */
@@ -59,14 +59,14 @@ void main(
 		{
 			strcpy(temporary, argv[2]);
 			c2pstr(temporary);
-			
+
 			/* Boot drive, desktop.. */
 			error= FSMakeFSSpec(0, 0, temporary, &new);
 			if(!error)
 			{
 				strcpy(temporary, argv[3]);
 				c2pstr(temporary);
-				
+
 				/* Boot drive, desktop.. */
 				error= FSMakeFSSpec(0, 0, temporary, &delta);
 				if(!error || error==fnfErr)
@@ -90,7 +90,7 @@ void main(
 			exit(1);
 		}
 	}
-	
+
 	exit(0);
 }
 
@@ -101,7 +101,7 @@ static struct wad_data *get_physics_wad_from_file(
 {
 	struct wad_data *wad= NULL;
 	short file_id;
-	
+
 	file_id= open_wad_file_for_reading(file);
 	if(file_id != NONE)
 	{
@@ -146,19 +146,19 @@ static boolean write_patchfile(
 	if(!error)
 	{
 		fileref file_ref;
-		
+
 		file_ref= open_wad_file_for_writing(file);
 		if(file_ref != NONE)
 		{
 			struct wad_header header;
 			struct directory_entry entries[1];
 
-			/* Create the header.. */		
+			/* Create the header.. */
 			fill_default_wad_header(file, CURRENT_WADFILE_VERSION,
 				data_version, 1, 0, &header);
 
 			header.parent_checksum= parent_checksum;
-			
+
 			if(write_wad_header(file_ref, &header))
 			{
 				if(write_wad(file_ref, &header, wad, sizeof(struct wad_header)))
@@ -172,25 +172,25 @@ static boolean write_patchfile(
 			entries[0].offset_to_start= sizeof(struct wad_header);
 			entries[0].index= 0;
 			entries[0].length= calculate_wad_length(&header, wad);
-	
+
 			/* Write the directory.. */
 			header.directory_offset= sizeof(struct wad_header)+entries[0].length;
 			header.wad_count= 1;
 			write_wad_header(file_ref, &header);
-	
+
 			write_directorys(file_ref, &header, entries);
-			
+
 			calculate_and_store_wadfile_checksum(file_ref);
 
 			close_wad_file(file_ref);
 		}
 	}
-	
+
 	return success;
 }
 
 static boolean create_delta_wad_file(
-	FileDesc *original, 
+	FileDesc *original,
 	FileDesc *new,
 	FileDesc *delta,
 	unsigned long delta_file_type)
@@ -219,12 +219,12 @@ static boolean create_delta_wad_file(
 
 		fprintf(stderr, "Opened both files…\n");
 
-		/* Loop through all the wads. */		
+		/* Loop through all the wads. */
 		for(index= 0; index<NUMBER_OF_DEFINITIONS; ++index)
 		{
 			long original_length, new_length;
 			struct definition_data *definition= definitions+index;
-			byte *original_data, *new_data;			
+			byte *original_data, *new_data;
 			long first_nonmatching_offset, nonmatching_length, offset;
 
 			/* Given a wad, extract the given tag from it */
@@ -233,43 +233,43 @@ static boolean create_delta_wad_file(
 
 			/* The both _HAVE_ to be full files.. */
 			assert(original_data && new_data && new_length==original_length);
-			
+
 			/* Now compare them.. */
 			first_nonmatching_offset= NONE;
 			nonmatching_length= 0;
 			for(offset= 0; offset<original_length; ++offset)
 			{
 				if(original_data[offset]!=new_data[offset])
-				{	
+				{
 					if(first_nonmatching_offset==NONE)
 					{
 						first_nonmatching_offset= offset;
 						had_deltas= TRUE;
 					}
-					
+
 					nonmatching_length= (offset-first_nonmatching_offset)+1;
 				}
 			}
 
-			fprintf(stderr, "Tag: %4s Non matching: %d Length: %d\n",	
+			fprintf(stderr, "Tag: %4s Non matching: %d Length: %d\n",
 				(char *) &definition->tag, first_nonmatching_offset,
 				nonmatching_length);
 
 			if(first_nonmatching_offset!=NONE)
 			{
-				delta_wad= append_data_to_wad(delta_wad, definition->tag, 
+				delta_wad= append_data_to_wad(delta_wad, definition->tag,
 					&new_data[first_nonmatching_offset],
 					nonmatching_length, first_nonmatching_offset);
 			}
 		}
 
-		/* If we had the deltas.. */	
+		/* If we had the deltas.. */
 		if(had_deltas)
 		{
 			fprintf(stderr, "File had deltas, writing patchfile\n");
-			success= write_patchfile(delta, delta_wad, PHYSICS_DATA_VERSION,	
+			success= write_patchfile(delta, delta_wad, PHYSICS_DATA_VERSION,
 				parent_checksum, delta_file_type);
-				
+
 			if(success)
 			{
 				fprintf(stderr, "Delta file successfully written..\n");
@@ -283,7 +283,7 @@ static boolean create_delta_wad_file(
 
 		free_wad(delta_wad);
 	}
-	
+
 	if(new_wad)	free_wad(new_wad);
 	if(original_wad) free_wad(original_wad);
 

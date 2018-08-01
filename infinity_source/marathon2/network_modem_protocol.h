@@ -12,15 +12,15 @@ boolean ModemSync(void);
 boolean ModemUnsync(void);
 
 short ModemAddDistributionFunction(NetDistributionProc proc, boolean lossy);
-void ModemDistributeInformation(short type, void *buffer, short buffer_size, 
+void ModemDistributeInformation(short type, void *buffer, short buffer_size,
 	boolean send_to_self);
 void ModemRemoveDistributionFunction(short type);
 
-boolean ModemGather(void *game_data, short game_data_size, void *player_data, 
+boolean ModemGather(void *game_data, short game_data_size, void *player_data,
 	short player_data_size);
 
 boolean ModemGatherPlayer(short player_index, CheckPlayerProcPtr check_player);
-boolean ModemGameJoin(char *player_name, char *player_type, void *player_data, 
+boolean ModemGameJoin(char *player_name, char *player_type, void *player_data,
 	short player_data_size, short version_number);
 
 void ModemCancelJoin(void);

@@ -23,7 +23,7 @@ struct overhead_map_data
 	short half_width, half_height;
 	short width, height;
 	short top, left;
-	
+
 	boolean draw_everything;
 };
 

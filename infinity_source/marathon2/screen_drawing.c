@@ -1,7 +1,7 @@
 /*
 	SCREEN_DRAWING.C
 	Monday, August 15, 1994 1:55:21 PM
- 
+
     Wednesday, August 24, 1994 12:50:20 AM (ajr)
 	  added _right_justified for _draw_screen_text
 	Thursday, June 22, 1995 8:45:41 AM- note that we no longer hold your hand and set the port
@@ -26,7 +26,7 @@
 #define clutSCREEN_COLORS 130
 #define finfFONTS 128
 
-struct interface_font_info 
+struct interface_font_info
 {
 	TextSpec fonts[NUMBER_OF_INTERFACE_FONTS];
 	short heights[NUMBER_OF_INTERFACE_FONTS];
@@ -58,10 +58,10 @@ void initialize_screen_drawing(
 
 	/* Load the rectangles */
 	load_interface_rectangles();
-	
+
 	/* Load the colors */
 	load_screen_interface_colors();
-	
+
 	/* load the font stuff. */
 	for(loop=0; loop<NUMBER_OF_INTERFACE_FONTS; ++loop)
 	{
@@ -110,8 +110,8 @@ void _restore_port(
 
 /* If source==NULL, source= the shapes bounding rectangle */
 void _draw_screen_shape(
-	shape_descriptor shape_id, 
-	screen_rectangle *destination, 
+	shape_descriptor shape_id,
+	screen_rectangle *destination,
 	screen_rectangle *source)
 {
 	PixMapHandle pixmap;
@@ -123,7 +123,7 @@ void _draw_screen_shape(
 	GetBackColor(&old_back);
 	RGBForeColor(&rgb_black);
 	RGBBackColor(&rgb_white);
-	
+
 	/* Draw the panels... */
 	pixmap= get_shape_pixmap(shape_id, FALSE);
 	if(!source)
@@ -133,7 +133,7 @@ void _draw_screen_shape(
 {
 	short dest_width, source_width;
 	short dest_height, source_height;
-	
+
 	dest_width= destination->right-destination->left;
 	source_width= (*pixmap)->bounds.right-(*pixmap)->bounds.left;
 	dest_height= destination->bottom-destination->top;
@@ -168,20 +168,20 @@ void _get_player_color(
 }
 
 void _get_interface_color(
-	short color_index, 
+	short color_index,
 	RGBColor *color)
 {
 	assert(screen_colors);
 	assert(color_index>=0 && color_index<=(*screen_colors)->ctSize);
 
 	*color= (*screen_colors)->ctTable[color_index].rgb;
-	
+
 	return;
 }
 
 void _scroll_window(
-	short dy, 
-	short rectangle_id, 
+	short dy,
+	short rectangle_id,
 	short background_color_index)
 {
 	Rect *destination= _get_interface_rect(rectangle_id);
@@ -200,7 +200,7 @@ void _scroll_window(
 }
 
 void _fill_screen_rectangle(
-	screen_rectangle *rectangle, 
+	screen_rectangle *rectangle,
 	short color_index)
 {
 	RGBColor old_color, new_color;
@@ -226,14 +226,14 @@ void _draw_screen_shape_at_x_y(
 	GetBackColor(&old_back);
 	RGBForeColor(&rgb_black);
 	RGBBackColor(&rgb_white);
-	
+
 	/* Draw the panels... */
 	pixmap= get_shape_pixmap(shape, FALSE);
-	
+
 	/* Offset to zero base, and add in x, y */
 	destination= (*pixmap)->bounds;
 	OffsetRect(&destination, x-destination.left, y-destination.top);
-	
+
 	/* Slam the puppy...  */
 	assert(destination_graphics_port);
 	CopyBits((BitMapPtr) *pixmap, &destination_graphics_port->portBits, //&screen_window->portBits,
@@ -259,20 +259,20 @@ return;
 	GetBackColor(&old_back);
 	RGBForeColor(&rgb_black);
 	RGBBackColor(&rgb_white);
-	
+
 	/* Draw the panels... */
 	pixmap= get_shape_pixmap(shape, FALSE);
-	
+
 	/* Offset to zero base, and add in x, y */
 	destination= source= (*pixmap)->bounds;
-	
+
 	if(flags & _center_horizontal)
 	{
 		left_offset= (RECTANGLE_WIDTH(rectangle)-RECTANGLE_WIDTH(&source))/2;
 	} else {
 		left_offset= 0;
 	}
-	
+
 	if(flags & _center_vertical)
 	{
 		top_offset= (RECTANGLE_HEIGHT(rectangle)-RECTANGLE_HEIGHT(&source))/2;
@@ -281,10 +281,10 @@ return;
 	} else {
 		top_offset= 0;
 	}
-	
-	OffsetRect(&destination, rectangle->left+left_offset, 
+
+	OffsetRect(&destination, rectangle->left+left_offset,
 		rectangle->top+top_offset);
-	
+
 	/* Slam the puppy...  */
 	assert(destination_graphics_port);
 	CopyBits((BitMapPtr) *pixmap, &destination_graphics_port->portBits, // &screen_window->portBits,
@@ -296,14 +296,14 @@ return;
 }
 
 short _text_width(
-	char *buffer, 
+	char *buffer,
 	short font_id)
 {
 	TextSpec old_font;
 	short width;
 
 	assert(font_id>=0 && font_id<NUMBER_OF_INTERFACE_FONTS);
-	
+
 	GetFont(&old_font);
 	SetFont(&interface_fonts.fonts[font_id]);
 	width= TextWidth(buffer, 0, strlen(buffer));
@@ -326,7 +326,7 @@ void _draw_screen_text(
 	char text_to_draw[256];
 
 	assert(font_id>=0 && font_id<NUMBER_OF_INTERFACE_FONTS);
-	
+
 	GetFont(&old_font);
 	SetFont(&interface_fonts.fonts[font_id]);
 
@@ -354,24 +354,24 @@ void _draw_screen_text(
 			if(text_to_draw[count]==' ') last_non_printing_character= count;
 			count++;
 		}
-		
+
 		if(count!=strlen(text_to_draw))
 		{
 			char remaining_text_to_draw[256];
 			screen_rectangle new_destination;
-			
+
 			/* If we ever have to wrap text, we can't also center vertically.  Sorry */
 			flags &= ~_center_vertical;
 			flags |= _top_justified;
-			
+
 			/* Pass the rest of it back in, recursively, on the next line.. */
 			BlockMove(&text_to_draw[last_non_printing_character+1], remaining_text_to_draw,
 				strlen(&text_to_draw[last_non_printing_character+1])+1);
-	
+
 			new_destination= *destination;
 			new_destination.top+= interface_fonts.line_spacing[font_id];
 			_draw_screen_text(remaining_text_to_draw, &new_destination, flags, font_id, text_color);
-	
+
 			/* now truncate our text to draw...*/
 			text_to_draw[last_non_printing_character]= 0;
 		}
@@ -381,15 +381,15 @@ void _draw_screen_text(
 	if(flags & _center_horizontal || flags & _right_justified)
 	{
 		short text_width;
-		
+
 		text_width= TextWidth(text_to_draw, 0, strlen(text_to_draw));
-		
+
 		if(text_width>RECTANGLE_WIDTH(destination))
 		{
 			short length;
 			short trunc_code;
-	
-			/* Truncate the puppy.. */	
+
+			/* Truncate the puppy.. */
 			x= destination->left;
 			length= strlen(text);
 			trunc_code= TruncText(RECTANGLE_WIDTH(destination), text_to_draw, &length, truncEnd);
@@ -415,14 +415,14 @@ void _draw_screen_text(
 		{
 			short length;
 			short trunc_code;
-	
-			/* Truncate the puppy.. */	
+
+			/* Truncate the puppy.. */
 			length= strlen(text);
 			trunc_code= TruncText(RECTANGLE_WIDTH(destination), text_to_draw, &length, truncEnd);
 			text_to_draw[length]= 0;
-		} 
+		}
 	}
-	
+
 	if(flags & _center_vertical)
 	{
 		short text_height;
@@ -456,7 +456,7 @@ void _draw_screen_text(
 	/* Now draw it. */
 	MoveTo(x, y);
 	DrawText(text_to_draw, 0, strlen(text_to_draw));
-	
+
 	/* Restore.. */
 	RGBForeColor(&old_color);
 	SetFont(&old_font);
@@ -483,13 +483,13 @@ short _get_font_line_height(
 }
 
 void _fill_rect(
-	screen_rectangle *rectangle, 
+	screen_rectangle *rectangle,
 	short color_index)
 {
 	RGBColor old_color, new_color;
 
 	_get_interface_color(color_index, &new_color);
-	
+
 	GetForeColor(&old_color);
 	RGBForeColor(&new_color);
 	PaintRect((Rect *) rectangle);
@@ -503,7 +503,7 @@ void _frame_rect(
 	RGBColor old_color, new_color;
 
 	_get_interface_color(color_index, &new_color);
-	
+
 	GetForeColor(&old_color);
 	RGBForeColor(&new_color);
 	FrameRect((Rect *) rectangle);
@@ -511,8 +511,8 @@ void _frame_rect(
 }
 
 void _offset_screen_rect(
-	screen_rectangle *rect, 
-	short dx, 
+	screen_rectangle *rect,
+	short dx,
 	short dy)
 {
 	OffsetRect((Rect *) rect, dx, dy);
@@ -537,19 +537,19 @@ boolean display_full_screen_pict_resource(
 {
 	PicHandle picture;
 	boolean picture_drawn= FALSE;
-	
-	picture= (PicHandle) GetResource(pict_resource_type, 
+
+	picture= (PicHandle) GetResource(pict_resource_type,
 		determine_pict_resource_id(pict_resource_type, pict_resource_number));
 	if (picture)
 	{
 		CTabHandle clut;
-		
+
 		if (interface_bit_depth==8)
 		{
 #if 0
 			PictInfo info;
 			OSErr error;
-			
+
 			error= GetPictInfo(picture, &info, returnColorTable, 256, popularMethod, 0);
 			assert(error==noErr);
 
@@ -566,63 +566,63 @@ boolean display_full_screen_pict_resource(
 		{
 			clut= world_color_table;
 		}
-		
+
 		if (clut)
 		{
 			GrafPtr old_port;
 
 			GetPort(&old_port);
 			SetPort(window);
-			
+
 			PaintRect(&window->portRect);
-	
+
 			if (interface_bit_depth==8) assert_world_color_table(clut, world_color_table);
 			full_fade(_start_cinematic_fade_in, clut);
 
 			draw_full_screen_pict_resource(window, pict_resource_type, pict_resource_number);
 			picture_drawn= TRUE;
-	
+
 			full_fade(_long_cinematic_fade_in, clut);
 
 			if (delay>0)
 			{
 				wait_for_click_or_keypress(delay);
-		
+
 				full_fade(_cinematic_fade_out, clut);
 				PaintRect(&window->portRect);
 				full_fade(_end_cinematic_fade_out, clut);
 				if (interface_bit_depth==8) assert_world_color_table(interface_color_table, world_color_table);
 			}
-			
+
 			SetPort(old_port);
 		}
 
 		if (bit_depth==8 && clut) ReleaseResource((Handle)clut);
 	}
-	
+
 	return picture_drawn;
 }
 #endif
 
 /* ------- Private prototypes */
 static void load_interface_rectangles(
-	void) 
+	void)
 {
 	Handle rect_handle;
 	short number;
-	
+
 	rect_handle= GetResource('nrct', 128); /* load the rectangles */
 	assert(rect_handle);
 	number=(*((short *) *rect_handle)); /* The number of rects is the first thing */
 	interface_rectangles= (screen_rectangle *) NewPtr(number*sizeof(Rect));
 
 	assert(interface_rectangles);
-	assert(number==NUMBER_OF_INTERFACE_RECTANGLES);	
+	assert(number==NUMBER_OF_INTERFACE_RECTANGLES);
 	assert(GetHandleSize(rect_handle)==(number*sizeof(screen_rectangle))+sizeof(short));
 
 	BlockMove(((*rect_handle)+sizeof(short)), interface_rectangles, number*sizeof(screen_rectangle));
 	ReleaseResource(rect_handle);
-	
+
 	/* Now center all rectangles in your screen... */
 }
 
@@ -637,12 +637,12 @@ static short _get_font_height(
 {
 	FontInfo info;
 	TextSpec old_font;
-	
+
 	GetFont(&old_font);
 	SetFont(font);
 	GetFontInfo(&info);
 	SetFont(&old_font);
-	
+
 	return info.ascent+info.leading;
 }
 
@@ -651,12 +651,12 @@ static short _get_font_line_spacing(
 {
 	FontInfo info;
 	TextSpec old_font;
-	
+
 	GetFont(&old_font);
 	SetFont(font);
 	GetFontInfo(&info);
 	SetFont(&old_font);
-	
+
 	return info.ascent+info.descent+info.leading;
 }
 
@@ -665,8 +665,8 @@ static void	load_screen_interface_colors(
 {
 	screen_colors= (CTabHandle) GetResource('clut', clutSCREEN_COLORS);
 	assert(screen_colors);
-	
+
 	HNoPurge((Handle)screen_colors);
-	
+
 	return;
 }

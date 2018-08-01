@@ -30,10 +30,10 @@ datagramData		ds.b	ddpMaxData
 TheSocketListener	proc	export
 
 					bra.s	start	;branch over the globals to the initializer
-					
+
 ; globals stuck in the procedure. we need to have them before we use them, yet we don't
 ; want to stick them at the beginning of the file because then they will be stuck at the
-; beginning of the code resource that we create, which will be problematic for calling 
+; beginning of the code resource that we create, which will be problematic for calling
 ; these routines.
 packet_buffer		dc.l	0	;packet buffer pointers
 application_a5		dc.l	0	;caller’s a5
@@ -55,19 +55,19 @@ packet_handler_proc	dc.l	0	;pointer to the function which handles packets
 ;remember the caller’s a5
 start				lea		application_a5,a0
 					move.l	a5,(a0)
-					
+
 ;save the packet handler procedure, the packet buffer pointer and the number of valid
 ;packet buffers
 					lea		packet_handler_proc,a0
 					move.l	4(a7),(a0)
 					lea		packet_buffer,a0
 					move.l	8(a7),(a0)
-					
+
 ;mark our buffer as not in use
 					move.l	packet_buffer,a0
 					clr.w	inUse(a0)
 
-					lea		NetDDPSocketListener, a0 ;; return the address 
+					lea		NetDDPSocketListener, a0 ;; return the address
 					move.l	a0, d0
 					rts
 

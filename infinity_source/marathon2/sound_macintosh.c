@@ -22,9 +22,9 @@ void InitializeTables(void);
 SSpSourceReference 		CreateSource (void);
 SSpListenerReference 	CreateListener(void);
 
-void ConvertMarathonCoordinatesToSoundSprocket (world_location3d *theWorld, 
+void ConvertMarathonCoordinatesToSoundSprocket (world_location3d *theWorld,
 												TQ3CameraPlacement *outCamera);
-												
+
 void CalcSourceInfo(SSpSourceReference theSource, world_location3d 	*theWorld);
 void CalcListenerInfo (world_location3d *marathonCoords);
 
@@ -32,31 +32,31 @@ void InitializeTables(void)
 {
 	int loop;
 	long double angle = 0;
-	
+
 	for (loop = 0; loop < NUMBER_OF_ANGLES; loop++)
 	{
-		
+
 		long double angle = 360*loop/(57.296*NUMBER_OF_ANGLES);
-		
+
 		gSprocketSinTable[loop] = sin (angle);
 		gSprocketCosTable[loop] = cos (angle);
 	}
-	
+
 }
 
 SSpSourceReference CreateSource ()
 {
 	OSStatus 				theErr = noErr;
 	SSpSourceReference 		theSource = NULL;
-	
+
 	theErr = SSpSource_New (&theSource);
-	
+
 	if (theErr != noErr)
 	{
 		DebugStr ("\pFailed to create a source");
 		theSource = NULL;
 	}
-	
+
 	return theSource;
 }
 
@@ -65,25 +65,25 @@ SSpListenerReference CreateListener()
 {
 	OSStatus 				theErr = noErr;
 	SSpListenerReference 	theSource = NULL;
-	
+
 	theErr = SSpListener_New (&theSource);
-	
+
 	if (theErr != noErr)
 	{
 		DebugStr ("\pFailed to create a listener");
 		theSource = NULL;
 	}
-	
+
 	return theSource;
 }
 
-void ConvertMarathonCoordinatesToSoundSprocket (world_location3d *theWorld, 
+void ConvertMarathonCoordinatesToSoundSprocket (world_location3d *theWorld,
 												TQ3CameraPlacement *outCamera)
 {
 	// up vector and orientation are arbitrary, will fix later.
 	angle pitch = normalize_angle (theWorld->pitch);
 	angle yaw = normalize_angle (theWorld->yaw);
-	
+
 	outCamera->cameraLocation.x = (float) theWorld->point.x;
 	outCamera->cameraLocation.y = (float) theWorld->point.y;
 	outCamera->cameraLocation.z = (float) theWorld->point.z;
@@ -91,7 +91,7 @@ void ConvertMarathonCoordinatesToSoundSprocket (world_location3d *theWorld,
 	outCamera->upVector.x = gSprocketSinTable[pitch];
 	outCamera->upVector.y = 0;
 	outCamera->upVector.z = gSprocketCosTable[pitch];
-	
+
 	outCamera->pointOfInterest.x = (float) theWorld->point.x + (gSprocketCosTable[yaw]*gSprocketCosTable[pitch]);
 	outCamera->pointOfInterest.y = (float) theWorld->point.y - gSprocketSinTable[yaw];
 	outCamera->pointOfInterest.z = (float) theWorld->point.z + (gSprocketCosTable[yaw]*gSprocketSinTable[pitch]);
@@ -106,9 +106,9 @@ void CalcListenerInfo (world_location3d *marathonCoords)
 	// need to get the world coordinate -- how?
 
 	ConvertMarathonCoordinatesToSoundSprocket (marathonCoords, &listenerPosition);
-	
+
 	theErr = SSpListener_SetCameraPlacement (gListener, &listenerPosition);
-	
+
 	if (theErr != noErr)
 		DebugStr ("\pFailed to set the camera position of the listener");
 }
@@ -123,9 +123,9 @@ void CalcSourceInfo(SSpSourceReference theSource, world_location3d 	*theWorld)
 	// need to get the world coordinate -- how?
 
 	ConvertMarathonCoordinatesToSoundSprocket (theWorld, &sourcePosition);
-	
+
 	theErr = SSpSource_SetCameraPlacement (theSource, &sourcePosition);
-	
+
 	if (theErr != noErr)
 		DebugStr ("\pFailed to set the camera position of the source");
 }
@@ -171,20 +171,20 @@ void set_sound_manager_parameters(
 		boolean initial_state= _sm_active;
 
 		verify_sound_manager_parameters(parameters);
-		
+
 		/* if it was initially on, turn off the sound manager */
-		if (initial_state) set_sound_manager_status(FALSE);		
-		
+		if (initial_state) set_sound_manager_status(FALSE);
+
 		/* we need to get rid of the sounds we have in memory */
 		unload_all_sounds();
-		
+
 		/* stuff in our new parameters */
 		*_sm_parameters= *parameters;
-		
+
 		/* if it was initially on, turn the sound manager back on */
 		if (initial_state) set_sound_manager_status(TRUE);
 	}
-	
+
 	return;
 }
 
@@ -201,7 +201,7 @@ void set_sound_manager_status(
 #ifdef SUPPORT_SOUND_SPROCKET
 		SoundComponentLink		myLink;
 #endif
-	
+
 		if (active != _sm_active)
 		{
 			if (active)
@@ -220,13 +220,13 @@ void set_sound_manager_status(
 
 				GetDefaultOutputVolume(&_sm_globals->old_sound_volume);
 				SetDefaultOutputVolume(sound_level_to_sound_volume(_sm_parameters->volume));
-				
+
 #ifdef SUPPORT_SOUND_SPROCKET
 				InitializeTables();
 				gListener = CreateListener();
 				SSpListener_SetMetersPerUnit (gListener, 0.0001);
 #endif
-				
+
 				for (i= 0, channel= _sm_globals->channels; i<_sm_globals->total_channel_count; ++i, ++channel)
 				{
 					/* initialize the channel */
@@ -246,14 +246,14 @@ void set_sound_manager_status(
 							error= SndDisposeChannel(channel->channel, TRUE);
 							assert(error==noErr);
 						}
-						
+
  						alert_user(infoError, strERRORS, badSoundChannels, error);
 						_sm_globals->total_channel_count= 0;
 						active= _sm_active= _sm_initialized= FALSE;
-						
+
 						break;
 					}
-					
+
 #ifdef SUPPORT_SOUND_SPROCKET
 					channel->sspSource = CreateSource();
 
@@ -264,14 +264,14 @@ void set_sound_manager_status(
 					myLink.description.componentFlagsMask = 0;
 					myLink.mixerID = nil;
 					myLink.linkID = nil;
-					
+
 					error = SndSetInfo(channel->channel, siPreMixerSoundComponent, &myLink);
 					if (error != noErr)
 					{
 						DebugStr("\pError in SOUND_SPROCKET - set_sound_manager_status");
 					}
-#endif		
-					
+#endif
+
 				}
 			}
 			else
@@ -291,23 +291,23 @@ void set_sound_manager_status(
 #endif
 
 				SetDefaultOutputVolume(_sm_globals->old_sound_volume);
-				
+
 				// noticing that the default sound volume wasn’t correctly restored until the
 				// next sound command was issued (sysbeep, etc.) we do this to assure volume
 				// is correct on exit
 				{
 					long unused;
-					
+
 					GetDefaultOutputVolume(&unused);
 				}
 
 				_sm_globals->total_channel_count= 0;
 			}
-			
+
 			_sm_active= active;
 		}
 	}
-	
+
 	return;
 }
 
@@ -316,16 +316,16 @@ OSErr open_sound_file(
 {
 	OSErr error= noErr;
 	short refNum;
-	
+
 	error= FSpOpenDF(spec, fsRdPerm, &refNum);
 	if (error==noErr)
 	{
 		long count;
 
-		// read header		
+		// read header
 		{
 			struct sound_file_header header;
-			
+
 			count= sizeof(struct sound_file_header);
 			error= FSRead(refNum, &count, (void *) &header);
 			if (error==noErr)
@@ -340,7 +340,7 @@ OSErr open_sound_file(
 				}
 			}
 		}
-		
+
 		if (error==noErr)
 		{
 			count= NUMBER_OF_SOUND_SOURCES*NUMBER_OF_SOUND_DEFINITIONS*sizeof(struct sound_definition);
@@ -353,7 +353,7 @@ OSErr open_sound_file(
 				_sm_initialized= FALSE;
 			}
 		}
-		
+
 		if (error!=noErr)
 		{
 			FSClose(refNum);
@@ -364,7 +364,7 @@ OSErr open_sound_file(
 			_sm_globals->sound_file_refnum= refNum;
 		}
 	}
-	
+
 	return error;
 }
 
@@ -384,7 +384,7 @@ boolean adjust_sound_volume_up(
 			changed= TRUE;
 		}
 	}
-	
+
 	return changed;
 }
 
@@ -404,7 +404,7 @@ boolean adjust_sound_volume_down(
 			changed= TRUE;
 		}
 	}
-	
+
 	return changed;
 }
 
@@ -422,7 +422,7 @@ void test_sound_volume(
 			SetDefaultOutputVolume(sound_level_to_sound_volume(_sm_parameters->volume));
 		}
 	}
-	
+
 	return;
 }
 
@@ -439,17 +439,17 @@ static void initialize_machine_sound_manager(
 	if ((error= MemError())==noErr)
 	{
 		short i;
-		
+
 		// allocate sound channels
 		for (i= 0; i<MAXIMUM_SOUND_CHANNELS+MAXIMUM_AMBIENT_SOUND_CHANNELS; ++i)
 		{
 			_sm_globals->channels[i].channel= (SndChannelPtr) NewPtr(sizeof(SndChannel));
 		}
-		
+
 		if ((error= MemError())==noErr)
 		{
 			FSSpec sounds_file;
-			
+
 			/* initialize _sm_globals */
 			_sm_globals->loaded_sounds_size= 0;
 			_sm_globals->total_channel_count= 0;
@@ -462,22 +462,22 @@ static void initialize_machine_sound_manager(
 				if (error==noErr)
 				{
 					atexit(shutdown_sound_manager);
-					
+
 					_sm_globals->available_flags= _stereo_flag | _dynamic_tracking_flag;
 					{
 						long heap_size= FreeMem();
-						
+
 						if (heap_size>kAMBIENT_SOUNDS_HEAP) _sm_globals->available_flags|= _ambient_sound_flag;
 						if (heap_size>kMORE_SOUNDS_HEAP) _sm_globals->available_flags|= _more_sounds_flag;
 						if (heap_size>k16BIT_SOUNDS_HEAP) _sm_globals->available_flags|= _16bit_sound_flag;
 						if (heap_size>kEXTRA_MEMORY_HEAP) _sm_globals->available_flags|= _extra_memory_flag;
 					}
-					
+
 					/* fake a set_sound_manager_parameters() call */
 					_sm_parameters->flags= 0;
 					_sm_initialized= _sm_active= TRUE;
 					GetDefaultOutputVolume(&_sm_globals->old_sound_volume);
-					
+
 					set_sound_manager_parameters(parameters);
 				}
 			}
@@ -493,7 +493,7 @@ static boolean channel_busy(
 	struct channel_data *channel)
 {
 	assert(SLOT_IS_USED(channel));
-	
+
 	return (channel->callback_count) ? FALSE : TRUE;
 }
 
@@ -501,14 +501,14 @@ static void unlock_sound(
 	short sound_index)
 {
 	struct sound_definition *definition= get_sound_definition(sound_index);
-	
+
 	assert(definition->hndl);
-	
+
 	if (definition->hndl)
 	{
 		HUnlock((Handle)definition->hndl);
 	}
-	
+
 	return;
 }
 
@@ -516,13 +516,13 @@ static void dispose_sound(
 	short sound_index)
 {
 	struct sound_definition *definition= get_sound_definition(sound_index);
-	
+
 	assert(definition->hndl);
-	
+
 	_sm_globals->loaded_sounds_size-= GetHandleSize((Handle)definition->hndl);
 	DisposeHandle((Handle)definition->hndl);
 	definition->hndl= 0;
-	
+
 	return;
 }
 
@@ -535,35 +535,35 @@ static long read_sound_from_file(
 	boolean success= FALSE;
 	Handle data= NULL;
 	OSErr error= noErr;
-	
+
 	if (_sm_globals->sound_file_refnum!=-1)
 	{
 		long size= (_sm_parameters->flags&_more_sounds_flag) ? definition->total_length : definition->single_length;
-		
+
 		if (data= NewHandle(size))
 		{
 			ParamBlockRec param;
-			
+
 			HLock(data);
-			
+
 			param.ioParam.ioCompletion= (IOCompletionUPP) NULL;
 			param.ioParam.ioRefNum= _sm_globals->sound_file_refnum;
 			param.ioParam.ioBuffer= *data;
 			param.ioParam.ioReqCount= size;
 			param.ioParam.ioPosMode= fsFromStart;
 			param.ioParam.ioPosOffset= definition->group_offset;
-			
+
 			error= PBReadSync(&param);
 			if (error==noErr)
 			{
 				HUnlock(data);
-				
+
 				_sm_globals->loaded_sounds_size+= size;
 			}
 			else
 			{
 				DisposeHandle(data);
-				
+
 				data= NULL;
 			}
 		}
@@ -573,9 +573,9 @@ static long read_sound_from_file(
 			dprintf("read_sound_from_file() couldn’t allocate #%d bytes", size);
 		}
 	}
-	
+
 	vwarn(error==noErr, csprintf(temporary, "read_sound_from_file(#%d) got error #%d", sound_index, error));
-	
+
 	return (long) data;
 }
 
@@ -585,7 +585,7 @@ static void quiet_channel(
 {
 	SndCommand command;
 	OSErr error;
-	
+
 	command.cmd= flushCmd;
 	command.param1= 0;
 	command.param2= 0;
@@ -600,9 +600,9 @@ static void quiet_channel(
 		{
 		}
 	}
-	
+
 	vwarn(error==noErr, csprintf(temporary, "SndDoImmediate() == #%d in quiet_channel()", error));
-	
+
 	return;
 }
 
@@ -626,23 +626,23 @@ static void instantiate_sound_variables(
 			// set the source location
 	error = SSpSource_SetCameraPlacement (channel->sspSource, &variables->source);
 	if (error != noErr) DebugStr ("\pFailed to set the source location");
-	
+
 	error = SSpSource_SetReferenceDistance (channel->sspSource, 2000.0);
-	
-		
+
+
 	// calculate our channel parameters and pass them along to the channel
 	error = SSpSource_CalcLocalization (channel->sspSource, gListener, &stereoData);
 	if (error != noErr) DebugStr ("\pFailed to calculate the localization");
-	
+
 	if (first_time)
 		stereoData.currentLocation.sourceVelocity = 0;
-	
+
 	stereoData.sourceMode = kSSpSourceMode_Localized;
-	
+
 	command.param1= 0;
 	command.param2= BUILD_STEREO_VOLUME(variables->volume, variables->volume);
 	error= SndDoImmediate(channel->channel, &command);
-	
+
 	SndSetInfo (channel->channel, siSSpLocalization, &stereoData);
 
 	channel->variables= *variables;
@@ -664,7 +664,7 @@ static void instantiate_sound_variables(
 	vwarn(error==noErr, csprintf(temporary, "SndDoImmediate() == #%d in instantiate_sound_variables()", error));
 
 	channel->variables= *variables;
-	
+
 		bogusLocalization.sourceMode = kSSpSourceMode_Unfiltered;
 		SndSetInfo (channel->channel, siSSpLocalization, &bogusLocalization);
 		return;
@@ -693,7 +693,7 @@ static void instantiate_sound_variables(
 	vwarn(error==noErr, csprintf(temporary, "SndDoImmediate() == #%d in instantiate_sound_variables()", error));
 
 	channel->variables= *variables;
-	
+
 	return;
 }
 #endif
@@ -711,7 +711,7 @@ static void buffer_sound(
 
 	assert(definition->hndl);
 	HLock((Handle)definition->hndl);
-	
+
 	assert(permutation>=0 && permutation<definition->permutations);
 	sound_header= (SoundHeaderPtr) ((*(byte **)definition->hndl) + definition->sound_offsets[permutation]);
 
@@ -740,7 +740,7 @@ static void buffer_sound(
 	}
 
 	vwarn(error==noErr, csprintf(temporary, "SndDoCommand() == #%d in buffer_sound()", error));
-	
+
 	return;
 }
 
@@ -751,8 +751,8 @@ static void shutdown_sound_manager(
 {
 	set_sound_manager_status(FALSE);
 
-	close_sound_file();	
-	
+	close_sound_file();
+
 	return;
 }
 
@@ -761,7 +761,7 @@ static pascal void sound_callback_proc(
 	SndCommand command)
 {
 	#pragma unused (command)
-	
+
 	*((short *)channel->userInfo)+= 1;
 
 	return;
@@ -771,7 +771,7 @@ static void close_sound_file(
 	void)
 {
 	OSErr error= noErr;
-	
+
 	if (_sm_globals->sound_file_refnum!=-1)
 	{
 		error= FSClose(_sm_globals->sound_file_refnum);
@@ -780,7 +780,7 @@ static void close_sound_file(
 			_sm_globals->sound_file_refnum= -1;
 		}
 	}
-	
+
 	return;
 }
 
@@ -788,7 +788,7 @@ static long sound_level_to_sound_volume(
 	short level)
 {
 	short volume= level*SOUND_VOLUME_DELTA;
-	
+
 	return BUILD_STEREO_VOLUME(volume, volume);
 }
 
@@ -798,7 +798,7 @@ enum
 {
 	FADE_OUT_DURATION= 2*MACINTOSH_TICKS_PER_SECOND,
 	FADE_OUT_STEPS= 20,
-	
+
 	TICKS_PER_FADE_OUT_STEP= FADE_OUT_DURATION/FADE_OUT_STEPS
 };
 
@@ -810,38 +810,38 @@ static synchronous_global_fade_to_silence(
 	boolean fade_out= FALSE;
 	struct channel_data *channel;
 	struct sound_variables old_variables[MAXIMUM_SOUND_CHANNELS+MAXIMUM_AMBIENT_SOUND_CHANNELS];
-	
+
 	for (i= 0, channel= _sm_globals->channels; i<_sm_globals->total_channel_count; ++i, ++channel)
 	{
 		if (SLOT_IS_USED(channel))
 		{
 			old_variables[i]= channel->variables;
-			
+
 			fade_out= TRUE;
 		}
 	}
-	
+
 	if (fade_out)
 	{
 		short step;
-		
+
 		for (step= 0; step<FADE_OUT_STEPS; ++step)
 		{
 			long tick_at_last_update= TickCount();
-			
+
 			while (TickCount()-tick_at_last_update<TICKS_PER_FADE_OUT_STEP);
-			
+
 			for (i= 0, channel= _sm_globals->channels; i<_sm_globals->total_channel_count; ++i, ++channel)
 			{
 				if (SLOT_IS_USED(channel))
 				{
 					struct sound_variables *old= old_variables + i;
 					struct sound_variables *new= &channel->variables;
-					
+
 					new->volume= (old->volume*(FADE_OUT_STEPS-step-1))/FADE_OUT_STEPS;
 					new->left_volume= (old->left_volume*(FADE_OUT_STEPS-step-1))/FADE_OUT_STEPS;
 					new->right_volume= (old->right_volume*(FADE_OUT_STEPS-step-1))/FADE_OUT_STEPS;
-			
+
 #ifdef SUPPORT_SOUND_SPROCKET
 					variables->useSprocketForSound = false;
 #endif
@@ -850,7 +850,7 @@ static synchronous_global_fade_to_silence(
 			}
 		}
 	}
-	
+
 	return;
 }
 #endif

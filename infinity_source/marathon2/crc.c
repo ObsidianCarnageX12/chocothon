@@ -22,7 +22,7 @@
 static unsigned long *crc_table= NULL;
 
 /* ---------- local prototypes ------- */
-static unsigned long calculate_file_crc(unsigned char *buffer, 
+static unsigned long calculate_file_crc(unsigned char *buffer,
 	short buffer_size, short refnum);
 static unsigned long calculate_buffer_crc(long count, unsigned long crc, void *buffer);
 static boolean build_crc_table(void);
@@ -30,23 +30,23 @@ static void free_crc_table(void);
 
 /* -------------- Entry Point ----------- */
 unsigned long calculate_crc_for_file(
-	FileDesc *file) 
+	FileDesc *file)
 {
 	short refnum;
 	unsigned long crc;
-	
+
 	refnum= open_file_for_reading(file);
 	if(refnum!=NONE)
 	{
 		crc= calculate_crc_for_opened_file(refnum);
 		close_file(refnum);
 	}
-	
+
 	return crc;
 }
 
 unsigned long calculate_crc_for_opened_file(
-	short refnum) 
+	short refnum)
 {
 	unsigned long crc;
 	unsigned char *buffer;
@@ -55,13 +55,13 @@ unsigned long calculate_crc_for_opened_file(
 	if(build_crc_table())
 	{
 		buffer= (unsigned char *) malloc(BUFFER_SIZE*sizeof(unsigned char));
-		if(buffer) 
+		if(buffer)
 		{
 			crc= calculate_file_crc(buffer, BUFFER_SIZE, refnum);
-			
+
 			free(buffer);
 		}
-		
+
 		/* free the crc table! */
 		free_crc_table();
 	}
@@ -77,7 +77,7 @@ unsigned long calculate_data_crc(
 	unsigned long crc= 0l;
 
 	assert(buffer);
-	
+
 	/* Build the crc table */
 	if(build_crc_table())
 	{
@@ -117,10 +117,10 @@ static boolean build_crc_table(
 			}
 			crc_table[index] = crc;
 		}
-		
+
 		success= TRUE;
 	}
-	
+
 	return success;
 }
 
@@ -134,8 +134,8 @@ static void free_crc_table(
 
 /* Calculate for a block of data incrementally */
 static unsigned long calculate_buffer_crc(
-	long count, 
-	unsigned long crc, 
+	long count,
+	unsigned long crc,
 	void *buffer)
 {
 	unsigned char *p;
@@ -143,7 +143,7 @@ static unsigned long calculate_buffer_crc(
 	unsigned long b;
 
 	p= (unsigned char *) buffer;
-	while (count--) 
+	while (count--)
 	{
 		a= (crc >> 8) & 0x00FFFFFFL;
 		b= crc_table[((int) crc ^ *p++) & 0xff];
@@ -154,7 +154,7 @@ static unsigned long calculate_buffer_crc(
 
 /* Calculate the crc for a file using the given buffer.. */
 static unsigned long calculate_file_crc(
-	unsigned char *buffer, 
+	unsigned char *buffer,
 	short buffer_size,
 	short refnum)
 {
@@ -162,18 +162,18 @@ static unsigned long calculate_file_crc(
 	long count;
 	FileError err;
 	long file_length, initial_position;
-	
+
 	/* Save and restore the initial file position */
 	initial_position= get_fpos(refnum);
 
 	/* Get the file_length */
 	file_length= get_file_length(refnum);
-	
+
 	/* Set to the start of the file */
 	set_fpos(refnum, 0l);
 
 	crc = 0xFFFFFFFFL;
-	while(file_length) 
+	while(file_length)
 	{
 		if(file_length>buffer_size)
 		{
@@ -184,11 +184,11 @@ static unsigned long calculate_file_crc(
 
 		err= read_file(refnum, count, buffer);
 		vassert(!err, csprintf(temporary, "Error: %d", err));
-		
+
 		crc = calculate_buffer_crc(count, crc, buffer);
 		file_length -= count;
 	}
-	
+
 	/* Restore the file position */
 	set_fpos(refnum, initial_position);
 

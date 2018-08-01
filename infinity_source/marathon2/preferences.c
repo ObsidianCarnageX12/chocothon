@@ -39,7 +39,7 @@ enum {
 	iWINDOW_SIZE,
 	iDETAIL,
 	iBRIGHTNESS,
-	iRESOLUTION_SWITCHING	
+	iRESOLUTION_SWITCHING
 };
 
 enum {
@@ -151,7 +151,7 @@ static void free_extensions_memory(void);
 static boolean increase_extensions_memory(void);
 static void build_extensions_list(void);
 static void search_from_directory(FSSpec *file);
-static unsigned long find_checksum_and_file_spec_from_dialog(DialogPtr dialog, 
+static unsigned long find_checksum_and_file_spec_from_dialog(DialogPtr dialog,
 	short item_hit, OSType type, FSSpec *file);
 static void	rebuild_patchlist(DialogPtr dialog, short item, unsigned long parent_checksum,
 	struct environment_preferences_data *preferences);
@@ -173,12 +173,12 @@ void initialize_preferences(
 	if(error_pending())
 	{
 		short type;
-		
+
 		err= get_game_error(&type);
 		dprintf("Er: %d type: %d", err, type);
 		set_game_error(systemError, noErr);
 	}
-	
+
 	/* If we didn't open, we initialized.. */
 	graphics_preferences= (struct graphics_preferences_data *)get_graphics_pref_data();
 	player_preferences= (struct player_preferences_data *)get_player_pref_data();
@@ -219,7 +219,7 @@ void handle_preferences(
 		load_environment_from_preferences();
 #endif
 	}
-	
+
 	return;
 }
 
@@ -232,7 +232,7 @@ void write_preferences(
 	if(error_pending())
 	{
 		short type;
-		
+
 		err= get_game_error(&type);
 		dprintf("Er: %d type: %d", err, type);
 		set_game_error(systemError, noErr);
@@ -310,13 +310,13 @@ static boolean validate_graphics_preferences(
 				preferences->screen_mode.high_resolution= FALSE;
 				changed= TRUE;
 			}
-			
+
 			if(preferences->screen_mode.bit_depth != 16)
 			{
 				preferences->screen_mode.bit_depth= 16;
 				changed= TRUE;
 			}
-			
+
 			if(preferences->screen_mode.draw_every_other_line)
 			{
 				preferences->screen_mode.draw_every_other_line= FALSE;
@@ -325,15 +325,15 @@ static boolean validate_graphics_preferences(
 		}
 	}
 
-	if (preferences->screen_mode.bit_depth==32 && !machine_supports_32bit(&preferences->device_spec)) 
+	if (preferences->screen_mode.bit_depth==32 && !machine_supports_32bit(&preferences->device_spec))
 	{
 		preferences->screen_mode.bit_depth= 16;
 		changed= TRUE;
 	}
 
-	/* Don't change out of 16 bit if we are in valkyrie mode. */	
+	/* Don't change out of 16 bit if we are in valkyrie mode. */
 	if (preferences->screen_mode.acceleration!=_valkyrie_acceleration
-		&& preferences->screen_mode.bit_depth==16 && !machine_supports_16bit(&preferences->device_spec)) 
+		&& preferences->screen_mode.bit_depth==16 && !machine_supports_16bit(&preferences->device_spec))
 	{
 		preferences->screen_mode.bit_depth= 8;
 		changed= TRUE;
@@ -380,7 +380,7 @@ static boolean validate_serial_number_preferences(
 	boolean success= TRUE;
 	byte short_serial_number[BYTES_PER_SHORT_SERIAL_NUMBER];
 	byte inferred_pad[BYTES_PER_SHORT_SERIAL_NUMBER];
-	
+
 	long_serial_number_to_short_serial_number_and_pad(prefs->long_serial_number, short_serial_number, inferred_pad);
 
 	if ((!PADS_ARE_EQUAL(actual_pad, inferred_pad) &&
@@ -389,7 +389,7 @@ static boolean validate_serial_number_preferences(
 	{
 		success= FALSE;
 	}
-	
+
 
 /*	dprintf("player #%d (%08x%08x%04x) %d %d;g;", i, *(long*)player1_long_serial_number,
 		*(long*)(player1_long_serial_number+4), *(short*)(player1_long_serial_number+8),
@@ -408,7 +408,7 @@ static boolean validate_serial_number_preferences(
 	{
 		success= FALSE;
 	}
-	
+
 	return success;
 #else
 #pragma unused (prefs)
@@ -428,13 +428,13 @@ static void default_network_preferences(
 	preferences->game_is_untimed = FALSE;
 	preferences->difficulty_level = 2;
 	preferences->game_options =	_multiplayer_game | _ammo_replenishes | _weapons_replenish
-		| _specials_replenish |	_monsters_replenish | _burn_items_on_death | _suicide_is_penalized 
+		| _specials_replenish |	_monsters_replenish | _burn_items_on_death | _suicide_is_penalized
 		| _force_unique_teams | _live_network_stats;
 	preferences->time_limit = 10 * TICKS_PER_SECOND * 60;
 	preferences->kill_limit = 10;
 	preferences->entry_point= 0;
 	preferences->game_type= _game_of_kill_monsters;
-	
+
 	return;
 }
 
@@ -453,7 +453,7 @@ static boolean validate_network_preferences(
 		}
 		changed= TRUE;
 	}
-	
+
 	if(prefs->game_is_untimed != TRUE && prefs->game_is_untimed != FALSE)
 	{
 		prefs->game_is_untimed= FALSE;
@@ -471,7 +471,7 @@ static boolean validate_network_preferences(
 		prefs->game_type= _game_of_kill_monsters;
 		changed= TRUE;
 	}
-	
+
 	return changed;
 }
 
@@ -486,7 +486,7 @@ static void default_player_preferences(
 	GetDateTime(&prefs->last_time_ran);
 	prefs->difficulty_level= 2;
 	get_name_from_system(prefs->name);
-	
+
 	return;
 }
 
@@ -510,7 +510,7 @@ static void get_name_from_system(
 	{
 		old_state= HGetState(name_handle);
 		HLock(name_handle);
-		
+
 		pstrcpy(name, *name_handle);
 		HSetState(name_handle, old_state);
 	}
@@ -528,7 +528,7 @@ static void default_input_preferences(
 {
 	boolean	is_powerbook_keyboard= FALSE;
 	long	kbd_type;
-	
+
 	if (Gestalt(gestaltKeyboardType, &kbd_type)==noErr)
 	{
 		switch (kbd_type)
@@ -540,7 +540,7 @@ static void default_input_preferences(
 			case gestaltPwrBkExtADBKbd:
 				is_powerbook_keyboard= TRUE;
 				break;
-		}	
+		}
 	}
 	preferences->input_device= _keyboard_or_game_pad;
 	set_default_keys(preferences->keycodes, (is_powerbook_keyboard ? _powerbook_keyboard_setup : _standard_keyboard_setup));
@@ -560,7 +560,7 @@ static boolean ethernet_active(
 	OSErr  error;
 
 	error= OpenDriver("\p.ENET", &refnum);
-	
+
 	return error==noErr ? TRUE : FALSE;
 }
 
@@ -613,24 +613,24 @@ static void setup_graphics_dialog(
 		preferences->screen_mode.high_resolution= FALSE;
 		preferences->screen_mode.bit_depth= 16;
 		preferences->screen_mode.draw_every_other_line= FALSE;
-		modify_control(dialog, LOCAL_TO_GLOBAL_DITL(iNUMBER_OF_COLORS, first_item), 
+		modify_control(dialog, LOCAL_TO_GLOBAL_DITL(iNUMBER_OF_COLORS, first_item),
 			CONTROL_INACTIVE, _thousands_colors_menu_item);
-		modify_control(dialog, LOCAL_TO_GLOBAL_DITL(iDETAIL, first_item), 
+		modify_control(dialog, LOCAL_TO_GLOBAL_DITL(iDETAIL, first_item),
 			CONTROL_INACTIVE, NONE);
 
 		/* You can't choose a monitor with hardware acceleration enabled.. */
-		modify_control(dialog, LOCAL_TO_GLOBAL_DITL(iCHOOSE_MONITOR, first_item), 
+		modify_control(dialog, LOCAL_TO_GLOBAL_DITL(iCHOOSE_MONITOR, first_item),
 			CONTROL_INACTIVE, NONE);
 	} else {
 		/* Make sure it is enabled. */
-		modify_control(dialog, LOCAL_TO_GLOBAL_DITL(iNUMBER_OF_COLORS, first_item), 
+		modify_control(dialog, LOCAL_TO_GLOBAL_DITL(iNUMBER_OF_COLORS, first_item),
 			CONTROL_ACTIVE, NONE);
-		modify_control(dialog, LOCAL_TO_GLOBAL_DITL(iDETAIL, first_item), 
+		modify_control(dialog, LOCAL_TO_GLOBAL_DITL(iDETAIL, first_item),
 			CONTROL_ACTIVE, NONE);
-		modify_control(dialog, LOCAL_TO_GLOBAL_DITL(iCHOOSE_MONITOR, first_item), 
+		modify_control(dialog, LOCAL_TO_GLOBAL_DITL(iCHOOSE_MONITOR, first_item),
 			CONTROL_ACTIVE, NONE);
 	}
-	
+
 	switch(preferences->screen_mode.bit_depth)
 	{
 		case 32: value= _millions_colors_menu_item; break;
@@ -652,14 +652,14 @@ static void setup_graphics_dialog(
 	preferences->screen_mode.draw_every_other_line= FALSE;
 	active= CONTROL_INACTIVE;
 #endif
-	modify_control(dialog, LOCAL_TO_GLOBAL_DITL(iDRAW_EVERY_OTHER_LINE, first_item), 
+	modify_control(dialog, LOCAL_TO_GLOBAL_DITL(iDRAW_EVERY_OTHER_LINE, first_item),
 		active, preferences->screen_mode.draw_every_other_line);
 
-	modify_control(dialog, LOCAL_TO_GLOBAL_DITL(iWINDOW_SIZE, first_item), NONE, 
+	modify_control(dialog, LOCAL_TO_GLOBAL_DITL(iWINDOW_SIZE, first_item), NONE,
 		preferences->screen_mode.size+1);
-	modify_control(dialog, LOCAL_TO_GLOBAL_DITL(iDETAIL, first_item), NONE, 
-		!preferences->screen_mode.high_resolution+1); 
-	modify_control(dialog, LOCAL_TO_GLOBAL_DITL(iBRIGHTNESS, first_item), NONE, 
+	modify_control(dialog, LOCAL_TO_GLOBAL_DITL(iDETAIL, first_item), NONE,
+		!preferences->screen_mode.high_resolution+1);
+	modify_control(dialog, LOCAL_TO_GLOBAL_DITL(iBRIGHTNESS, first_item), NONE,
 		preferences->screen_mode.gamma_level+1);
 
 #ifdef envppc
@@ -676,7 +676,7 @@ static void setup_graphics_dialog(
 #endif
 
 	active = (hardware_acceleration_code(&preferences->device_spec) == _valkyrie_acceleration) ? CONTROL_ACTIVE : CONTROL_INACTIVE;
-	modify_control(dialog, LOCAL_TO_GLOBAL_DITL(iHARDWARE_ACCELERATION, first_item), 
+	modify_control(dialog, LOCAL_TO_GLOBAL_DITL(iHARDWARE_ACCELERATION, first_item),
 		active, (preferences->screen_mode.acceleration == _valkyrie_acceleration));
 
 	return;
@@ -700,11 +700,11 @@ static void hit_graphics_item(
 			display_device_dialog(&preferences->device_spec);
 			/* We resetup because the new device might not support millions, etc.. */
 			break;
-			
+
 		case iDRAW_EVERY_OTHER_LINE:
 			preferences->screen_mode.draw_every_other_line= !preferences->screen_mode.draw_every_other_line;
 			break;
-			
+
 		case iHARDWARE_ACCELERATION:
 			preferences->screen_mode.draw_every_other_line= !preferences->screen_mode.draw_every_other_line;
 			if(preferences->screen_mode.acceleration == _valkyrie_acceleration)
@@ -715,7 +715,7 @@ static void hit_graphics_item(
 			}
 			break;
 
-#ifdef envppc			
+#ifdef envppc
 		case iRESOLUTION_SWITCHING:
 			preferences->do_resolution_switching= !preferences->do_resolution_switching;
 			break;
@@ -732,21 +732,21 @@ static void hit_graphics_item(
 			}
 			break;
 
-		case iWINDOW_SIZE:		
+		case iWINDOW_SIZE:
 			GetDItem(dialog, item_hit, &item_type, (Handle *) &control, &bounds);
 			preferences->screen_mode.size= GetCtlValue(control)-1;
 			break;
-			
+
 		case iDETAIL:
 			GetDItem(dialog, item_hit, &item_type, (Handle *) &control, &bounds);
 			preferences->screen_mode.high_resolution= !(GetCtlValue(control)-1);
 			break;
-		
+
 		case iBRIGHTNESS:
 			GetDItem(dialog, item_hit, &item_type, (Handle *) &control, &bounds);
 			preferences->screen_mode.gamma_level= GetCtlValue(control)-1;
 			break;
-			
+
 		default:
 			halt();
 			break;
@@ -757,7 +757,7 @@ static void hit_graphics_item(
 		setup_graphics_dialog(dialog, first_item, prefs);
 	}
 }
-	
+
 static boolean teardown_graphics_dialog(
 	DialogPtr dialog,
 	short first_item,
@@ -787,7 +787,7 @@ static void setup_player_dialog(
 	Rect bounds;
 
 	/* Setup the difficulty level */
-	modify_control(dialog, LOCAL_TO_GLOBAL_DITL(iDIFFICULTY_LEVEL, first_item), NONE, 
+	modify_control(dialog, LOCAL_TO_GLOBAL_DITL(iDIFFICULTY_LEVEL, first_item), NONE,
 		preferences->difficulty_level+1);
 
 	/* Setup the name. */
@@ -833,7 +833,7 @@ static void hit_player_item(
 			break;
 	}
 }
-	
+
 static boolean teardown_player_dialog(
 	DialogPtr dialog,
 	short first_item,
@@ -844,7 +844,7 @@ static boolean teardown_player_dialog(
 	Rect bounds;
 	struct player_preferences_data *preferences= (struct player_preferences_data *)prefs;
 	Str255 buffer;
-	
+
 	/* Get the player name */
 	GetDItem(dialog, LOCAL_TO_GLOBAL_DITL(iNAME, first_item), &item_type, &control, &bounds);
 	GetIText(control, buffer);
@@ -875,13 +875,13 @@ static void setup_sound_dialog(
 	available_flags= available_sound_manager_flags(preferences->flags);
 
 	/* First setup the popups */
-	modify_control(dialog, LOCAL_TO_GLOBAL_DITL(iVOLUME, first_item), NONE, 
+	modify_control(dialog, LOCAL_TO_GLOBAL_DITL(iVOLUME, first_item), NONE,
 		preferences->volume+1);
-	modify_control(dialog, LOCAL_TO_GLOBAL_DITL(iCHANNELS, first_item), NONE, 
+	modify_control(dialog, LOCAL_TO_GLOBAL_DITL(iCHANNELS, first_item), NONE,
 		preferences->channel_count);
 
 	active= (available_flags & _stereo_flag) ? CONTROL_ACTIVE : CONTROL_INACTIVE;
-	modify_control(dialog, LOCAL_TO_GLOBAL_DITL(iSTEREO, first_item), active, 
+	modify_control(dialog, LOCAL_TO_GLOBAL_DITL(iSTEREO, first_item), active,
 		(preferences->flags & _stereo_flag) ? TRUE : FALSE);
 
 	/* Don't do dynamic tracking if you aren't in stereo. */
@@ -891,19 +891,19 @@ static void setup_sound_dialog(
 	}
 
 	active= (available_flags & _dynamic_tracking_flag) ? CONTROL_ACTIVE : CONTROL_INACTIVE;
-	modify_control(dialog, LOCAL_TO_GLOBAL_DITL(iACTIVE_PANNING, first_item), active, 
+	modify_control(dialog, LOCAL_TO_GLOBAL_DITL(iACTIVE_PANNING, first_item), active,
 		(preferences->flags & _dynamic_tracking_flag) ? TRUE : FALSE);
 
 	active= (available_flags & _16bit_sound_flag) ? CONTROL_ACTIVE : CONTROL_INACTIVE;
-	modify_control(dialog, LOCAL_TO_GLOBAL_DITL(iHIGH_QUALITY, first_item), active, 
+	modify_control(dialog, LOCAL_TO_GLOBAL_DITL(iHIGH_QUALITY, first_item), active,
 		(preferences->flags & _16bit_sound_flag) ? TRUE : FALSE);
 
 	active= (available_flags & _ambient_sound_flag) ? CONTROL_ACTIVE : CONTROL_INACTIVE;
-	modify_control(dialog, LOCAL_TO_GLOBAL_DITL(iAMBIENT_SOUND, first_item), active, 
+	modify_control(dialog, LOCAL_TO_GLOBAL_DITL(iAMBIENT_SOUND, first_item), active,
 		(preferences->flags & _ambient_sound_flag) ? TRUE : FALSE);
 
 	active= (available_flags & _more_sounds_flag) ? CONTROL_ACTIVE : CONTROL_INACTIVE;
-	modify_control(dialog, LOCAL_TO_GLOBAL_DITL(iMORE_SOUNDS, first_item), active, 
+	modify_control(dialog, LOCAL_TO_GLOBAL_DITL(iMORE_SOUNDS, first_item), active,
 		(preferences->flags & _more_sounds_flag) ? TRUE : FALSE);
 
 	return;
@@ -941,7 +941,7 @@ static void hit_sound_item(
 				preferences->flags &= ~_dynamic_tracking_flag;
 			}
 			break;
-			
+
 		case iHIGH_QUALITY:
 			GetDItem(dialog, item_hit, &item_type, (Handle *) &control, &bounds);
 			if(!GetCtlValue(control))
@@ -971,7 +971,7 @@ static void hit_sound_item(
 				preferences->flags &= ~_more_sounds_flag;
 			}
 			break;
-			
+
 		case iVOLUME:
 			GetDItem(dialog, item_hit, &item_type, (Handle *) &control, &bounds);
 			preferences->volume= GetCtlValue(control)-1;
@@ -980,9 +980,9 @@ static void hit_sound_item(
 
 		case iCHANNELS:
 			GetDItem(dialog, item_hit, &item_type, (Handle *) &control, &bounds);
-			preferences->channel_count= GetCtlValue(control);	
+			preferences->channel_count= GetCtlValue(control);
 			break;
-			
+
 		default:
 			halt();
 			break;
@@ -992,7 +992,7 @@ static void hit_sound_item(
 
 	return;
 }
-	
+
 static boolean teardown_sound_dialog(
 	DialogPtr dialog,
 	short first_item,
@@ -1019,7 +1019,7 @@ static void setup_input_dialog(
 {
 	struct input_preferences_data *preferences= (struct input_preferences_data *)prefs;
 	short which;
-	
+
 #ifdef SUPPORT_INPUT_SPROCKET
 	switch(preferences->input_device)
 	{
@@ -1027,7 +1027,7 @@ static void setup_input_dialog(
 			which = iMOUSE_CONTROL;
 			break;
 		case _input_sprocket_yaw_pitch:
-			if (system_information->has_input_sprocket)	
+			if (system_information->has_input_sprocket)
 			{
 				which = iINPUT_SPROCKET_CONTROL;
 				break;
@@ -1037,28 +1037,28 @@ static void setup_input_dialog(
 		default:
 			which = iKEYBOARD_CONTROL;
 	}
-	
-	
+
+
 	if (system_information->has_input_sprocket)
 	{
-		modify_radio_button_family(dialog, LOCAL_TO_GLOBAL_DITL(iMOUSE_CONTROL, first_item), 
-			LOCAL_TO_GLOBAL_DITL(iINPUT_SPROCKET_CONTROL, first_item), 
+		modify_radio_button_family(dialog, LOCAL_TO_GLOBAL_DITL(iMOUSE_CONTROL, first_item),
+			LOCAL_TO_GLOBAL_DITL(iINPUT_SPROCKET_CONTROL, first_item),
 			LOCAL_TO_GLOBAL_DITL(which, first_item));
 	}
 	else
 	{
-		modify_radio_button_family(dialog, LOCAL_TO_GLOBAL_DITL(iMOUSE_CONTROL, first_item), 
-			LOCAL_TO_GLOBAL_DITL(iKEYBOARD_CONTROL, first_item), 
+		modify_radio_button_family(dialog, LOCAL_TO_GLOBAL_DITL(iMOUSE_CONTROL, first_item),
+			LOCAL_TO_GLOBAL_DITL(iKEYBOARD_CONTROL, first_item),
 			LOCAL_TO_GLOBAL_DITL(which, first_item));
-			
-		// disable the input sprocket radio button	
+
+		// disable the input sprocket radio button
 		modify_control(dialog, LOCAL_TO_GLOBAL_DITL(iINPUT_SPROCKET_CONTROL, first_item),
 				CONTROL_INACTIVE, NONE);
 	}
-#else	
+#else
 	which = (preferences->input_device == _mouse_yaw_pitch) ? iMOUSE_CONTROL : iKEYBOARD_CONTROL;
-	modify_radio_button_family(dialog, LOCAL_TO_GLOBAL_DITL(iMOUSE_CONTROL, first_item), 
-		LOCAL_TO_GLOBAL_DITL(iKEYBOARD_CONTROL, first_item), 
+	modify_radio_button_family(dialog, LOCAL_TO_GLOBAL_DITL(iMOUSE_CONTROL, first_item),
+		LOCAL_TO_GLOBAL_DITL(iKEYBOARD_CONTROL, first_item),
 		LOCAL_TO_GLOBAL_DITL(which, first_item));
 #endif
 }
@@ -1077,27 +1077,27 @@ static void hit_input_item(
 		case iKEYBOARD_CONTROL:
 #ifdef SUPPORT_INPUT_SPROCKET
 			use_input_sprocket= FALSE;
-			modify_radio_button_family(dialog, LOCAL_TO_GLOBAL_DITL(iMOUSE_CONTROL, first_item), 
+			modify_radio_button_family(dialog, LOCAL_TO_GLOBAL_DITL(iMOUSE_CONTROL, first_item),
 				LOCAL_TO_GLOBAL_DITL(iINPUT_SPROCKET_CONTROL, first_item), item_hit);
 #else
-			modify_radio_button_family(dialog, LOCAL_TO_GLOBAL_DITL(iMOUSE_CONTROL, first_item), 
+			modify_radio_button_family(dialog, LOCAL_TO_GLOBAL_DITL(iMOUSE_CONTROL, first_item),
 				LOCAL_TO_GLOBAL_DITL(iKEYBOARD_CONTROL, first_item), item_hit);
 #endif
 			preferences->input_device= GLOBAL_TO_LOCAL_DITL(item_hit, first_item)==iMOUSE_CONTROL ?
 				_mouse_yaw_pitch : _keyboard_or_game_pad;
 			break;
-		
+
 #ifdef SUPPORT_INPUT_SPROCKET
 		case iINPUT_SPROCKET_CONTROL:
-			modify_radio_button_family(dialog, LOCAL_TO_GLOBAL_DITL(iMOUSE_CONTROL, first_item), 
+			modify_radio_button_family(dialog, LOCAL_TO_GLOBAL_DITL(iMOUSE_CONTROL, first_item),
 				LOCAL_TO_GLOBAL_DITL(iINPUT_SPROCKET_CONTROL, first_item), item_hit);
-			if (system_information->has_input_sprocket)	
+			if (system_information->has_input_sprocket)
 			{
 				use_input_sprocket= TRUE;
 				preferences->input_device = _input_sprocket_yaw_pitch;
 			}
 			break;
-#endif			
+#endif
 		case iSET_KEYS:
 #ifdef SUPPORT_INPUT_SPROCKET
 			if (use_input_sprocket)
@@ -1105,22 +1105,22 @@ static void hit_input_item(
 #ifndef INPUT_SPROCKET_BUG_FIX
 				short	cur_res_file= CurResFile();
 #endif
-				GrafPtr old_port;	
+				GrafPtr old_port;
 				OSStatus err;
 				GDHandle main_device = GetMainDevice();
 				PixMapHandle main_device_pixMapHandle = (*main_device)->gdPMap;
 				short main_device_depth = (*main_device_pixMapHandle)->pixelSize;
-					
+
 				GetPort(&old_port);
-				
+
 				/* if we are in 8 bit switch to system colors */
 				if (main_device_depth == 8)
 				{
-					HideWindow(dialog);	
+					HideWindow(dialog);
 					paint_window_black();
 					force_system_colors();
 				}
-				
+
 #ifndef INPUT_SPROCKET_BUG_FIX
 				UseResFile(HomeResFile(GetResource('SOCK', 128)));
 #endif
@@ -1133,23 +1133,23 @@ static void hit_input_item(
 				if (main_device_depth == 8)
 				{
 					display_screen(MAIN_MENU_BASE);
-					
+
 					ShowWindow(dialog);
 					SelectWindow(dialog);
 					SetPort(dialog);
 					DrawDialog(dialog);
 					ShowCursor();
-					
+
 					stop_fade();
 				}
-				
+
 				SetPort(old_port);
 			}
 			else
 #endif
 			{
 				short key_codes[NUMBER_OF_KEYS];
-				
+
 				memcpy(key_codes, preferences->keycodes, NUMBER_OF_KEYS*sizeof(short));
 				if(configure_key_setup(key_codes))
 				{
@@ -1158,12 +1158,12 @@ static void hit_input_item(
 				}
 			}
 			break;
-			
+
 		default:
 			break;
 	}
 }
-	
+
 static boolean teardown_input_dialog(
 	DialogPtr dialog,
 	short first_item,
@@ -1206,7 +1206,7 @@ static void default_environment_preferences(
 	/* Calculate their checksums.. */
 	prefs->map_checksum= read_wad_file_checksum((FileDesc *) &prefs->map_file);
 	prefs->physics_checksum= read_wad_file_checksum((FileDesc *) &prefs->physics_file);
-	
+
 	/* Calculate the modification dates. */
 	prefs->shapes_mod_date= get_file_modification_date(&prefs->shapes_file);
 	prefs->sounds_mod_date= get_file_modification_date(&prefs->sounds_file);
@@ -1219,7 +1219,7 @@ static boolean file_exists(
 {
 	OSErr err;
 	FSSpec spec;
-	
+
 	err= FSMakeFSSpec(file->vRefNum, file->parID, file->name, &spec);
 
 	return (err==noErr);
@@ -1236,28 +1236,28 @@ static boolean validate_environment_preferences(
 		prefs->map_checksum= read_wad_file_checksum((FileDesc *) &prefs->map_file);
 		changed= TRUE;
 	}
-	
+
 	if(!file_exists(&prefs->physics_file))
 	{
 		get_default_physics_spec((FileDesc *) &prefs->physics_file);
 		prefs->physics_checksum= read_wad_file_checksum((FileDesc *) &prefs->physics_file);
 		changed= TRUE;
 	}
-	
+
 	if(!file_exists(&prefs->shapes_file))
 	{
 		get_file_spec(&prefs->shapes_file, strFILENAMES, filenameSHAPES8, strPATHS);
 		prefs->shapes_mod_date= get_file_modification_date(&prefs->shapes_file);
 		changed= TRUE;
 	}
-	
+
 	if(!file_exists(&prefs->sounds_file))
 	{
 		get_file_spec(&prefs->sounds_file, strFILENAMES, filenameSOUNDS8, strPATHS);
 		prefs->sounds_mod_date= get_file_modification_date(&prefs->sounds_file);
 		changed= TRUE;
 	}
-#endif	
+#endif
 	return changed;
 }
 
@@ -1265,7 +1265,7 @@ static void *get_environment_pref_data(
 	void)
 {
 	return w_get_data_from_preferences(prefENVIRONMENT_TAG,
-		sizeof(struct environment_preferences_data), 
+		sizeof(struct environment_preferences_data),
 		default_environment_preferences, validate_environment_preferences);
 }
 
@@ -1296,7 +1296,7 @@ static void setup_environment_dialog(
 	} else {
 		halt();
 	}
-	
+
 	return;
 }
 
@@ -1312,15 +1312,15 @@ static void hit_environment_item(
 	switch(GLOBAL_TO_LOCAL_DITL(item_hit, first_item))
 	{
 		case iMAP:
-			preferences->map_checksum= find_checksum_and_file_spec_from_dialog(dialog, item_hit, 
+			preferences->map_checksum= find_checksum_and_file_spec_from_dialog(dialog, item_hit,
 				SCENARIO_FILE_TYPE,	&preferences->map_file);
 			break;
-			
+
 		case iPHYSICS:
-			preferences->physics_checksum= find_checksum_and_file_spec_from_dialog(dialog, item_hit, 
+			preferences->physics_checksum= find_checksum_and_file_spec_from_dialog(dialog, item_hit,
 				PHYSICS_FILE_TYPE,	&preferences->physics_file);
 			break;
-			
+
 		case iSHAPES:
 			preferences->shapes_mod_date= find_checksum_and_file_spec_from_dialog(dialog, item_hit,
 				SHAPES_FILE_TYPE, &preferences->shapes_file);
@@ -1330,10 +1330,10 @@ static void hit_environment_item(
 			preferences->sounds_mod_date= find_checksum_and_file_spec_from_dialog(dialog, item_hit,
 				SOUNDS_FILE_TYPE, &preferences->sounds_file);
 			break;
-			
+
 		case iPATCHES_LIST:
 			break;
-			
+
 		default:
 			break;
 	}
@@ -1411,7 +1411,7 @@ void load_environment_from_preferences(
 			/* What should I do? */
 		}
 	}
-	
+
 	return;
 }
 
@@ -1425,7 +1425,7 @@ static boolean teardown_environment_dialog(
 
 	/* Proceses the entire physics file.. */
 	free_extensions_memory();
-	
+
 	return TRUE;
 }
 
@@ -1435,7 +1435,7 @@ static unsigned long get_file_modification_date(
 	CInfoPBRec pb;
 	OSErr error;
 	unsigned long modification_date= 0l;
-	
+
 	memset(&pb, 0, sizeof(pb));
 	pb.hFileInfo.ioVRefNum= file->vRefNum;
 	pb.hFileInfo.ioNamePtr= file->name;
@@ -1462,7 +1462,7 @@ static void set_popup_enabled_state(
 	ControlHandle control;
 	short item_type;
 	Rect bounds;
-	
+
 	/* Get the menu handle */
 	GetDItem(dialog, item_number, &item_type, (Handle *) &control, &bounds);
 	assert(item_type&ctrlItem);
@@ -1470,10 +1470,10 @@ static void set_popup_enabled_state(
 	/* I don't know how to assert that it is a popup control... <sigh> */
 	privateHndl= (PopupPrivateData **) ((*control)->contrlData);
 	assert(privateHndl);
-	
+
 	menu= (*privateHndl)->mHandle;
 	assert(menu);
-	
+
 	if(enabled)
 	{
 		EnableItem(menu, item_to_affect);
@@ -1515,7 +1515,7 @@ static boolean allocate_extensions_memory(
 	accessory_files= NULL;
 	file_descriptions= NULL;
 	success= TRUE;
-	
+
 	return success;
 }
 
@@ -1545,7 +1545,7 @@ static boolean increase_extensions_memory(
 	FSSpec *new_accessory_files= NULL;
 	struct file_description *new_file_descriptions= NULL;
 	boolean success= FALSE;
-	
+
 	new_accessory_files= (FSSpec *)realloc(accessory_files,sizeof(FSSpec) * (accessory_file_count + 1));
 	if (new_accessory_files!=NULL)
 	{
@@ -1558,7 +1558,7 @@ static boolean increase_extensions_memory(
 			success= TRUE;
 		}
 	}
-	
+
 	return success;
 }
 
@@ -1568,7 +1568,7 @@ static Boolean file_is_extension_and_add_callback(
 {
 	unsigned long checksum;
 	CInfoPBRec *pb= (CInfoPBRec *) data;
-	
+
 //	assert(accessory_files);
 //	assert(file_descriptions);
 
@@ -1606,7 +1606,7 @@ static Boolean file_is_extension_and_add_callback(
 				if(checksum != NONE) /* error. */
 				{
 					unsigned long parent_checksum;
-					
+
 					if ((patch_file_count<MAXIMUM_FIND_FILES) && increase_extensions_memory())
 					{
 						patch_file_count++;
@@ -1618,7 +1618,7 @@ static Boolean file_is_extension_and_add_callback(
 					}
 				}
 				break;
-				
+
 			case SHAPES_FILE_TYPE:
 			case SOUNDS_FILE_TYPE:
 				if (((pb->hFileInfo.ioFlFndrInfo.fdType==SHAPES_FILE_TYPE) ? shapes_file_count : sounds_file_count)<MAXIMUM_FIND_FILES)
@@ -1639,12 +1639,12 @@ static Boolean file_is_extension_and_add_callback(
 					}
 				}
 				break;
-				
+
 			default:
 				break;
 		}
 	}
-	
+
 	return FALSE;
 }
 
@@ -1663,17 +1663,17 @@ static void build_extensions_list(
 	{
 		OSErr err;
 		FSSpec file;
-	
+
 		getpstr(temporary, strPATHS, ii);
-		
+
 		/* Hmm... check FSMakeFSSpec... */
 		/* Relative pathname.. */
 		err= FSMakeFSSpec(my_spec.vRefNum, my_spec.parID, (StringPtr)temporary, &file);
-		
-		if(!err) 
+
+		if(!err)
 		{
 			long parID;
-			
+
 			err= get_directories_parID(&file, &parID);
 			if(!err)
 			{
@@ -1693,7 +1693,7 @@ static void search_from_directory(
 {
 	struct find_file_pb pb;
 	OSErr error;
-	
+
 	memset(&pb, 0, sizeof(struct find_file_pb));
 	pb.version= 0;
 #ifdef FINAL
@@ -1720,7 +1720,7 @@ static void search_from_directory(
 /* Note that we are going to assume that things don't change while they are in this */
 /*  dialog- ie no one is copying files to their machine, etc. */
 static void fill_in_popup_with_filetype(
-	DialogPtr dialog, 
+	DialogPtr dialog,
 	short item,
 	OSType type,
 	unsigned long checksum)
@@ -1733,7 +1733,7 @@ static void fill_in_popup_with_filetype(
 
 	/* Get the menu */
 	menu= get_popup_menu_handle(dialog, item);
-	
+
 	/* Remove whatever it had */
 	while(CountMItems(menu)) DelMenuItem(menu, 1);
 
@@ -1750,7 +1750,7 @@ static void fill_in_popup_with_filetype(
 				value= CountMItems(menu);
 			}
 		}
-	} 
+	}
 
 	/* Set the max value */
 	GetDItem(dialog, item, &item_type, (Handle *) &control, &bounds);
@@ -1767,19 +1767,19 @@ static void fill_in_popup_with_filetype(
 				physics_valid= FALSE;
 				count++;
 				break;
-				
+
 			case SCENARIO_FILE_TYPE:
 			case SHAPES_FILE_TYPE:
 			case SOUNDS_FILE_TYPE:
 				break;
-				
+
 			default:
 				break;
 		}
-	} 
-	
+	}
+
 	SetCtlMax(control, count);
-	
+
 	if(value != NONE)
 	{
 		SetCtlValue(control, value);
@@ -1792,8 +1792,8 @@ static void fill_in_popup_with_filetype(
 }
 
 static unsigned long find_checksum_and_file_spec_from_dialog(
-	DialogPtr dialog, 
-	short item_hit, 
+	DialogPtr dialog,
+	short item_hit,
 	OSType type,
 	FSSpec *file)
 {
@@ -1802,11 +1802,11 @@ static unsigned long find_checksum_and_file_spec_from_dialog(
 	short item_type, value;
 	Rect bounds;
 	unsigned long checksum;
-	
+
 	/* Get the dialog item hit */
 	GetDItem(dialog, item_hit, &item_type, (Handle *) &control, &bounds);
 	value= GetCtlValue(control);
-	
+
 	for(index= 0; index<accessory_file_count; ++index)
 	{
 		if(file_descriptions[index].file_type==type)
@@ -1871,13 +1871,13 @@ static boolean control_strip_installed(
 	boolean installed= FALSE;
 	long control_strip_version;
 	OSErr error;
-	
+
 	error= Gestalt(gestaltControlStripVersion, &control_strip_version);
 	if(!error)
 	{
 		installed= TRUE;
 	}
-	
+
 	return installed;
 }
 

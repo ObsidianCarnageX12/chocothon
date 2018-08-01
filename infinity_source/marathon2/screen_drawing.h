@@ -14,7 +14,7 @@ enum {
 	_microphone_rect,
 	_inventory_rect,
 	_weapon_display_rect,
-	
+
 	/* interface rectangles */
 	_new_game_button_rect,
 	_load_game_button_rect,
@@ -39,7 +39,7 @@ enum {
 	_inventory_header_background_color,
 	_inventory_background_color,
 	PLAYER_COLOR_BASE_INDEX,
-	
+
 	_white_color= 14,
 	_invalid_weapon_color,
 	_computer_border_background_text_color,
@@ -90,12 +90,12 @@ void _set_port_to_gworld(void);
 void _restore_port(void);
 
 /* If source==NULL, source= the shapes bounding rectangle */
-void _draw_screen_shape(shape_descriptor shape_id, screen_rectangle *destination, 
+void _draw_screen_shape(shape_descriptor shape_id, screen_rectangle *destination,
 	screen_rectangle *source);
 void _draw_screen_shape_at_x_y(shape_descriptor shape, short x, short y);
 void _draw_screen_shape_centered(shape_descriptor shape, screen_rectangle *rectangle,
 	short flags);
-void _draw_screen_text(char *text, screen_rectangle *destination, 
+void _draw_screen_text(char *text, screen_rectangle *destination,
 	short flags, short font_id, short text_color);
 short _text_width(char *buffer, short font_id);
 
@@ -104,7 +104,7 @@ void _erase_screen(short color_index);
 void _scroll_window(short dy, short rectangle_id, short background_color_index);
 
 void _fill_screen_rectangle(screen_rectangle *rectangle, short color_index);
-	
+
 screen_rectangle *get_interface_rectangle(short index);
 
 short _get_font_line_height(short font_index);

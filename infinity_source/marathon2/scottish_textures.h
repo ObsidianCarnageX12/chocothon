@@ -71,9 +71,9 @@ struct tint_table32
 struct rectangle_definition
 {
 	word flags;
-	
+
 	struct bitmap_definition *texture;
-	
+
 	/* screen coordinates; x0<x1, y0<y1 */
 	short x0, y0;
 	short x1, y1;
@@ -82,20 +82,20 @@ struct rectangle_definition
 	short clip_left, clip_right;
 	short clip_top, clip_bottom;
 
-	/* depth at logical center (used to calculate light due to viewer) */	
+	/* depth at logical center (used to calculate light due to viewer) */
 	world_distance depth;
-	
+
 	/* ambient shading table index; many objects will be self-luminescent, so this may have
 		nothing to do with the polygon the object is sitting in */
 	fixed ambient_shade;
-	
-	/* here are all the shading tables, crammed together in memory */	
+
+	/* here are all the shading tables, crammed together in memory */
 	void *shading_tables;
 
 	/* _tinted, _textured and _static are supported; _solid would be silly and _landscape
 		would be hard (but might be cool) */
 	short transfer_mode, transfer_data;
-	
+
 	/* mirrored horizontally and vertically if TRUE */
 	boolean flip_vertical, flip_horizontal;
 };
@@ -103,7 +103,7 @@ struct rectangle_definition
 struct polygon_definition
 {
 	word flags;
-	
+
 	struct bitmap_definition *texture; /* ignored for _tinted and _solid polygons */
 
 	/* ambient shading table index */
@@ -111,9 +111,9 @@ struct polygon_definition
 
 	/* here are all the shading tables, crammed together in memory (unless this is a tinted
 		polygon in which case it is a single 256-byte tinting table) */
-	void *shading_tables;	
+	void *shading_tables;
 
-	/* all modes legal */	
+	/* all modes legal */
 	short transfer_mode, transfer_data;
 
 	world_point3d origin;

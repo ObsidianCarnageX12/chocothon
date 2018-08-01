@@ -30,11 +30,11 @@ enum {
 	/* iCANCEL */
 	iPREF_SECTION_POPUP= 3,
 	NUMBER_VALID_PREF_ITEMS= 8
-};	
+};
 /* -------------- Preferences Dialog --------- */
 /* Kick ass, take names */
 boolean set_preferences(
-	struct preferences_dialog_data *funcs, 
+	struct preferences_dialog_data *funcs,
 	short count,
 	void (*reload_function)(void))
 {
@@ -47,14 +47,14 @@ boolean set_preferences(
 	void *preferences;
 	short new_value;
 	ModalFilterUPP modal_proc;
-	
+
 	assert(count);
-	
+
 	dialog= myGetNewDialog(dlogPREFERENCES_DIALOG, NULL,(WindowPtr) -1, refPREFERENCES_DIALOG);
 	assert(dialog);
-	
+
 	/* Setup the popup list.. */
-	GetDItem(dialog, iPREF_SECTION_POPUP, &item_type, 
+	GetDItem(dialog, iPREF_SECTION_POPUP, &item_type,
 		(Handle *) &preferences_control, &bounds);
 	assert(preferences_control);
 	privateHndl= (PopupPrivateData **) ((*preferences_control)->contrlData);
@@ -67,7 +67,7 @@ boolean set_preferences(
 		getpstr(temporary, funcs[index].resource_group, funcs[index].string_index);
 		SetMenuItemText(mHandle, index+1, (StringPtr)temporary);
 	}
-	
+
 	/* Set our max value.. */
 	SetCtlMax(preferences_control, index+1); /* +1 because menus are one based. */
 
@@ -84,17 +84,17 @@ boolean set_preferences(
 	assert(modal_proc);
 
 	/* Setup the filter procedure */
-	/* Note that this doesn't allow for cancelling.. */	
+	/* Note that this doesn't allow for cancelling.. */
 	do {
 		ModalDialog(modal_proc, &item_hit);
-		
+
 		switch(item_hit)
 		{
 			case iPREF_SECTION_POPUP:
 				new_value= GetCtlValue(preferences_control)-1;
 				if(new_value != current_pref_section)
 				{
-					if(handle_switch(dialog, funcs, &preferences, 
+					if(handle_switch(dialog, funcs, &preferences,
 						new_value, current_pref_section))
 					{
 						/* Changed it... */
@@ -102,18 +102,18 @@ boolean set_preferences(
 					}
 				}
 				break;
-				
+
 			case iOK:
-				if(!funcs[current_pref_section].teardown_dialog_func(dialog, 
+				if(!funcs[current_pref_section].teardown_dialog_func(dialog,
 					NUMBER_VALID_PREF_ITEMS, preferences))
 				{
 					/* We can't tear down yet.. */
 					item_hit= 4000;
 				}
 				break;
-				
+
 			case iCANCEL:
-				if(funcs[current_pref_section].teardown_dialog_func(dialog, 
+				if(funcs[current_pref_section].teardown_dialog_func(dialog,
 					NUMBER_VALID_PREF_ITEMS, preferences))
 				{
 					/* Reload the wadfile.. */
@@ -123,15 +123,15 @@ boolean set_preferences(
 					item_hit= 4000;
 				}
 				break;
-				
+
 			default:
-				funcs[current_pref_section].item_hit_func(dialog, 
+				funcs[current_pref_section].item_hit_func(dialog,
 					NUMBER_VALID_PREF_ITEMS, preferences, item_hit);
 				break;
 		}
 	} while (item_hit>iCANCEL);
 
-	DisposeRoutineDescriptor(modal_proc);	
+	DisposeRoutineDescriptor(modal_proc);
 	DisposeDialog(dialog);
 
 	return item_hit==iOK;
@@ -139,7 +139,7 @@ boolean set_preferences(
 
 /* ------------------ local code */
 static boolean handle_switch(
-	DialogPtr dialog, 
+	DialogPtr dialog,
 	struct preferences_dialog_data *funcs,
 	void **prefs,
 	short new_section,
@@ -150,35 +150,35 @@ static boolean handle_switch(
 	/* Call the cleanup routines.. */
 	if(old_section != NONE)
 	{
-		able_to_switch= funcs[old_section].teardown_dialog_func(dialog, 
+		able_to_switch= funcs[old_section].teardown_dialog_func(dialog,
 			NUMBER_VALID_PREF_ITEMS, *prefs);
 		if(able_to_switch)
 		{
 			short number_items= CountDITL(dialog)-NUMBER_VALID_PREF_ITEMS;
-		
+
 			/* Remove the old ones. */
 			ShortenDITL(dialog, number_items);
 		}
 	}
-	
+
 	if(able_to_switch)
 	{
 		Handle theDITL;
-	
+
 		/* Add the data from the dialog... */
 		theDITL= GetResource('DITL', funcs[new_section].ditl_id);
 		assert(theDITL);
-		
+
 		/* Append it.. */
 		AppendDITL(dialog, theDITL, overlayDITL);
-		
+
 		/* Free the memory */
 		ReleaseResource(theDITL);
 
 		*prefs= funcs[new_section].get_data();
 
 		/* Called on setup (initialize your fields) */
-		funcs[new_section].setup_dialog_func(dialog, NUMBER_VALID_PREF_ITEMS, 
+		funcs[new_section].setup_dialog_func(dialog, NUMBER_VALID_PREF_ITEMS,
 			*prefs);
 	}
 
@@ -195,7 +195,7 @@ static pascal Boolean preferences_filter_proc(
 	Rect bounds;
 	boolean handled= FALSE;
 
-	GetDItem(dialog, iPREF_SECTION_POPUP, &item_type, 
+	GetDItem(dialog, iPREF_SECTION_POPUP, &item_type,
 		(Handle *) &preferences_control, &bounds);
 	new_value= value= GetCtlValue(preferences_control);
 
@@ -216,7 +216,7 @@ static pascal Boolean preferences_filter_proc(
 				case kHOME:
 					new_value= 1;
 					break;
-					
+
 				case kEND:
 					new_value= 45;
 					break;
@@ -232,11 +232,11 @@ static pascal Boolean preferences_filter_proc(
 			}
 			break;
 	}
-	
+
 	if(!handled)
 	{
 		handled= general_filter_proc(dialog, event, item_hit);
 	}
-	
+
 	return handled;
 }

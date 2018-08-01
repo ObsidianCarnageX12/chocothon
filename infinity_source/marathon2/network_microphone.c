@@ -29,7 +29,7 @@ Tuesday, December 6, 1994 10:38:50 PM  (Jason)
 /* ---------- constants */
 
 /* ---------- structures */
-struct sound_device_settings 
+struct sound_device_settings
 {
 	short num_channels;
 	Fixed sample_rate;
@@ -37,7 +37,7 @@ struct sound_device_settings
 	OSType compression_type;
 };
 
-struct net_microphone_data 
+struct net_microphone_data
 {
 	long refnum;
 	long device_internal_buffer_size;
@@ -101,11 +101,11 @@ OSErr open_network_microphone(
 	/* do things we only do once */
 	{
 		static boolean initialization= FALSE;
-		
+
 		if (!initialization)
 		{
 			atexit(close_network_microphone);
-			
+
 			initialization= TRUE;
 		}
 	}
@@ -118,7 +118,7 @@ OSErr open_network_microphone(
 			net_microphone.network_distribution_type= network_distribution_type;
 			net_microphone.buffer= NewPtr(NETWORK_SOUND_CHUNK_BUFFER_SIZE);
 			net_microphone.completion_proc= (SICompletionProcPtr) NewSICompletionProc(sound_recording_completed);
-			
+
 			if (net_microphone.buffer && net_microphone.completion_proc)
 			{
 				err= SPBOpenDevice((StringPtr)"", siWritePermission, &net_microphone.refnum);
@@ -142,7 +142,7 @@ OSErr open_network_microphone(
 							}
 						}
 					}
-					
+
 					/* Had a problem.  Close it down. */
 					if(err) SPBCloseDevice(net_microphone.refnum);
 				}
@@ -154,7 +154,7 @@ OSErr open_network_microphone(
 		}
 		else
 		{
-			err= noHardware; 
+			err= noHardware;
 		}
 	}
 
@@ -173,7 +173,7 @@ void close_network_microphone(void)
 		{
 			err= SPBStopRecording(net_microphone.refnum);
 		}
-	
+
 		err= SPBCloseDevice(net_microphone.refnum);
 
 		/* Get rid of the routine descriptor */
@@ -187,7 +187,7 @@ void handle_microphone(boolean triggered)
 {
 	OSErr err= noErr;
 	boolean success= FALSE;
-	
+
 	if(net_microphone_installed)
 	{
 		if(triggered)
@@ -195,7 +195,7 @@ void handle_microphone(boolean triggered)
 			if(!net_microphone.recording)
 			{
 				err= start_sound_recording();
-				
+
 				if(!err)
 				{
 					/* Tell us we are starting to record.. */
@@ -212,7 +212,7 @@ void handle_microphone(boolean triggered)
 						/* Start up the next one.. */
 						/* No error.. */
 						break;
-						
+
 					default:
 						dprintf("Error in completion: %d", net_microphone.param_block.error);
 						net_microphone.recording= FALSE;
@@ -231,8 +231,8 @@ void handle_microphone(boolean triggered)
 		}
 	}
 
-	if(err) dprintf("Err in handle microphone: %d", err);	
-	
+	if(err) dprintf("Err in handle microphone: %d", err);
+
 	return;
 }
 
@@ -257,7 +257,7 @@ static OSErr get_device_settings(
 			}
 		}
 	}
-	
+
 	return error;
 }
 
@@ -266,7 +266,7 @@ static OSErr set_device_settings(
 	struct sound_device_settings *settings)
 {
 	OSErr error;
-	
+
 	error= SPBSetDeviceInfo(refnum, siNumberChannels, (char *) &settings->num_channels);
 	if (error==noErr)
 	{
@@ -280,7 +280,7 @@ static OSErr set_device_settings(
 			}
 		}
 	}
-	
+
 	return error;
 }
 
@@ -296,12 +296,12 @@ static OSErr closest_supported_sample_rate(
 {
 	struct siSampleRateAvailableData data;
 	OSErr error;
-	
+
 	error= SPBGetDeviceInfo(refNum, siSampleRateAvailable, (char *) &data);
 	if (error==noErr)
 	{
 		Fixed *sampleRates= (Fixed *) *data.sampleRates;
-		
+
 		if (!data.sampleRateCount)
 		{
 			/* clip to continuous range */
@@ -318,18 +318,18 @@ static OSErr closest_supported_sample_rate(
 			for (i= 0; i<data.sampleRateCount; ++i)
 			{
 				unsigned long delta= ((unsigned long)sampleRates[i]>(unsigned long)*sampleRate) ?
-					((unsigned long)sampleRates[i]-(unsigned long)*sampleRate) : 
+					((unsigned long)sampleRates[i]-(unsigned long)*sampleRate) :
 					((unsigned long)*sampleRate-(unsigned long)sampleRates[i]);
-				
+
 				if (!i || delta<closest_delta) closestRate= sampleRates[i], closest_delta= delta;
 			}
-			
+
 			*sampleRate= closestRate;
 		}
-		
+
 		DisposeHandle(data.sampleRates);
 	}
-	
+
 	return error;
 }
 
@@ -345,7 +345,7 @@ static OSErr start_sound_recording(
 	net_microphone.param_block.bufferLength= NETWORK_SOUND_CHUNK_BUFFER_SIZE;
 	net_microphone.param_block.bufferPtr= net_microphone.buffer;
 	net_microphone.param_block.completionRoutine= (SICompletionUPP) net_microphone.completion_proc;
-#ifdef env68k								
+#ifdef env68k
 	net_microphone.param_block.userLong= (long) get_a5();
 #endif
 
@@ -381,15 +381,15 @@ static pascal void sound_recording_completed(
 			/* Respawn the recording! */
 			pb->error= SPBRecord(pb, TRUE);
 			break;
-			
+
 		case abortErr:
 			break;
-			
+
 		default:
 			dprintf("SPBRecord()==#%d", pb->error);
 			break;
 	}
-	
+
 #ifdef env68k
 	set_a5(old_a5); /* restore our a5 world */
 #endif

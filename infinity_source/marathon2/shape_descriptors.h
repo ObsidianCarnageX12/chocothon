@@ -46,8 +46,8 @@ enum /* collection numbers */
 	_collection_walls1, // 17
 	_collection_walls2, // 18
 	_collection_walls3, // 19
-	_collection_walls4, // 20 
-	_collection_walls5, // 21 
+	_collection_walls4, // 20
+	_collection_walls5, // 21
 	_collection_scenery1, // 22
 	_collection_scenery2, // 23
 	_collection_scenery3, // 24
@@ -56,9 +56,9 @@ enum /* collection numbers */
 	_collection_landscape1, // 27 day
 	_collection_landscape2, // 28 night
 	_collection_landscape3, // 29 moon
-	_collection_landscape4, // 30 
+	_collection_landscape4, // 30
 	_collection_cyborg, // 31
-	
+
 	NUMBER_OF_COLLECTIONS
 };
 

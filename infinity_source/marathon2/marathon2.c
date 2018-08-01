@@ -96,7 +96,7 @@ short update_world(
 			queue_size= MIN(get_action_queue_size(player_index), get_heartbeat_count() - dynamic_world->tick_count);
 		}
 		if (queue_size<0) queue_size= 0; // thumb in dike to prevent update_interface from getting -1
-		
+
 		if (queue_size>highest_time) highest_time= queue_size;
 		if (queue_size<lowest_time) lowest_time= queue_size;
 	}
@@ -107,42 +107,42 @@ short update_world(
 		update_lights();
 		update_medias();
 		update_platforms();
-		
+
 		update_control_panels(); // don't put after update_players
 		update_players();
 		move_projectiles();
 		move_monsters();
 		update_effects();
 		recreate_objects();
-		
+
 		handle_random_sound_image();
 		animate_scenery();
 
 		update_net_game();
 
-		if(check_level_change()) 
+		if(check_level_change())
 		{
 			time_elapsed= 0; /* So that we don't update things & try to render the world. */
 			break; /* Break if we change the level */
 		}
 		if(game_over= game_is_over()) break;
-		
+
 		dynamic_world->tick_count+= 1;
 		dynamic_world->game_information.game_time_remaining-= 1;
 	}
 
 	/* Game is over. */
-	if(game_over) 
+	if(game_over)
 	{
 		game_timed_out();
 		time_elapsed= 0;
-	} 
+	}
 	else if (time_elapsed)
 	{
 		update_interface(time_elapsed);
 		update_fades();
 	}
-	
+
 	check_recording_replaying();
 
 	return time_elapsed;
@@ -153,10 +153,10 @@ short update_world(
 void leaving_map(
 	void)
 {
-	
+
 	remove_all_projectiles();
 	remove_all_nonpersistent_effects();
-	
+
 	/* mark our shape collections for unloading */
 	mark_environment_collections(static_world->environment_code, FALSE);
 	mark_all_monster_collections(FALSE);
@@ -165,7 +165,7 @@ void leaving_map(
 	/* all we do is mark them for unloading, we don't explicitly dispose of them; whenever the
 		next level is loaded someone (probably entering_map, below) will call load_collections()
 		and the stuff we marked as needed to be ditched will be */
-	
+
 	/* stop counting world ticks */
 //	set_keyboard_controller_status(FALSE);
 
@@ -198,7 +198,7 @@ boolean entering_map(
 
 	/* and since no monsters have paths, we should make sure no paths think they have monsters */
 	reset_paths();
-	
+
 	/* mark our shape collections for loading and load them */
 	mark_environment_collections(static_world->environment_code, TRUE);
 	mark_all_monster_collections(TRUE);
@@ -210,11 +210,11 @@ boolean entering_map(
 
 	/* tell the keyboard controller to start recording keyboard flags */
 	if (game_is_networked) success= NetSync(); /* make sure everybody is ready */
-	
+
 	/* make sure nobody’s holding a weapon illegal in the new environment */
 	check_player_weapons_for_environment_change();
 
-	if (dynamic_world->player_count>1) initialize_net_game();	
+	if (dynamic_world->player_count>1) initialize_net_game();
 	randomize_scenery_shapes();
 
 //	reset_player_queues(); //¶¶
@@ -236,9 +236,9 @@ void changed_polygon(
 {
 	struct polygon_data *new_polygon= get_polygon_data(new_polygon_index);
 	struct player_data *player= player_index!=NONE ? get_player_data(player_index) : (struct player_data *) NULL;
-	
+
 	#pragma unused (original_polygon_index)
-	
+
 	/* Entering this polygon.. */
 	switch (new_polygon->type)
 	{
@@ -257,7 +257,7 @@ void changed_polygon(
 					_pass_solid_lines|_activate_deaf_monsters|_activate_invisible_monsters|_use_activation_biases|_activation_cannot_be_avoided);
 			}
 			break;
-		
+
 		case _polygon_is_item_trigger:
 			if (player)
 			{
@@ -270,7 +270,7 @@ void changed_polygon(
 			set_light_status(new_polygon->permutation,
 				new_polygon->type==_polygon_is_light_off_trigger ? FALSE : TRUE);
 			break;
-			
+
 		case _polygon_is_platform:
 			platform_was_entered(new_polygon->permutation, player ? TRUE : FALSE);
 			break;
@@ -282,7 +282,7 @@ void changed_polygon(
 					new_polygon->type==_polygon_is_platform_off_trigger ? FALSE : TRUE);
 			}
 			break;
-			
+
 		case _polygon_must_be_explored:
 			/* When a player enters a must be explored, it now becomes a normal polygon, to allow */
 			/*  for must be explored flags to work across cooperative net games */
@@ -292,7 +292,7 @@ void changed_polygon(
 			}
 			break;
 
-#ifdef SCREAMING_METAL			
+#ifdef SCREAMING_METAL
 		case _polygon_sound_once_trigger:
 			if (player)
 			{
@@ -300,11 +300,11 @@ void changed_polygon(
 				{
 					play_local_sound(new_polygon->permutation);
 				}
-				
+
 				new_polygon->type= _polygon_is_normal;
 			}
 			break;
-		
+
 		case _polygon_sound_always_trigger:
 			if (player && player_index==local_player_index))
 			{
@@ -326,19 +326,19 @@ short calculate_level_completion_state(
 	void)
 {
 	short completion_state= _level_finished;
-	
+
 	/* if there are any monsters left on an extermination map, we haven’t finished yet */
 	if (static_world->mission_flags&_mission_extermination)
 	{
 		if (live_aliens_on_map()) completion_state= _level_unfinished;
 	}
-	
+
 	/* if there are any polygons which must be explored and have not been entered, we’re not done */
 	if (static_world->mission_flags&_mission_exploration)
 	{
 		short polygon_index;
 		struct polygon_data *polygon;
-		
+
 		for (polygon_index= 0, polygon= map_polygons; polygon_index<dynamic_world->polygon_count; ++polygon_index, ++polygon)
 		{
 			if (polygon->type==_polygon_must_be_explored)
@@ -348,13 +348,13 @@ short calculate_level_completion_state(
 			}
 		}
 	}
-	
+
 	/* if there are any items left on this map, we’re not done */
 	if (static_world->mission_flags&_mission_retrieval)
 	{
 		if (unretrieved_items_on_map()) completion_state= _level_unfinished;
 	}
-	
+
 	/* if there are any untoggled repair switches on this level then we’re not there */
 	if (static_world->mission_flags&_mission_repair)
 	{
@@ -371,7 +371,7 @@ short calculate_level_completion_state(
 			completion_state= _level_failed;
 		}
 	}
-	
+
 	return completion_state;
 }
 
@@ -379,9 +379,9 @@ short calculate_damage(
 	struct damage_definition *damage)
 {
 	short total_damage= damage->base + (damage->random ? random()%damage->random : 0);
-	
+
 	total_damage= FIXED_INTEGERAL_PART(total_damage*damage->scale);
-	
+
 	/* if this damage was caused by an alien modify it for the current difficulty level */
 	if (damage->flags&_alien_damage)
 	{
@@ -392,7 +392,7 @@ short calculate_damage(
 			/* harder levels do not cause more damage */
 		}
 	}
-	
+
 	return total_damage;
 }
 
@@ -414,22 +414,22 @@ void cause_polygon_damage(
 		(polygon->type==_polygon_is_major_ouch && !(dynamic_world->tick_count&MAJOR_OUCH_FREQUENCY)))
 	{
 		struct damage_definition damage;
-		
+
 		damage.flags= _alien_damage;
 		damage.type= polygon->type==_polygon_is_minor_ouch ? _damage_polygon : _damage_major_polygon;
 		damage.base= polygon->type==_polygon_is_minor_ouch ? MINOR_OUCH_DAMAGE : MAJOR_OUCH_DAMAGE;
 		damage.random= 0;
 		damage.scale= FIXED_ONE;
-		
+
 		damage_monster(monster_index, NONE, NONE, (world_point3d *) NULL, &damage);
 	}
 #endif
-	
+
 	return;
 }
 
 /* ---------- private code */
-	
+
 /* They ran out of time.  This means different things depending on the */
 /* type of game.. */
 static void game_timed_out(
@@ -475,6 +475,6 @@ static void load_all_game_sounds(
 		case 3: break;
 		case 4: break;
 	}
-	
+
 	return;
 }

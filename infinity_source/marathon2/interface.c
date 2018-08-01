@@ -232,12 +232,12 @@ boolean player_controlling_game(
 	boolean player_in_control= FALSE;
 
 	assert(game_state.state==_game_in_progress || game_state.state==_switch_demo);
-	
+
 	if(game_state.user==_single_player || game_state.user==_network_player)
 	{
 		player_in_control= TRUE;
 	}
-	
+
 	return player_in_control;
 }
 
@@ -261,23 +261,23 @@ void set_game_state(
 					game_state.state= _begin_display_of_epilogue;
 					game_state.phase= 0;
 					break;
-					
+
 				case _close_game:
 					finish_game(TRUE);
 					break;
-					
+
 				case _quit_game:
 					finish_game(FALSE);
 					display_quit_screens();
 					break;
-					
+
 				case _switch_demo:
 					/* Because Alain's code calls us at interrupt level 1, */
 					/*  we must defer processing of this message until idle */
 					game_state.state= _switch_demo;
 					game_state.phase= 0;
 					break;
-					
+
 				case _revert_game:
 					/* Because reverting a game in the middle of the update_world loop sounds */
 					/*  sketchy, this is not done until idle time.. */
@@ -289,8 +289,8 @@ void set_game_state(
 					game_state.state= new_state;
 					game_state.phase= 0;
 					break;
-					
-				default: 
+
+				default:
 					halt();
 					break;
 			}
@@ -333,9 +333,9 @@ boolean load_and_start_game(
 	FileDesc *file)
 {
 	boolean success;
-	
+
 	hide_cursor();
-	if(can_interface_fade_out()) 
+	if(can_interface_fade_out())
 	{
 		interface_fade_out(MAIN_MENU_BASE, TRUE);
 	}
@@ -349,7 +349,7 @@ boolean load_and_start_game(
 		/* Should this also force the system colors or something? */
 		show_cursor();
 	}
-	
+
 	return success;
 }
 
@@ -371,7 +371,7 @@ boolean check_level_change(
 		transfer_to_new_level(game_state.current_screen);
 		level_changed= TRUE;
 	}
-	
+
 	return level_changed;
 }
 
@@ -381,7 +381,7 @@ void pause_game(
 	stop_fade();
 	darken_world_window();
 	set_keyboard_controller_status(FALSE);
-	
+
 	return;
 }
 
@@ -390,7 +390,7 @@ void resume_game(
 {
 	validate_world_window();
 	set_keyboard_controller_status(TRUE);
-	
+
 	return;
 }
 
@@ -401,7 +401,7 @@ void draw_menu_button_for_command(
 	short rectangle_index= index-1+_new_game_button_rect;
 
 	assert(get_game_state()==_display_main_menu);
-	
+
 	/* Draw it initially depressed.. */
 	draw_button(rectangle_index, TRUE);
 	initial_tick= machine_tick_count();
@@ -415,7 +415,7 @@ void update_interface_display(
 	void)
 {
 	struct screen_data *data;
-	
+
 	data= get_screen_data(game_state.state);
 
 	/* Use this to avoid the fade.. */
@@ -428,7 +428,7 @@ void idle_game_state(
 	void)
 {
 	short ticks_elapsed;
-	
+
 	ticks_elapsed= (machine_tick_count() - game_state.last_ticks_on_idle)/(MACHINE_TICKS_PER_SECOND/TICKS_PER_SECOND);
 	if(ticks_elapsed || game_state.phase==0)
 	{
@@ -436,7 +436,7 @@ void idle_game_state(
 		{
 			game_state.phase-= ticks_elapsed;
 		}
-		
+
 		/* Note that we still go through this if we have an indefinate phase.. */
 		if(game_state.phase<=0)
 		{
@@ -472,18 +472,18 @@ void idle_game_state(
 						case _replay:
 							finish_game(TRUE);
 							break;
-							
+
 						case _demo:
 							finish_game(FALSE);
 							display_introduction_screen_for_demo();
 							break;
-							
-						default: 
-							halt(); 
+
+						default:
+							halt();
 							break;
 					}
 					break;
-				
+
 				case _display_chapter_heading:
 					dprintf("Chapter heading...");
 					break;
@@ -503,12 +503,12 @@ void idle_game_state(
 					} else {
 						/* Give them the error... */
 						display_loading_map_error();
-						
+
 						/* And finish their current game.. */
 						finish_game(TRUE);
 					}
 					break;
-					
+
 				case _begin_display_of_epilogue:
 					finish_game(FALSE);
 					display_epilogue();
@@ -522,7 +522,7 @@ void idle_game_state(
 				case _change_level:
 				case _displaying_network_game_dialogs:
 					break;
-					
+
 				default:
 					halt();
 					break;
@@ -560,9 +560,9 @@ void display_main_menu(
 	game_state.last_ticks_on_idle= machine_tick_count();
 	game_state.user= _single_player;
 	game_state.flags= 0;
-	
+
 	display_screen(MAIN_MENU_BASE);
-	
+
 	/* Start up the song! */
 	if(!music_playing() && game_state.main_menu_display_count==0)
 	{
@@ -596,14 +596,14 @@ void do_menu_item_command(
 								resume_game();
 							}
 							break;
-						
+
 						case _demo:
 							finish_game(TRUE);
 							break;
-							
+
 						case _network_player:
 							break;
-							
+
 						default:
 							halt();
 							break;
@@ -619,34 +619,34 @@ void do_menu_item_command(
 							validate_world_window();
 #endif
 							break;
-						
+
 						case _demo:
 						case _replay:
 							finish_game(TRUE);
 							break;
-							
+
 						case _network_player:
 							break;
-							
+
 						default:
 							halt();
 							break;
 					}
 					break;
-					
+
 				case iRevert:
 					/* Not implemented.. */
 					break;
-					
+
 				case iCloseGame:
 				case iQuitGame:
 					{
 						boolean really_wants_to_quit= FALSE;
-					
+
 						switch(game_state.user)
 						{
 							case _single_player:
-								if(PLAYER_IS_DEAD(local_player) || 
+								if(PLAYER_IS_DEAD(local_player) ||
 									dynamic_world->tick_count-local_player->ticks_at_last_successful_save<CLOSE_WITHOUT_WARNING_DELAY)
 								{
 									really_wants_to_quit= TRUE;
@@ -664,19 +664,19 @@ void do_menu_item_command(
 									}
 								}
 								break;
-							
+
 							case _demo:
 							case _replay:
 							case _network_player:
 								really_wants_to_quit= TRUE;
 							render_screen(0); /* Get rid of hole.. */
 								break;
-								
+
 							default:
 								halt();
 								break;
 						}
-	
+
 						if(really_wants_to_quit)
 						{
 //							render_screen(0); /* Get rid of hole.. */
@@ -691,13 +691,13 @@ void do_menu_item_command(
 						}
 					}
 					break;
-					
+
 				default:
 					halt();
 					break;
 			}
 			break;
-			
+
 		case mInterface:
 			switch(menu_item)
 			{
@@ -713,7 +713,7 @@ void do_menu_item_command(
 						begin_game(_single_player, cheat);
 					}
 					break;
-		
+
 				case iJoinGame:
 					if (system_information->machine_has_network_memory)
 					{
@@ -724,7 +724,7 @@ void do_menu_item_command(
 						alert_user(infoError, strERRORS, notEnoughNetworkMemory, 0);
 					}
 					break;
-		
+
 				case iGatherGame:
 					if (system_information->machine_has_network_memory)
 					{
@@ -735,7 +735,7 @@ void do_menu_item_command(
 						alert_user(infoError, strERRORS, notEnoughNetworkMemory, 0);
 					}
 					break;
-					
+
 				case iLoadGame:
 #ifndef TRILOGY
 					if (serial_preferences->network_only)
@@ -748,33 +748,33 @@ void do_menu_item_command(
 						handle_load_game();
 					}
 					break;
-		
+
 				case iReplayLastFilm:
 				case iReplaySavedFilm:
 					handle_replay(menu_item==iReplayLastFilm);
 					break;
-					
+
 				case iCredits:
 					display_credits();
 					break;
-					
+
 				case iPreferences:
 					do_preferences();
 					game_state.phase= TICKS_UNTIL_DEMO_STARTS;
 					game_state.last_ticks_on_idle= machine_tick_count();
 					break;
-					
+
 				case iCenterButton:
 					break;
-					
+
 				case iSaveLastFilm:
 					handle_save_film();
 					break;
-		
+
 				case iQuit:
 					display_quit_screens();
 					break;
-		
+
 				default:
 					halt();
 					break;
@@ -804,7 +804,7 @@ void portable_process_screen_click(
 			/* Get out of user mode. */
 			display_main_menu();
 			break;
-			
+
 		case _display_quit_screens:
 		case _display_intro_screens:
 		case _display_chapter_heading:
@@ -814,16 +814,16 @@ void portable_process_screen_click(
 			/* Force the state change next time through.. */
 			force_game_state_change();
 			break;
-			
+
 		case _quit_game:
 		case _close_game:
-		case _switch_demo:	
+		case _switch_demo:
 			break;
-	
+
 		case _display_main_menu:
 			handle_interface_menu_screen_click(x, y, cheatkeys_down);
 			break;
-		
+
 		default:
 			halt();
 			break;
@@ -850,7 +850,7 @@ boolean enabled_item(
 		case iCenterButton:
 			enabled= FALSE;
 			break;
-			
+
 		case iReplayLastFilm:
 		case iSaveLastFilm:
 			enabled= has_recording_file();
@@ -860,12 +860,12 @@ boolean enabled_item(
 		case iJoinGame:
 			enabled= networking_available();
 			break;
-			
+
 		default:
 			halt();
 			break;
 	}
-	
+
 	return enabled;
 }
 
@@ -906,7 +906,7 @@ static void display_introduction(
 	}
 }
 
-static void display_introduction_screen_for_demo(	
+static void display_introduction_screen_for_demo(
 	void)
 {
 	struct screen_data *screen_data= get_screen_data(_display_intro_screens_for_demo);
@@ -927,10 +927,10 @@ static void display_epilogue(
 	void)
 {
 	queue_song(_introduction_song); // _epilogue_song
-	
+
 	{
 		long ticks= machine_tick_count();
-		
+
 		do
 		{
 			music_idle_proc();
@@ -942,11 +942,11 @@ static void display_epilogue(
 	game_state.phase= 0;
 	game_state.current_screen= 0;
 	game_state.last_ticks_on_idle= machine_tick_count();
-	
-	HideCursor();	
+
+	HideCursor();
 	try_and_display_chapter_screen(CHAPTER_SCREEN_BASE+99, TRUE, TRUE);
 	ShowCursor();
-	
+
 	return;
 }
 
@@ -956,7 +956,7 @@ static void display_credits(
 	if (NUMBER_OF_CREDIT_SCREENS)
 	{
 		struct screen_data *screen_data= get_screen_data(_display_credits);
-		
+
 		game_state.state= _display_credits;
 		game_state.current_screen= 0;
 		game_state.user= _single_player;
@@ -981,7 +981,7 @@ static void display_quit_screens(
 		game_state.flags= 0;
 		game_state.phase= screen_data->duration;
 		game_state.last_ticks_on_idle= machine_tick_count();
-		
+
 		display_screen(screen_data->screen_base);
 	} else {
 		/* No screens. */
@@ -995,13 +995,13 @@ static void transfer_to_new_level(
 {
 	struct entry_point entry;
 	boolean success= TRUE;
-	
+
 	entry.level_number= level_number;
 
 	/* Only can transfer if NetUnSync returns TRUE */
-	if(game_is_networked) 
+	if(game_is_networked)
 	{
-		if(NetUnSync()) 
+		if(NetUnSync())
 		{
 			success= TRUE;
 		} else {
@@ -1017,7 +1017,7 @@ static void transfer_to_new_level(
 		success= goto_level(&entry, FALSE);
 		set_keyboard_controller_status(TRUE);
 	}
-	
+
 	if(success)
 	{
 		start_game(game_state.user, TRUE);
@@ -1025,13 +1025,13 @@ static void transfer_to_new_level(
 		display_loading_map_error();
 		finish_game(TRUE);
 	}
-	
+
 	return;
 }
 
 /* The port is set.. */
 static void draw_button(
-	short index, 
+	short index,
 	boolean pressed)
 {
 	screen_rectangle *screen_rect= get_interface_rectangle(index);
@@ -1039,7 +1039,7 @@ static void draw_button(
 
 	set_drawing_clip_rectangle(screen_rect->top, screen_rect->left, screen_rect->bottom,
 		screen_rect->right);
-	
+
 	/* Use this to avoid the fade.. */
 	draw_full_screen_pict_resource_from_images(pict_resource_number);
 
@@ -1047,12 +1047,12 @@ static void draw_button(
 
 	return;
 }
-					
+
 static void handle_replay( /* This is gross. */
 	boolean last_replay)
 {
 	boolean success;
-	
+
 	if(!last_replay) force_system_colors();
 	success= begin_game(_replay, !last_replay);
 	if(!success) display_main_menu();
@@ -1073,7 +1073,7 @@ static boolean begin_game(
 	boolean record_game;
 
 	memset(starts, 0, sizeof(struct player_start_data)*MAXIMUM_NUMBER_OF_PLAYERS);
-	
+
 	switch(user)
 	{
 		case _network_player:
@@ -1102,10 +1102,10 @@ static boolean begin_game(
 				game_information.difficulty_level= network_game_info->difficulty_level;
 				entry.level_number = network_game_info->level_number;
 				entry.level_name[0] = 0;
-	
+
 				if (network_game_info->allow_mic)
 				{
-						
+
 					install_network_microphone();
 					game_state.current_netgame_allows_microphone= TRUE;
 				} else {
@@ -1131,9 +1131,9 @@ static boolean begin_game(
 						{
 							success= setup_for_replay_from_file(&replay_file, get_current_map_checksum());
 						}
-					} 
+					}
 					break;
-					
+
 				case _demo:
 					success= setup_replay_from_random_resource(get_current_map_checksum());
 					break;
@@ -1142,18 +1142,18 @@ static boolean begin_game(
 					success= setup_for_replay_from_file(&dragged_replay_file, get_current_map_checksum());
 					user= _replay;
 					break;
-					
+
 				default:
 					halt();
 					break;
 			}
-			
+
 			if(success)
 			{
 				unsigned long unused1;
 				short unused2;
-			
-				get_recording_header_data(&number_of_players, 
+
+				get_recording_header_data(&number_of_players,
 					&entry.level_number, &unused1, &unused2,
 					starts, &game_information);
 
@@ -1162,7 +1162,7 @@ static boolean begin_game(
 				record_game= FALSE;
 			}
 			break;
-			
+
 		case _single_player:
 			if(cheat)
 			{
@@ -1171,7 +1171,7 @@ static boolean begin_game(
 			} else {
 				entry.level_number= 0;
 			}
-	
+
 			entry.level_name[0] = starts[0].identifier = 0;
 			starts[0].team = starts[0].color = _red_team;
 			strcpy(starts[0].name, "");
@@ -1184,7 +1184,7 @@ static boolean begin_game(
 			number_of_players= 1;
 			record_game= TRUE;
 			break;
-			
+
 		default:
 			halt();
 			break;
@@ -1194,14 +1194,14 @@ static boolean begin_game(
 	{
 		if(record_game)
 		{
-			set_recording_header_data(number_of_players, entry.level_number, get_current_map_checksum(), 
+			set_recording_header_data(number_of_players, entry.level_number, get_current_map_checksum(),
 				RECORDING_VERSION, starts, &game_information);
 			start_recording();
 		}
-		
+
 		hide_cursor();
 		/* This has already been done to get to gather/join */
-		if(can_interface_fade_out()) 
+		if(can_interface_fade_out())
 		{
 			interface_fade_out(MAIN_MENU_BASE, TRUE);
 		}
@@ -1231,7 +1231,7 @@ static boolean begin_game(
 
 			/* Show the cursor here on failure. */
 			show_cursor();
-		
+
 			/* The only time we don't clean up is on the replays.. */
 			if(clean_up_on_failure)
 			{
@@ -1260,7 +1260,7 @@ static boolean begin_game(
 		/*  3) Error... */
 		/* Either way, we eat them.. */
 	}
-	
+
 	return success;
 }
 
@@ -1273,12 +1273,12 @@ static void start_game(
 
 	enter_screen();
 
-	// Screen should already be black! 
+	// Screen should already be black!
 	validate_world_window();
-	
+
 	draw_interface();
 
-#ifdef PERFORMANCE	
+#ifdef PERFORMANCE
 	PerfControl(perf_globals, TRUE);
 #endif
 
@@ -1293,7 +1293,7 @@ static void start_game(
 	if(!changing_level)
 	{
 		set_keyboard_controller_status(TRUE);
-	} 
+	}
 }
 
 static void handle_load_game(
@@ -1323,7 +1323,7 @@ static void finish_game(
 {
 	set_keyboard_controller_status(FALSE);
 
-#ifdef PERFORMANCE	
+#ifdef PERFORMANCE
 	PerfControl(perf_globals, FALSE);
 #endif
 	/* Note that we have to deal with the switch demo state later because */
@@ -1341,7 +1341,7 @@ static void finish_game(
 		case _network_player:
 			stop_recording();
 			break;
-			
+
 		case _demo:
 		case _replay:
 			stop_replay();
@@ -1362,10 +1362,10 @@ static void finish_game(
 	leaving_map();
 
 	/* Get as much memory back as we can. */
-	free_and_unlock_memory(); // this could call free_map.. 
+	free_and_unlock_memory(); // this could call free_map..
 	unload_all_collections();
 	unload_all_sounds();
-	
+
 	if (game_state.user==_network_player)
 	{
 		if(game_state.current_netgame_allows_microphone)
@@ -1374,7 +1374,7 @@ static void finish_game(
 		}
 		NetUnSync(); // gracefully exit from the game
 	}
-	
+
 	// give them some Howard Cosell
 	if ((game_state.user==_network_player) || ((game_state.user==_replay) && (dynamic_world->player_count>1)))
 	{
@@ -1386,7 +1386,7 @@ static void finish_game(
 	}
 
 	if (game_state.user==_network_player)	exit_networking();
-	
+
 	if(return_to_main_menu) display_main_menu();
 }
 
@@ -1395,7 +1395,7 @@ static void handle_network_game(
 {
 #if 1
 	boolean successful_gather;
-	
+
 	force_system_colors();
 
 	/* Don't update the screen, etc.. */
@@ -1406,7 +1406,7 @@ static void handle_network_game(
 	} else {
 		successful_gather= network_join();
 	}
-	
+
 	if (successful_gather)
 	{
 		begin_game(_network_player, FALSE);
@@ -1443,19 +1443,19 @@ static void next_game_screen(
 				/* Whoops.  didn't get it. */
 				alert_user(fatalError, strERRORS, outOfMemory, 0);
 				break;
-				
+
 			case _display_quit_screens:
 				/* Fade out.. */
 				interface_fade_out(data->screen_base+game_state.current_screen, TRUE);
 				game_state.state= _quit_game;
 				break;
-				
+
 			default:
 				display_main_menu();
 				break;
 		}
 	} else {
-		if(game_state.state==_display_intro_screens && 
+		if(game_state.state==_display_intro_screens &&
 			game_state.current_screen==INTRO_SCREEN_TO_START_SONG_ON)
 		{
 			queue_song(_introduction_song);
@@ -1466,7 +1466,7 @@ static void next_game_screen(
 	}
 }
 
-static void display_loading_map_error(	
+static void display_loading_map_error(
 	void)
 {
 	short error, type;
@@ -1476,7 +1476,7 @@ static void display_loading_map_error(
 	if(type==gameError)
 	{
 		short string_id;
-		
+
 		switch(error)
 		{
 			case errServerDied:
@@ -1485,7 +1485,7 @@ static void display_loading_map_error(
 			case errUnsyncOnLevelChange:
 				string_id= unableToGracefullyChangeLevelsNet;
 				break;
-			
+
 			case errMapFileNotSet:
 			case errIndexOutOfRange:
 			case errTooManyOpenFiles:
@@ -1525,7 +1525,7 @@ void display_screen(
 {
 	short pict_resource_number= base_pict_id+game_state.current_screen;
 	static boolean picture_drawn= FALSE;
-	
+
 	if (images_picture_exists(pict_resource_number))
 	{
 		stop_interface_fade();
@@ -1542,7 +1542,7 @@ void display_screen(
 		if(current_picture_clut)
 		{
 			/* slam the entire clut to black, now. */
-			if (interface_bit_depth==8) 
+			if (interface_bit_depth==8)
 			{
 				assert_world_color_table(current_picture_clut, (struct color_table *) NULL);
 			}
@@ -1552,18 +1552,18 @@ void display_screen(
 			draw_full_screen_pict_resource_from_images(pict_resource_number);
 			picture_drawn= TRUE;
 
-			assert(current_picture_clut);	
+			assert(current_picture_clut);
 			start_interface_fade(_long_cinematic_fade_in, current_picture_clut);
 		}
 	}
-	
+
 	if(!picture_drawn)
 	{
 dprintf("Didn't draw: %d;g", pict_resource_number);
 		/* Go for the next one.. */
 		next_game_screen();
 	}
-	
+
 	return;
 }
 
@@ -1599,7 +1599,7 @@ static void handle_interface_menu_screen_click(
 			break;
 		}
 	}
-	
+
 	/* we found one.. */
 	if(index!=NUMBER_OF_INTERFACE_RECTANGLES)
 	{
@@ -1613,14 +1613,14 @@ static void handle_interface_menu_screen_click(
 
 			/* Draw it initially depressed.. */
 			draw_button(index, last_state);
-		
+
 			while(mouse_still_down())
 			{
 				boolean state;
-				
+
 				get_mouse_position(&x, &y);
 				state= point_in_rectangle(x, y, screen_rect);
-				
+
 				if(state != last_state)
 				{
 					draw_button(index, state);
@@ -1630,11 +1630,11 @@ static void handle_interface_menu_screen_click(
 
 			/* Draw it unpressed.. */
 			draw_button(index, FALSE);
-			
+
 			if(last_state)
 			{
 				do_menu_item_command(mInterface, index-_new_game_button_rect+1, cheatkeys_down);
-			}	
+			}
 		}
 	}
 
@@ -1651,7 +1651,7 @@ static void try_and_display_chapter_screen(
 	if (scenario_picture_exists(pict_resource_number))
 	{
 		free_and_unlock_memory();
-		
+
 		/* This will NOT work if the initial level entered has a chapter screen, which is why */
 		/*  we perform this check. (The interface_color_table is not valid...) */
 		if(interface_table_is_valid)
@@ -1671,7 +1671,7 @@ static void try_and_display_chapter_screen(
 			SndListHandle sound= NULL;
 
 			/* slam the entire clut to black, now. */
-			if (interface_bit_depth==8) 
+			if (interface_bit_depth==8)
 			{
 				assert_world_color_table(current_picture_clut, (struct color_table *) NULL);
 			}
@@ -1686,7 +1686,7 @@ static void try_and_display_chapter_screen(
 //				if (channel= (SndChannelPtr) NewPtrClear(sizeof(SndChannel)))
 				{
 					OSErr sound_error= SndNewChannel(&channel, 0, 0, (SndCallBackUPP) NULL);
-					
+
 					if (sound_error==noErr)
 					{
 						SndPlay(channel, sound, TRUE);
@@ -1698,25 +1698,25 @@ static void try_and_display_chapter_screen(
 				}
 			}
 #endif
-			
+
 			/* Fade in.... */
-			assert(current_picture_clut);	
+			assert(current_picture_clut);
 			full_fade(_long_cinematic_fade_in, current_picture_clut);
-			
+
 			scroll_full_screen_pict_resource_from_scenario(pict_resource_number, text_block);
 
 			wait_for_click_or_keypress(text_block ? -1 : 10*MACHINE_TICKS_PER_SECOND);
-			
+
 			/* Fade out! (Pray) */
 			interface_fade_out(pict_resource_number, FALSE);
-			
+
 #if 1
 			if (channel)
 			{
 				SndDisposeChannel(channel, TRUE);
 //				DisposePtr((Ptr)channel);
 			}
-			
+
 			if (sound)
 			{
 				ReleaseResource((Handle)sound);
@@ -1752,7 +1752,7 @@ static void update_interface_fades(
 	void)
 {
 	boolean still_fading= FALSE;
-	
+
 	if(interface_fade_in_progress)
 	{
 		still_fading= update_fades();
@@ -1761,7 +1761,7 @@ static void update_interface_fades(
 			stop_interface_fade();
 		}
 	}
-	
+
 	return;
 }
 
@@ -1772,11 +1772,11 @@ void stop_interface_fade(
 	{
 		stop_fade();
 		interface_fade_in_progress= FALSE;
-		
+
 		assert(animated_color_table);
 		free(animated_color_table);
 
-		if (interface_bit_depth==8) 
+		if (interface_bit_depth==8)
 		{
 			assert_world_color_table(current_picture_clut, (struct color_table *) NULL);
 		}
@@ -1807,9 +1807,9 @@ void interface_fade_out(
 			current_picture_clut= calculate_picture_clut(pict_resource_number);
 			current_picture_clut_depth= interface_bit_depth;
 		}
-		
+
 		hide_cursor();
-			
+
 		fadeout_animated_color_table= (struct color_table *) malloc(sizeof(struct color_table));
 		memcpy(fadeout_animated_color_table, current_picture_clut, sizeof(struct color_table));
 
@@ -1822,8 +1822,8 @@ void interface_fade_out(
 			/* Oops.  Founda  memory leak.. */
 			free(fadeout_animated_color_table);
 		}
-		
-		if(fade_music) 
+
+		if(fade_music)
 		{
 			while(music_playing()) music_idle_proc();
 

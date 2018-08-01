@@ -20,12 +20,12 @@
 ;{
 ;	short width, height; /* in pixels */
 ;	short bytes_per_row; /* if ==NONE this is a transparent RLE shape */
-;	
+;
 ;	short flags; /* [column_order.1] [unused.15] */
 ;	short bit_depth; /* should always be ==8 */
-;	
+;
 ;	short unused[8];
-;	
+;
 ;	pixel8 *row_addresses[1];
 ;};
 
@@ -54,10 +54,10 @@ _texture_horizontal_polygon_lines8 proc	export
 ;struct _horizontal_polygon_line_data /* 32 bytes */
 ;{
 ;	word flags; /* [expand.1] [vertical.1] [unused.14] */
-;	
+;
 ;	unsigned long source_x, source_y;
 ;	unsigned long source_dx, source_dy;
-;	
+;
 ;	pixel8 *shading_table;
 ;};
 
@@ -89,7 +89,7 @@ LOCAL_SIZE					equ		*
 REGISTERS					reg		d3-d7/a2-a4
 
 							with	stack_frame
-							
+
 							link	a6,#LOCAL_SIZE
 							movem.l	REGISTERS,-(sp)
 
@@ -105,16 +105,16 @@ _Y							equ		d2
 							move.l	x0_table(a6),a0
 							move.w	(a0)+,_X0
 							move.l	a0,x0_table(a6)
-							
+
 							;get x1 for this line and postincrement the x1_table
 							move.l	x1_table(a6),a0
 							move.w	(a0)+,_X1
 							move.l	a0,x1_table(a6)
-							
+
 							;get y for this line and postincrement it
 							move.l	y0(a6),_Y
 							addq.l	#1,y0(a6)
-							
+
 _OFFSET						equ		d0	;scratch until inner loop
 _PIXEL						equ		d1	;scratch until inner loop
 _SHIFT_COUNT				equ		d2	;scratch until inner loop
@@ -128,7 +128,7 @@ _READ_ADDRESS				equ		a0	;scratch until inner loop
 _ROW_ADDRESSES				equ		a1
 _WRITE_ADDRESS				equ		a2
 _SHADING_TABLE				equ		a3
-							
+
 							with	bitmap_definition
 
 							;initialize a pointer to the texture’s row_address table
@@ -141,9 +141,9 @@ _SHADING_TABLE				equ		a3
 							lea		row_addresses(a0),a0
 							move.l	(a0,_Y.w*4),_WRITE_ADDRESS
 							add.w	_X0,_WRITE_ADDRESS
-							
+
 							endwith
-							
+
 							;initialize source_x, source_y, source_dx, source_dy and shading_table
 							;from the line_data structure, then postincrement it
 							with	line_data
@@ -156,13 +156,13 @@ _SHADING_TABLE				equ		a3
 							add.w	#LINE_DATA_SIZE,a0
 							move.l	a0,data(a6)
 							endwith
-							
+
 							;initialize _COUNT (x1-x0 minus one)
 							move.w	_X1,_COUNT
 							sub.w	_X0,_COUNT
 							subq	#1,_COUNT
 							bmi.s	end_line
-							
+
 							;zero _PIXEL and initialize _SHIFT_COUNT
 							moveq	#0,_PIXEL
 							moveq	#DOWNSHIFT,_SHIFT_COUNT
@@ -192,7 +192,7 @@ end_line
 
 							endwith
 							endproc
-							
+
 _texture_vertical_polygon_lines8 proc	export
 
 _SCREEN						equ		a0
@@ -218,7 +218,7 @@ REGISTERS					reg		d3-d7/a2-a5
 ;	short downshift;
 ;	short x0;
 ;	short width;
-;	
+;
 ;	short pad;
 ;};
 line_header					record	0
@@ -265,7 +265,7 @@ LOCAL_SIZE					equ		*
 							endr
 
 							with	stack_frame
-							
+
 							link	a6,#LOCAL_SIZE
 							movem.l	REGISTERS,-(sp)
 
@@ -287,7 +287,7 @@ LOCAL_SIZE					equ		*
 next_column
 							move.w	line_count(a6), d0
 							beq.s	end
-							
+
 ;							cmpi.w	#2, d0
 ;							blt		single_start
 ;							move.w	x(a6), d0
@@ -303,14 +303,14 @@ single_start
 							move.w	(a0), _Y0
 							move.l	y1_table(a6), a0
 							move.w	(a0), _Y1
-							
+
 							with	bitmap_definition
 							move.l	screen(a6), a0
 							lea		row_addresses(a0), a0
 							move.l	(a0, _Y0.w*4), _SCREEN
 							add.w	x(a6), _SCREEN
 							endwith
-							
+
 ;grab variables from line
 							with	line
 							move.l	shading_table(_DATA), _SHADING0
@@ -324,7 +324,7 @@ single_start
 							sub.w	_Y0, _Y1
 							subq.w	#1, _COUNT
 							bmi.s	single_map_end
-							
+
 single_map
 							move.l	_TEXTURE_Y0, _SCRATCH
 							lsr.l	_DOWNSHIFT, _SCRATCH
@@ -341,7 +341,7 @@ single_map_end
 							subq.w	#1, line_count(a6)
 							addq.w	#1, x(a6)
 							bra.s	next_column
-							
+
 end
 							movem.l	(sp)+, REGISTERS
 							unlk	a6
@@ -376,7 +376,7 @@ REGISTERS					reg		d3-d7/a2-a5
 ;	short downshift;
 ;	short x0;
 ;	short width;
-;	
+;
 ;	short pad;
 ;};
 line_header					record	0
@@ -423,7 +423,7 @@ LOCAL_SIZE					equ		*
 							endr
 
 							with	stack_frame
-							
+
 							link	a6,#LOCAL_SIZE
 							movem.l	REGISTERS,-(sp)
 
@@ -445,7 +445,7 @@ LOCAL_SIZE					equ		*
 next_column
 							move.w	line_count(a6), d0
 							beq.s	end
-							
+
 ;							cmpi.w	#2, d0
 ;							blt		single_start
 ;							move.w	x(a6), d0
@@ -461,14 +461,14 @@ single_start
 							move.w	(a0), _Y0
 							move.l	y1_table(a6), a0
 							move.w	(a0), _Y1
-							
+
 							with	bitmap_definition
 							move.l	screen(a6), a0
 							lea		row_addresses(a0), a0
 							move.l	(a0, _Y0.w*4), _SCREEN
 							add.w	x(a6), _SCREEN
 							endwith
-							
+
 ;grab variables from line
 							with	line
 							move.l	shading_table(_DATA), _SHADING0
@@ -482,7 +482,7 @@ single_start
 							sub.w	_Y0, _Y1
 							subq.w	#1, _COUNT
 							bmi.s	single_map_end
-							
+
 single_map
 							move.l	_TEXTURE_Y0, _SCRATCH
 							lsr.l	_DOWNSHIFT, _SCRATCH
@@ -501,7 +501,7 @@ single_map_end
 							subq.w	#1, line_count(a6)
 							addq.w	#1, x(a6)
 							bra.s	next_column
-							
+
 end
 							movem.l	(sp)+, REGISTERS
 							unlk	a6
@@ -510,7 +510,7 @@ end
 							symbol	_transparent_texture_vertical_polygon_lines8
 
 							endproc
-							
+
 							end
 
 ;--------------------------
@@ -543,7 +543,7 @@ parallel_start
 							move.l	(a0, _Y0.w*4), _SCREEN
 							add.w	x(a6), _SCREEN
 							endwith
-							
+
 sync0
 							move.l	_TEXTURE_Y0, _SCRATCH
 							lsr.l	_DOWNSHIFT, _SCRATCH
@@ -561,12 +561,12 @@ sync1
 							move.b	(_SHADING1, _SCRATCH.w), 1(_SCREEN)
 							add.w	_BYTES_PER_ROW, _SCREEN
 							dbf		_COUNT, sync1
-							
+
 ;(count==y1)= y1-y0-1
 							sub.w	_Y0, _Y1
 							subq.w	#1, _COUNT
 							bmi.s	parallel_map_end
-							
+
 parallel_map
 							move.l	_TEXTURE_Y0, _SCRATCH
 							lsr.l	_DOWNSHIFT, _SCRATCH

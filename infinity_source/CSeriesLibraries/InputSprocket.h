@@ -70,7 +70,7 @@ enum
 
 /* *************** resources **************** */
 
-enum 
+enum
 {
 	kISpSetListResourceType = 'setl',
 	kISpSetDataResourceType = 'setd'
@@ -83,7 +83,7 @@ enum
  * information for an input device within the system
  *
  */
- 
+
 typedef struct ISpDeviceDefinition
 {
 	Str63 deviceName;								/* a human readable name of the device */
@@ -107,7 +107,7 @@ enum
  * This is the structure that event data is passed in.
  *
  */
- 
+
 typedef struct ISpElementEvent
 {
 	AbsoluteTime when;              	/* this is absolute time on PCI or later, otherwise it is */
@@ -157,7 +157,7 @@ enum
  * These are the current built values for ISpDeviceClass
  *
  */
- 
+
 enum
 {
 	kISpDeviceClass_SpeechRecognition = 'talk',
@@ -172,11 +172,11 @@ enum
 
 /*
  * These are the current built in ISpElementKind's
- * 
+ *
  * These are all OSTypes.
  *
  */
- 
+
 enum
 {
 	kISpElementKind_Button = 'butn',
@@ -195,29 +195,29 @@ enum
  *
  */
 
-#if USE_OLD_INPUT_SPROCKET_LABELS 
+#if USE_OLD_INPUT_SPROCKET_LABELS
 enum
 {
 	/* axis */
 	kISpElementLabel_XAxis = 'xaxi',
 	kISpElementLabel_YAxis = 'yaxi',
 	kISpElementLabel_ZAxis = 'zaxi',
-	
+
 	kISpElementLabel_Rx = 'rxax',
 	kISpElementLabel_Ry = 'ryax',
 	kISpElementLabel_Rz = 'rzax',
-	
+
 	kISpElementLabel_Gas = 'gasp',
 	kISpElementLabel_Brake = 'brak',
 	kISpElementLabel_Clutch = 'cltc',
-	
+
 	kISpElementLabel_Throttle = 'thrt',
 	kISpElementLabel_Trim = 'trim',
-	
+
 	/* direction pad */
 	kISpElementLabel_POVHat = 'povh',
 	kISpElementLabel_PadMove = 'move',
-	
+
 	/* buttons */
 	kISpElementLabel_Fire = 'fire',
 	kISpElementLabel_Start = 'strt',
@@ -229,53 +229,53 @@ enum
 {
 	/* generic */
 	kISpElementLabel_None = 'none',
-	
+
 	/* axis */
 	kISpElementLabel_Axis_XAxis = 'xaxi',
 	kISpElementLabel_Axis_YAxis = 'yaxi',
 	kISpElementLabel_Axis_ZAxis = 'zaxi',
-	
+
 	kISpElementLabel_Axis_Rx = 'rxax',
 	kISpElementLabel_Axis_Ry = 'ryax',
 	kISpElementLabel_Axis_Rz = 'rzax',
-	
+
 	kISpElementLabel_Axis_Gas = 'gasp',
 	kISpElementLabel_Axis_Brake = 'brak',
 	kISpElementLabel_Axis_Clutch = 'cltc',
-	
+
 	kISpElementLabel_Axis_Throttle = 'thrt',
 	kISpElementLabel_Axis_Trim = 'trim',
 	kISpElementLabel_Axis_Rudder = 'rudd',
-	
+
 	/* direction pad */
 	kISpElementLabel_Pad_POV = 'povh',
 	kISpElementLabel_Pad_Move = 'move',
-	
+
 	/* buttons */
 	kISpElementLabel_Btn_Fire = 'fire',
 	kISpElementLabel_Btn_SecondaryFire = 'sfir',
 	kISpElementLabel_Btn_Jump = 'jump',
-	kISpElementLabel_Btn_PauseResume = 'strt',	
+	kISpElementLabel_Btn_PauseResume = 'strt',
 	/* kISpElementLabel_Btn_PauseResume automatically binds to escape */
 	kISpElementLabel_Btn_Select = 'optn',
-	
+
 	kISpElementLabel_Btn_SlideLeft = 'blft',
 	kISpElementLabel_Btn_SlideRight = 'brgt',
-	
+
 	kISpElementLabel_Btn_MoveForward = 'btmf',
 	kISpElementLabel_Btn_MoveBackward = 'btmb',
-	
+
 	kISpElementLabel_Btn_TurnLeft = 'bttl',
 	kISpElementLabel_Btn_TurnRight = 'bttr',
-	
+
 	kISpElementLabel_Btn_LookLeft = 'btll',
 	kISpElementLabel_Btn_LookRight = 'btlr',
 	kISpElementLabel_Btn_LookUp = 'btlu',
 	kISpElementLabel_Btn_LookDown = 'btld',
-	
+
 	kISpElementLabel_Btn_Next = 'btnx',
 	kISpElementLabel_Btn_Previous = 'btpv',
-	
+
 	kISpElementLabel_Btn_SideStep = 'side',
 	kISpElementLabel_Btn_Run = 'quik',
 	kISpElementLabel_Btn_Look = 'blok'
@@ -286,7 +286,7 @@ enum
  * direction pad data & configuration information
  *
  */
- 
+
 typedef UInt32 ISpDPadData;
 enum
 {
@@ -312,7 +312,7 @@ typedef struct ISpDPadConfigurationInfo
  * button data & configuration information
  *
  */
- 
+
 typedef UInt32 ISpButtonData;
 enum
 {
@@ -327,10 +327,10 @@ typedef struct ISpButtonConfigurationInfo
 
 /*
  *
- * axis data & configuration information 
+ * axis data & configuration information
  *
  */
- 
+
 #define	kISpAxisMinimum  0x00000000U
 #define	kISpAxisMiddle   0x7FFFFFFFU
 #define	kISpAxisMaximum  0xFFFFFFFFU
@@ -383,7 +383,7 @@ OSStatus ISpShutdown(void); // 1.1 or later
  * polling
  *
  */
- 
+
  OSStatus ISpTickle(void);	// 1.1 or later
 
 /********** user interface functions **********/
@@ -396,7 +396,7 @@ NumVersion ISpGetVersion(void);
  * ISpElement_NewVirtual(ISpElementReference *outElement);
  *
  */
- 
+
 OSStatus ISpElement_NewVirtual(UInt32 dataSize, ISpElementReference *outElement, UInt32 flags);
 
 /*
@@ -404,7 +404,7 @@ OSStatus ISpElement_NewVirtual(UInt32 dataSize, ISpElementReference *outElement,
  * ISpElement_NewVirtualFromNeeds(UInt32 count, ISpNeeds *needs, ISpElementReference *outElements);
  *
  */
- 
+
 OSStatus ISpElement_NewVirtualFromNeeds(UInt32 count, ISpNeed *needs, ISpElementReference *outElements, UInt32 flags);
 
 /*
@@ -419,7 +419,7 @@ OSStatus ISpElement_DisposeVirtual(UInt32 count, ISpElementReference *inElements
  * ISpInit
  *
  */
- 
+
 OSStatus ISpInit(
 	UInt32 count,
 	ISpNeed *needs,
@@ -427,15 +427,15 @@ OSStatus ISpInit(
 	OSType appCreatorCode,
 	OSType subCreatorCode,
 	UInt32 flags,
-	short setListResourceId, 
+	short setListResourceId,
 	UInt32 version);
-	
-	
+
+
 /*
  * ISpConfigure
  *
  */
- 
+
 typedef Boolean (*ISpEventProcPtr) (EventRecord* inEvent);
 
 OSStatus ISpConfigure(ISpEventProcPtr inEventProcPtr);
@@ -445,7 +445,7 @@ OSStatus ISpConfigure(ISpEventProcPtr inEventProcPtr);
  * ISpStop
  *
  */
- 
+
 OSStatus ISpStop(void);
 
 /*
@@ -454,19 +454,19 @@ OSStatus ISpStop(void);
  *
  * ISpSuspend turns all devices off and allocates memory so that the state may be later resumed.
  * ISpResume resumes to the previous state of the system after a suspend call.
- * 
+ *
  * Return Codes
  * memFullErr
  *
  */
- 
+
 OSStatus ISpSuspend(void);
 OSStatus ISpResume(void);
 
 /*
  * ISpDevices_Extract, ISpDevices_ExtractByClass, ISpDevices_ExtractByIdentifier
  *
- * These will extract as many device references from the system wide list as will fit in your buffer.  
+ * These will extract as many device references from the system wide list as will fit in your buffer.
  *
  * inBufferCount - the size of your buffer (in units of sizeof(ISpDeviceReference)) this may be zero
  * buffer - a pointer to your buffer
@@ -498,14 +498,14 @@ OSStatus ISpDevices_ExtractByIdentifier(ISpDeviceIdentifier inIdentifier, UInt32
  * inClass - the class of devices to activate or deactivate
  *
  * ISpDevice_IsActive
- * inDevice - the device reference that you wish to 
+ * inDevice - the device reference that you wish to
  * outIsActive - a boolean value that is true when the device is active
  *
  * Return Codes
  * paramErr
  *
  */
- 
+
 OSStatus ISpDevices_ActivateClass(ISpDeviceClass inClass);		// 1.1 or later
 OSStatus ISpDevices_DeactivateClass(ISpDeviceClass inClass);	// 1.1 or later
 OSStatus ISpDevices_Activate(UInt32 inDeviceCount, ISpDeviceReference *inDevicesToActivate);
@@ -524,7 +524,7 @@ OSStatus ISpDevice_IsActive(ISpDeviceReference inDevice, Boolean *outIsActive);
  * paramErr
  *
  */
- 
+
 OSStatus ISpDevice_GetDefinition(const ISpDeviceReference inDevice, UInt32 inBuflen, ISpDeviceDefinition *outStruct);
 
 
@@ -539,7 +539,7 @@ OSStatus ISpDevice_GetDefinition(const ISpDeviceReference inDevice, UInt32 inBuf
  * paramErr
  *
  */
- 
+
 OSStatus ISpDevice_GetElementList(const ISpDeviceReference inDevice, ISpElementListReference *outElementList);
 
 /*
@@ -551,21 +551,21 @@ OSStatus ISpDevice_GetElementList(const ISpDeviceReference inDevice, ISpElementL
  * paramErr
  *
  */
- 
+
 OSStatus ISpElement_GetGroup(const ISpElementReference inElement, UInt32 *outGroup);
 
 /*
  *
- * takes an ISpElementReference and returns the device that the element belongs 
+ * takes an ISpElementReference and returns the device that the element belongs
  * to.
  *
  * Return Codes
  * paramErr if inElement is 0 or outDevice is nil
  *
  */
- 
+
 OSStatus ISpElement_GetDevice(const ISpElementReference inElement, ISpDeviceReference *outDevice);
-		
+
 /*
  *
  * takes an ISpElementReference and gives the ISpElementInfo for that Element.  This is the
@@ -578,13 +578,13 @@ OSStatus ISpElement_GetDevice(const ISpElementReference inElement, ISpDeviceRefe
  */
 
 OSStatus ISpElement_GetInfo(const ISpElementReference inElement, ISpElementInfoPtr outInfo);
-		
+
 /*
  *
- * 		
+ *
  *
  * takes an ISpElementReference and gives the ISpElementKind specific configuration information
- * 
+ *
  * if buflen is not long enough to hold the information ISpElement_GetConfigurationInfo will
  * copy buflen bytes of the data into the block of memory pointed to by configInfo and
  * will return something error.
@@ -593,14 +593,14 @@ OSStatus ISpElement_GetInfo(const ISpElementReference inElement, ISpElementInfoP
  * paramErr if inElement or configInfo is nil
  *
  */
- 
+
 OSStatus ISpElement_GetConfigurationInfo(const ISpElementReference inElement, UInt32 buflen, void *configInfo);
-	
+
 /*
  *
  * ISpElement_GetSimpleState
  *
- * Takes an ISpElementReference and returns the current state of that element.  This is a 
+ * Takes an ISpElementReference and returns the current state of that element.  This is a
  * specialized version of ISpElement_GetComplexState that is only appropriate for elements
  * whose data fits in a signed 32 bit integer.
  *
@@ -610,14 +610,14 @@ OSStatus ISpElement_GetConfigurationInfo(const ISpElementReference inElement, UI
  * paramErr if inElement is 0 or state is nil
  *
  */
- 
+
 OSStatus ISpElement_GetSimpleState(const ISpElementReference inElement, UInt32 *state);
 
 /*
  *
  * ISpElement_GetComplexState
  *
- * Takes an ISpElementReference and returns the current state of that element.  
+ * Takes an ISpElementReference and returns the current state of that element.
  * Will copy up to buflen bytes of the current state of the device into
  * state.
  *
@@ -629,7 +629,7 @@ OSStatus ISpElement_GetSimpleState(const ISpElementReference inElement, UInt32 *
 
 OSStatus ISpElement_GetComplexState(const ISpElementReference inElement, UInt32 buflen, void *state);
 
- 
+
 /*
  * ISpElement_GetNextEvent
  *
@@ -643,7 +643,7 @@ OSStatus ISpElement_GetComplexState(const ISpElementReference inElement, UInt32 
  * paramErr
  *
  */
- 
+
 OSStatus ISpElement_GetNextEvent(ISpElementReference inElement, UInt32 bufSize, ISpElementEventPtr event, Boolean *wasEvent);
 
 /*
@@ -660,7 +660,7 @@ OSStatus ISpElement_GetNextEvent(ISpElementReference inElement, UInt32 bufSize, 
  * paramErr
  *
  */
- 
+
 OSStatus ISpElement_Flush(ISpElementReference inElement);
 
 
@@ -668,9 +668,9 @@ OSStatus ISpElement_Flush(ISpElementReference inElement);
 /*
  * ISpElementList_New
  *
- * Creates a new element list and returns it in outElementList.  In count specifies 
+ * Creates a new element list and returns it in outElementList.  In count specifies
  * the number of element references in the list pointed to by inElements.  If inCount
- * is non zero the list is created with inCount elements in at as specified by the 
+ * is non zero the list is created with inCount elements in at as specified by the
  * inElements parameter.  Otherwise the list is created empty.
  *
  *
@@ -691,7 +691,7 @@ OSStatus ISpElementList_New(UInt32 inCount, ISpElementReference *inElements, ISp
 /*
  * ISpElementList_Dispose
  *
- * Deletes an already existing memory list.  
+ * Deletes an already existing memory list.
  *
  *
  * Return Codes
@@ -714,7 +714,7 @@ OSStatus ISpElementList_Dispose(ISpElementListReference inElementList);
  * Return Codes
  * paramErr if outElementList is nil
  *
- */ 
+ */
 
 OSStatus ISpGetGlobalElementList(ISpElementListReference *outElementList);
 
@@ -729,7 +729,7 @@ OSStatus ISpGetGlobalElementList(ISpElementListReference *outElementList);
  *
  * Special Concerns
  * interrupt Unsafe
- * 
+ *
  */
 OSStatus ISpElementList_AddElements(ISpElementListReference inElementList, UInt32 refCon, UInt32 count, ISpElementReference *newElements);
 
@@ -744,9 +744,9 @@ OSStatus ISpElementList_AddElements(ISpElementListReference inElementList, UInt3
  *
  * Special Concerns
  * interrupt Unsafe
- * 
+ *
  */
- 
+
 OSStatus ISpElementList_RemoveElements(ISpElementListReference inElementList, UInt32 count, ISpElementReference *oldElement);
 
 /*
@@ -754,7 +754,7 @@ OSStatus ISpElementList_RemoveElements(ISpElementListReference inElementList, UI
  *
  * ISpElementList_Extract will extract as many of the elements from an element list as possible.  You pass
  * in an element list, a pointer to an array of element references and the number of elements in that array.
- * It will return how many items are in the element list in the outCount parameter and copy the minimum of 
+ * It will return how many items are in the element list in the outCount parameter and copy the minimum of
  * that number and the size of the array into the buffer.
  *
  * ByKind and ByLabel are the same except that they will only count and copy element references to elements
@@ -764,11 +764,11 @@ OSStatus ISpElementList_RemoveElements(ISpElementListReference inElementList, UI
  * paramErr
  *
  */
- 
+
 OSStatus ISpElementList_Extract(ISpElementListReference inElementList, UInt32 inBufferCount, UInt32 *outCount, ISpElementReference *buffer);
 OSStatus ISpElementList_ExtractByKind(ISpElementListReference inElementList, ISpElementKind inKind, UInt32 inBufferCount, UInt32 *outCount, ISpElementReference *buffer);
 OSStatus ISpElementList_ExtractByLabel(ISpElementListReference inElementList, ISpElementLabel inLabel, UInt32 inBufferCount, UInt32 *outCount, ISpElementReference *buffer);
- 
+
 /*
  * ISpElementList_GetNextEvent
  *
@@ -782,7 +782,7 @@ OSStatus ISpElementList_ExtractByLabel(ISpElementListReference inElementList, IS
  * paramErr
  *
  */
- 
+
 OSStatus ISpElementList_GetNextEvent(ISpElementListReference inElementList, UInt32 bufSize, ISpElementEventPtr event, Boolean *wasEvent);
 
 /*
@@ -799,7 +799,7 @@ OSStatus ISpElementList_GetNextEvent(ISpElementListReference inElementList, UInt
  * paramErr
  *
  */
- 
+
 OSStatus ISpElementList_Flush(ISpElementListReference inElementList);
 
 

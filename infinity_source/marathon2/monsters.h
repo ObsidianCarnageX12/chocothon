@@ -170,11 +170,11 @@ struct monster_data /* 64 bytes */
 	short type;
 	short vitality; /* if ==NONE, will be properly initialized when the monster is first activated */
 	word flags; /* [slot_used.1] [need_path.1] [recovering_from_hit.1] [active.1] [idle.1] [berserk.1] [target_damage.1] [unused.6] [never_activated.1] [demoted.1] [promoted.1] */
-	
+
 	short path; /* NONE is no path (the need path bit should be set in this case) */
 	world_distance path_segment_length; /* distance until we’re through with this segment of the path */
 	world_distance desired_height;
-	
+
 	short mode, action;
 	short target_index; /* a monster_index */
 	world_distance external_velocity; /* per tick, in the direction -facing, only updated during hit/death animations */
@@ -185,11 +185,11 @@ struct monster_data /* 64 bytes */
 	world_distance elevation; /* valid when attacking; z-component of projectile vector */
 
 	short object_index;
-	
+
 	long ticks_since_last_activation;
 
 	short activation_bias;
-	
+
 	short goal_polygon_index; // used instead of NONE when generating random paths
 
 	// copied from monster’s object every tick but updated with height
@@ -197,7 +197,7 @@ struct monster_data /* 64 bytes */
 	short sound_polygon_index;
 
 	short random_desired_height;
-	
+
 	short unused[7];
 };
 

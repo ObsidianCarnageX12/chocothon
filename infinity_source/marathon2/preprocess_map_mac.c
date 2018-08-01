@@ -4,7 +4,7 @@
 
 	Sunday, December 5, 1993 1:00:31 PM- rdm created
 	Friday, June 16, 1995 9:12:50 AM- I am completely fired.  And a complete fucking moron.  The
-		revert game information is stored in stale pointers, which is crack, because they are 
+		revert game information is stored in stale pointers, which is crack, because they are
 		pointing into random stack memory.  This is completely evil, totally stupid, and I feel
 		ridiculously dumb.
 	Saturday, August 26, 1995 12:33:51 PM- most of the crap in this file can be cleaned up.  Some
@@ -63,7 +63,7 @@ static FSSpec previous_selection; /* FSSpec for convenience-> never used as such
 static void enumerate_catalog(long dir_id);
 static void add_overhead_thumbnail(void);
 pascal short custom_get_hook(short item, DialogPtr theDialog);
-static pascal Boolean custom_get_filter_proc(DialogPtr theDialog, 
+static pascal Boolean custom_get_filter_proc(DialogPtr theDialog,
 	EventRecord *theEvent, short *itemHit);
 pascal short custom_put_hook(short item, DialogPtr theDialog, void *user_data);
 static boolean confirm_save_choice(FSSpec *file);
@@ -83,13 +83,13 @@ void get_default_map_spec(
 		/* Get the Marathon FSSpec */
 		error= get_file_spec(&default_map_spec, strFILENAMES, filenameDEFAULT_MAP, strPATHS);
 		if (error) alert_user(fatalError, strERRORS, badExtraFileLocations, error);
-		
+
 		first_try= FALSE;
 	}
-	
+
 	/* Copy it in. */
 	memcpy(new_file, &default_map_spec, sizeof(FileDesc));
-	
+
 	return;
 }
 
@@ -110,13 +110,13 @@ void get_default_physics_spec(
 			get_my_fsspec(&default_physics_spec);
 			getpstr((char *)default_physics_spec.name, strFILENAMES, filenamePHYSICS_MODEL);
 		}
-		
+
 		first_try= FALSE;
 	}
-	
+
 	/* Copy it in. */
 	memcpy(new_file, &default_physics_spec, sizeof(FileDesc));
-	
+
 	return;
 }
 
@@ -144,7 +144,7 @@ boolean save_game(
 	void)
 {
 	Str255 prompt;
-	Str63 file_name;	
+	Str63 file_name;
 	DlgHookYDUPP dlgHook;
 	StandardFileReply reply;
 	Point top_left= {-1, -1}; /* auto center */
@@ -153,20 +153,20 @@ boolean save_game(
 	pause_game();
 	exit_screen();
 	ShowCursor();
-	
+
 	/* Translate the name, and display the dialog */
 	get_current_saved_game_name((char *)file_name);
-	
+
 	// <AMR 4/9/97> added to ensure that dialog isn't named whatever the action key was
 	FlushEvents(keyDownMask|keyUpMask|autoKeyMask|mDownMask|mUpMask, 0);
-	
+
 	/* Create the UPP's */
 	dlgHook= NewDlgHookYDProc(custom_put_hook);
 	assert(dlgHook);
 
 	/* The drawback of this method-> I don't get a New Folder button. */
 	/* If this is terribly annoying, I will add the Sys7 only code. */
-	CustomPutFile((StringPtr)getpstr((char *)prompt, strPROMPTS, _save_game_prompt), 
+	CustomPutFile((StringPtr)getpstr((char *)prompt, strPROMPTS, _save_game_prompt),
 		file_name, &reply, 0, top_left, dlgHook, NULL, NULL, NULL, &reply.sfFile);
 
 	/* Free them... */
@@ -185,7 +185,7 @@ boolean save_game(
 	enter_screen();
 	draw_interface();
 	resume_game();
-	
+
 	return success;
 }
 
@@ -194,7 +194,7 @@ void add_finishing_touches_to_save_file(
 {
 	short resource_file_ref;
 	char name[64+1];
-	
+
 	/* Save the STR resource that tells us what our application name is. */
 	resource_file_ref= FSpOpenResFile((FSSpec *) file, fsWrPerm);
 	if(resource_file_ref>= 0)
@@ -207,7 +207,7 @@ void add_finishing_touches_to_save_file(
 		c2pstr(name);
 		err= PtrToHand(name, &resource, name[0]+1);
 		assert(!err);
-		
+
 		AddResource(resource, 'STR ', strSAVE_LEVEL_NAME, (StringPtr)"");
 		ReleaseResource(resource);
 
@@ -218,7 +218,7 @@ void add_finishing_touches_to_save_file(
 	}
 
 	/* Add the application name resource.. */
-	add_application_name_to_fsspec((FileDesc *) file, 
+	add_application_name_to_fsspec((FileDesc *) file,
 		getpstr(name, strFILENAMES, filenameMARATHON_NAME));
 }
 
@@ -243,7 +243,7 @@ static void add_overhead_thumbnail(
 
 	/* Start recording.. */
 	picture= OpenPicture(&bounds);
-	
+
 	PaintRect(&bounds);
 
 	overhead_data.scale= OVERHEAD_MAP_MINIMUM_SCALE;
@@ -254,7 +254,7 @@ static void add_overhead_thumbnail(
 	overhead_data.width= RECTANGLE_WIDTH(&bounds);
 	overhead_data.height= RECTANGLE_HEIGHT(&bounds);
 	overhead_data.mode= _rendering_saved_game_preview;
-	
+
 	_render_overhead_map(&overhead_data);
 
 	RGBForeColor(&rgb_black);
@@ -264,18 +264,18 @@ static void add_overhead_thumbnail(
 	TextSize(0);
 
 	ClosePicture();
-	
+
 	AddResource((Handle) picture, 'PICT', THUMBNAIL_ID, (StringPtr)"");
 	ReleaseResource((Handle) picture);
 
 	SetGWorld(old_gworld, old_device);
-	
+
 	return;
 }
 
 /* load_file_reply is valid.. */
 pascal short custom_put_hook(
-	short item, 
+	short item,
 	DialogPtr theDialog,
 	void *user_data)
 {
@@ -293,7 +293,7 @@ pascal short custom_put_hook(
 			}
 		}
 	}
-	
+
 	return item;
 }
 
@@ -317,7 +317,7 @@ static boolean confirm_save_choice(
 	pb.ioNamePtr= file->name;
 	pb.ioVRefNum= file->vRefNum;
 	pb.ioDirID= file->parID;
-	err= PBHGetFInfo((HParmBlkPtr) &pb, FALSE); 
+	err= PBHGetFInfo((HParmBlkPtr) &pb, FALSE);
 
 	if(!err)
 	{
@@ -335,21 +335,21 @@ static boolean confirm_save_choice(
 				/* Load in the dialog.. */
 				dialog= myGetNewDialog(dlogMY_REPLACE, NULL, (WindowPtr) -1, 0);
 				assert(dialog);
-				
+
 				/* Move the window to the proper location.. */
-				MoveWindow((WindowPtr) dialog, frame.left+REPLACE_H_OFFSET, 
+				MoveWindow((WindowPtr) dialog, frame.left+REPLACE_H_OFFSET,
 					frame.top+REPLACE_V_OFFSET, FALSE);
 
 				/* Show the window. */
-				ShowWindow((WindowPtr) dialog);			
+				ShowWindow((WindowPtr) dialog);
 				do {
 					ModalDialog(get_general_filter_upp(), &item_hit);
 				} while(item_hit > iCANCEL);
 
-				/* Restore and cleanup.. */				
+				/* Restore and cleanup.. */
 				ParamText((StringPtr)"", (StringPtr)"", (StringPtr)"", (StringPtr)"");
 				DisposeDialog(dialog);
-				
+
 				if(item_hit==iOK) /* replace.. */
 				{
 					/* Want to delete it... */
@@ -362,13 +362,13 @@ static boolean confirm_save_choice(
 			}
 		}
 	}
-	
+
 	return pass_through;
 }
 
 #ifdef OBSOLETE
 static pascal short custom_get_hook(
-	short item, 
+	short item,
 	DialogPtr theDialog)
 {
 	short file_ref;
@@ -383,9 +383,9 @@ static pascal short custom_get_hook(
 
 	parID= LMGetCurDirStore();
 
-	/* IF the selection has changed... */	
-	if(previous_selection.vRefNum != load_file_reply.vRefNum 
-		|| previous_selection.parID != parID 
+	/* IF the selection has changed... */
+	if(previous_selection.vRefNum != load_file_reply.vRefNum
+		|| previous_selection.parID != parID
 		|| previous_selection.name[0]!=load_file_reply.fName[0]
 		|| memcmp(previous_selection.name, load_file_reply.fName, load_file_reply.fName[0]+1))
 	{
@@ -397,8 +397,8 @@ static pascal short custom_get_hook(
 		/* Pessimism.. */
 		overhead_pict_valid= FALSE;
 		save_level_name[0]= 0;
-		
-		/* ... check the file type.. */	
+
+		/* ... check the file type.. */
 		if(load_file_reply.fType==SAVE_GAME_TYPE)
 		{
 			/* .. free memory if necessary... */
@@ -420,13 +420,13 @@ static pascal short custom_get_hook(
 					overhead_pict= (PicHandle) resource;
 					err= HandToHand((Handle *) &overhead_pict);
 					assert(!err);
-					
+
 					/* Release it. */
 					ReleaseResource(resource);
 
 					overhead_pict_valid= TRUE;
-				} 
-				
+				}
+
 				resource= Get1Resource('STR ', strSAVE_LEVEL_NAME);
 				if(resource)
 				{
@@ -436,24 +436,24 @@ static pascal short custom_get_hook(
 
 				CloseResFile(file_ref);
 			}
-		} 
-		
+		}
+
 		/* Inval the rectangle.. */
 		GetDItem(theDialog, iTHUMBNAIL_RECT, &itemType, &item_handle, &bounds);
-		
+
 		/* Inval, and let the modal proc draw the picture.. */
 		GetPort(&old_port);
 		SetPort((GrafPtr) theDialog);
 		InvalRect(&bounds);
 		SetPort(old_port);
 	}
-	
+
 	return item;
 }
 
 static pascal Boolean custom_get_filter_proc(
-	DialogPtr theDialog, 
-	EventRecord *theEvent, 
+	DialogPtr theDialog,
+	EventRecord *theEvent,
 	short *itemHit)
 {
 	short itemType;
@@ -471,7 +471,7 @@ static pascal Boolean custom_get_filter_proc(
 		{
 			GetPort(&old_port);
 			SetPort((GrafPtr) theDialog);
-		
+
 			GetDItem(theDialog, iTHUMBNAIL_RECT, &itemType, &item, &bounds);
 			GetDItem(theDialog, iLEVEL_NAME, &itemType, &item, &name_bounds);
 
@@ -480,12 +480,12 @@ static pascal Boolean custom_get_filter_proc(
 			/* Draw a border around it. */
 			InsetRect(&frame, -2, -2);
 			FrameRect(&frame);
-		
+
 			if(overhead_pict_valid)
 			{
 				short text_x, text_y;
 				short text_length;
-			
+
 				assert(overhead_pict);
 				clip_region= NewRgn();
 				GetClip(clip_region);
@@ -509,7 +509,7 @@ static pascal Boolean custom_get_filter_proc(
 				EraseRect(&bounds);
 				EraseRect(&name_bounds);
 			}
-	
+
 			/* Return to the old port */
 			SetPort(old_port);
 		}

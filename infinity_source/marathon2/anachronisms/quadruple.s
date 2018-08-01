@@ -36,10 +36,10 @@ fpTemp1:		EQU		fp0
 fpTemp2:		EQU		fp1
 
 .quadruple_screen:
-	lwz			rSrcPtr, source(rParamPtr)			
+	lwz			rSrcPtr, source(rParamPtr)
 	subi		rSrcPtr, rSrcPtr, 4					; Adjust for update
 
-	lwz			rDstPtr1, dest(rParamPtr)			
+	lwz			rDstPtr1, dest(rParamPtr)
 	subi		rDstPtr1, rDstPtr1, 8				; Adjust for update
 	lhz			rDstPtr2, bytes_per_row(rParamPtr)
 	add			rDstPtr2, rDstPtr2, rDstPtr1
@@ -64,7 +64,7 @@ fpTemp2:		EQU		fp1
 
 	cmpi		0, 0, rTemp1, kVerticalOnlyMode
 	beq			@duo
-	
+
 @quad8bit:
 	lhz			rWidth, width(rParamPtr)
 	subi		rWidth, rWidth, 1
@@ -108,7 +108,7 @@ fpTemp2:		EQU		fp1
 	bne			@quad8bit_start						;loop for all height
 
 	blr												; outta here
-		
+
 @duo
 	subi		rSrcPtr, rSrcPtr, 4					; Adjust for update again
 	lhz			rWidth, width(rParamPtr)
@@ -173,7 +173,7 @@ fpTemp2:		EQU		fp1
 	bne			@quad16bit_start					;loop for all height
 
 	blr
-		
+
 @quad32bit:
 	lhz			rWidth, width(rParamPtr)
 	subi		rWidth, rWidth, 1
@@ -205,7 +205,7 @@ fpTemp2:		EQU		fp1
 	bne			@quad32bit_start					;loop for all height
 
 	blr
-		
+
 @exit:
 	blr
 

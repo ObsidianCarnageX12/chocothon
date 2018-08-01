@@ -295,7 +295,7 @@ OSStatus DSpContext_SetCLUTEntries( DSpContextReference inContext,
 OSStatus DSpContext_GetCLUTEntries( DSpContextReference inContext,
 			ColorSpec *outEntries, UInt16 inStartingEntry,
 			UInt16 inLastEntry );
-			
+
 #ifdef __cplusplus
 }
 #endif
@@ -327,7 +327,7 @@ OSStatus DSpContext_SetOverlayAltBuffer( DSpContextReference inContext,
 			DSpAltBufferReference inNewOverlay );
 OSStatus DSpContext_GetOverlayAltBuffer( DSpContextReference inContext,
 			DSpAltBufferReference *outOverlay );
-			
+
 #endif
 
 

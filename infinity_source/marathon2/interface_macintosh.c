@@ -68,7 +68,7 @@ void do_preferences(
 	{
 		change_screen_mode(&graphics_preferences->screen_mode, FALSE);
 	}
-	
+
 	return;
 }
 
@@ -79,14 +79,14 @@ short get_level_number_from_user(
 	DialogPtr dialog;
 	struct entry_point entry;
 	boolean done= FALSE;
-	
+
 	index = 0; maximum_level_number= 0;
 	while (get_indexed_entry_point(&entry, &index, _single_player_entry_point | _multiplayer_carnage_entry_point | _multiplayer_cooperative_entry_point)) maximum_level_number++;
 
 	dialog = myGetNewDialog(dlogLEVEL_NUMBER, NULL, (WindowPtr) -1, 0);
 	assert(dialog);
 
-	psprintf(temporary, "%d", maximum_level_number); 
+	psprintf(temporary, "%d", maximum_level_number);
 	ParamText((StringPtr)temporary, (StringPtr)"", (StringPtr)"", (StringPtr)"");
 	SelIText(dialog, iLEVEL_NUMBER, 0, SHORT_MAX);
 
@@ -111,12 +111,12 @@ short get_level_number_from_user(
 					done= TRUE;
 				}
 				break;
-				
+
 			case iCANCEL:
 				done= TRUE;
 				level_number= NONE;
 				break;
-				
+
 			default:
 				halt();
 				break;
@@ -134,7 +134,7 @@ void toggle_menus(
 	short item;
 	static boolean first_time= TRUE;
 
-	/* First time, we insert the menus... */	
+	/* First time, we insert the menus... */
 	if(first_time)
 	{
 		MenuHandle menu;
@@ -154,7 +154,7 @@ void toggle_menus(
 
 		first_time= FALSE;
 	}
-	
+
 	menu_interface= GetMenuHandle(mInterface);
 	menu_game= GetMenuHandle(mGame);
 	assert(menu_game && menu_interface);
@@ -198,7 +198,7 @@ void update_game_window(
 			assert(event);
 			update_screen_window(window, event);
 			break;
-			
+
 		case _display_quit_screens:
 		case _display_intro_screens_for_demo:
 		case _display_intro_screens:
@@ -209,7 +209,7 @@ void update_game_window(
 		case _display_main_menu:
 			update_interface_display();
 			break;
-			
+
 		case _quit_game:
 		case _close_game:
 		case _switch_demo:
@@ -218,15 +218,15 @@ void update_game_window(
 		case _begin_display_of_epilogue:
 		case _displaying_network_game_dialogs:
 			break;
-	
+
 		default:
 			halt();
 			break;
 	}
-	
+
 	return;
 }
-	
+
 void process_game_key(
 	EventRecord *event,
 	short key)
@@ -245,7 +245,7 @@ void process_game_key(
 				{
 					assert(menuID==mGame);
 
-					do_menu_item_command(menuID, menuItem, 
+					do_menu_item_command(menuID, menuItem,
 						has_cheat_modifiers(event));
 				} else {
 					handle_game_key(event, key);
@@ -254,7 +254,7 @@ void process_game_key(
 				handle_game_key(event, key);
 			}
 			break;
-			
+
 		case _display_intro_screens:
 		case _display_chapter_heading:
 		case _display_prologue:
@@ -275,16 +275,16 @@ void process_game_key(
 			stop_interface_fade();
 			display_main_menu();
 			break;
-			
+
 		case _quit_game:
 		case _close_game:
 		case _revert_game:
-		case _switch_demo:	
+		case _switch_demo:
 		case _change_level:
 		case _begin_display_of_epilogue:
 		case _displaying_network_game_dialogs:
 			break;
-	
+
 		case _display_main_menu:
 			if(event->modifiers&cmdKey && event->what==keyDown)
 			{
@@ -295,10 +295,10 @@ void process_game_key(
 				menuItem= menu_key & 0x0000ffff;
 
 				/* If it was a menu key. */
-				if(menuID) 
+				if(menuID)
 				{
 					GrafPtr old_port;
-				
+
 					assert(menuID==mInterface);
 
 					stop_interface_fade();
@@ -308,8 +308,8 @@ void process_game_key(
 					SetPort(screen_window);
 					draw_menu_button_for_command(menuItem);
 					SetPort(old_port);
-					
-					do_menu_item_command(mInterface, menuItem, 
+
+					do_menu_item_command(mInterface, menuItem,
 						has_cheat_modifiers(event));
 				}
 			} else {
@@ -320,14 +320,14 @@ void process_game_key(
 				}
 			}
 			break;
-		
+
 		default:
 			halt();
 			break;
 	}
 
 	return;
-}	
+}
 
 boolean try_for_event(
 	boolean *use_waitnext)
@@ -335,7 +335,7 @@ boolean try_for_event(
 	boolean try_for_event= FALSE;
 	static long last_xnextevent_call= 0;
 	static short consecutive_getosevent_calls= 0;
-	
+
 	switch(get_game_state())
 	{
 		case _game_in_progress:
@@ -344,8 +344,8 @@ boolean try_for_event(
 			{
 				try_for_event= TRUE;
 
-				if (suppress_background_events() && 
-					EmptyRgn(((WindowPeek)screen_window)->updateRgn)) 
+				if (suppress_background_events() &&
+					EmptyRgn(((WindowPeek)screen_window)->updateRgn))
 					// && consecutive_getosevent_calls<MAXIMUM_CONSECUTIVE_GETOSEVENT_CALLS)
 				{
 					*use_waitnext= FALSE;
@@ -354,7 +354,7 @@ boolean try_for_event(
 					*use_waitnext= TRUE;
 					consecutive_getosevent_calls= 0;
 				}
-		
+
 				last_xnextevent_call= TickCount();
 			}
 			break;
@@ -372,7 +372,7 @@ boolean try_for_event(
 			*use_waitnext= interface_fade_finished();
 			try_for_event= TRUE;
 			break;
-			
+
 		case _quit_game:
 		case _close_game:
 		case _switch_demo:
@@ -380,7 +380,7 @@ boolean try_for_event(
 			*use_waitnext= TRUE;
 			try_for_event= TRUE;
 			break;
-			
+
 		default:
 			vhalt(csprintf(temporary, "What the hell is state: %d?", get_game_state()));
 			break;
@@ -390,7 +390,7 @@ boolean try_for_event(
 	{
 		global_idle_proc();
 	}
-	
+
 	return try_for_event;
 }
 
@@ -412,8 +412,8 @@ void remove_network_microphone(
 }
 
 static void network_speaker_proc(
-	void *buffer, 
-	short size, 
+	void *buffer,
+	short size,
 	short player_index)
 {
 	#pragma unused(player_index)
@@ -436,7 +436,7 @@ boolean has_cheat_modifiers(
 	{
 		cheat= TRUE;
 	}
-	
+
 	return cheat;
 }
 
@@ -453,31 +453,31 @@ void load_main_menu_buffers(
 	OSErr error;
 	Rect bounds;
 	PicHandle picture;
-	
+
 	assert(main_menu_unpressed==NULL && main_menu_pressed==NULL);
 
-	/* Determine the pictures bounds... */	
+	/* Determine the pictures bounds... */
 	picture= get_picture_resource_from_images(base_id);
 	assert(picture);
 	bounds= (*picture)->picFrame;
 	OffsetRect(&bounds, -bounds.left, -bounds.top);
 
-	error= NewGWorld(&main_menu_unpressed, interface_bit_depth, &bounds, 
+	error= NewGWorld(&main_menu_unpressed, interface_bit_depth, &bounds,
 		NULL, world_device, noNewDevice);
 	assert(!error && main_menu_unpressed);
 
 	/* Draw it and release it.. */
 	draw_picture_into_gworld(main_menu_unpressed, picture);
 
-	/* Create the other gworld */	
-	error= NewGWorld(&main_menu_pressed, interface_bit_depth, &bounds, 
+	/* Create the other gworld */
+	error= NewGWorld(&main_menu_pressed, interface_bit_depth, &bounds,
 		(CTabHandle) NULL, world_device, noNewDevice);
 	assert(!error && main_menu_pressed);
 
 	picture= get_picture_resource_from_images(base_id+1);
 	assert(picture);
 	draw_picture_into_gworld(main_menu_pressed, picture);
-		
+
 	return;
 }
 
@@ -492,7 +492,7 @@ void main_menu_bit_depth_changed(
 {
 	free_main_menu_buffers();
 	load_main_menu_buffers(base_id);
-	
+
 	return;
 }
 
@@ -502,9 +502,9 @@ void free_main_menu_buffers(
 	assert(main_menu_unpressed && main_menu_pressed);
 	DisposeGWorld(main_menu_unpressed);
 	DisposeGWorld(main_menu_pressed);
-	
+
 	main_menu_pressed= main_menu_unpressed= NULL;
-	
+
 	return;
 }
 
@@ -515,16 +515,16 @@ void draw_main_menu(
 	boolean locked;
 	GrafPtr old_port;
 	Rect source_bounds, dest_bounds;
-	
+
 	assert(main_menu_pressed && main_menu_unpressed);
-	
+
 	GetPort(&old_port);
 	SetPort(screen_window);
 
 	source_bounds= dest_bounds= main_menu_pressed->portRect;
 	AdjustRect(&screen_window->portRect, &dest_bounds, &dest_bounds, centerRect);
 	OffsetRect(&dest_bounds, dest_bounds.left<0 ? -dest_bounds.left : 0, dest_bounds.top<0 ? -dest_bounds.top : 0);
-	
+
 	pixmap= GetGWorldPixMap(main_menu_unpressed);
 	assert(pixmap);
 	locked= LockPixels(pixmap);
@@ -533,7 +533,7 @@ void draw_main_menu(
 #if SUPPORT_DRAW_SPROCKET
 	ForeColor( blackColor );
 	PaintRect( &screen_window->portRect );
-	
+
 	CopyBits((BitMapPtr)*main_menu_unpressed->portPixMap, &world_pixels->portBits,
 		&source_bounds, &dest_bounds, srcCopy, (RgnHandle) NULL);
 
@@ -549,11 +549,11 @@ void draw_main_menu(
 
 	SetPort(old_port);
 
-	return;	
+	return;
 }
 
 void draw_menu_button(
-	short index, 
+	short index,
 	boolean pressed)
 {
 	screen_rectangle *screen_rect= get_interface_rectangle(index);
@@ -566,19 +566,19 @@ void draw_menu_button(
 	{
 		load_main_menu_buffers(1100); //••••
 	}
-	
+
 	assert(main_menu_pressed && main_menu_unpressed);
-	
+
 	if(pressed)
 	{
 		source_world= main_menu_pressed;
 	} else {
 		source_world= main_menu_unpressed;
 	}
-	
+
 	GetPort(&old_port);
 	SetPort(screen_window);
-	
+
 	pixmap= GetGWorldPixMap(source_world);
 	locked= LockPixels(pixmap);
 	assert(locked);
@@ -613,14 +613,14 @@ static void draw_picture_into_gworld(
 		GDHandle old_device;
 		PixMapHandle pixmap;
 		boolean locked;
-	
+
 		GetGWorld(&old_world, &old_device);
 		SetGWorld(gworld, NULL);
 		pixmap= GetGWorldPixMap(gworld);
 		assert(pixmap);
 		locked= LockPixels(pixmap);
 		assert(locked);
-		
+
 		bounds= (*picture)->picFrame;
 		AdjustRect(&gworld->portRect, &bounds, &bounds, centerRect);
 		OffsetRect(&bounds, bounds.left<0 ? -bounds.left : 0, bounds.top<0 ? -bounds.top : 0);
@@ -628,10 +628,10 @@ static void draw_picture_into_gworld(
 		HLock((Handle) picture);
 		DrawPicture(picture, &bounds);
 		HUnlock((Handle) picture);
-		
+
 		UnlockPixels(pixmap);
 		SetGWorld(old_world, old_device);
-				
+
 		ReleaseResource((Handle) picture);
 	}
 
@@ -668,10 +668,10 @@ void get_mouse_position(
 	short *y)
 {
 	Point p;
-	
+
 	GetMouse(&p);
 	*x= p.h; *y= p.v;
-	
+
 	return;
 }
 
@@ -682,7 +682,7 @@ void set_drawing_clip_rectangle(
 	short right)
 {
 	Rect rectangle;
-	
+
 	SetRect(&rectangle, left, top, right, bottom);
 	ClipRect(&rectangle);
 
@@ -698,7 +698,7 @@ void show_movie(
 		{
 			FSSpec movie_spec; // <===== fill in based on index!
 			OSErr err= noErr;
-		
+
 			err= get_file_spec(&movie_spec, strFILENAMES, filenameMOVIE, strPATHS);
 			if(!err)
 			{
@@ -707,51 +707,51 @@ void show_movie(
 				{
 					Movie movie;
 					short resRefNum;
-		
-					if(!OpenMovieFile(&movie_spec, &resRefNum, fsRdPerm)) 
+
+					if(!OpenMovieFile(&movie_spec, &resRefNum, fsRdPerm))
 					{
-						if(!NewMovieFromFile(&movie, resRefNum, nil, nil, newMovieActive, nil )) 
+						if(!NewMovieFromFile(&movie, resRefNum, nil, nil, newMovieActive, nil ))
 						{
 							Rect dispBounds;
 							boolean aborted= FALSE;
-				
+
 							/* Find movie bounds and zero base it.... */
 							GetMovieBox(movie, &dispBounds);
 							OffsetRect(&dispBounds, -dispBounds.left, -dispBounds.top);
 							dispBounds.right= RECTANGLE_WIDTH(&dispBounds)*2;
 							dispBounds.bottom= RECTANGLE_HEIGHT(&dispBounds)*2;
-							
+
 							/* Çenter... */
 							AdjustRect(&screen_window->portRect, &dispBounds, &dispBounds, centerRect);
 							OffsetRect(&dispBounds, dispBounds.left<0 ? -dispBounds.left : 0, dispBounds.top<0 ? -dispBounds.top : 0);
 							SetMovieBox(movie, &dispBounds);
-							
-							/* Set to the screen_window.. */	
+
+							/* Set to the screen_window.. */
 							SetMovieGWorld(movie, (CGrafPtr)  screen_window, nil);
-							
+
 							// After setup, play the movie
 							GoToBeginningOfMovie(movie); // Rewind
-							
+
 							/* Should the preroll movie use FIXED_ONE as second parameter */
 							/*  (or whatever the mac equivalent (Fixed) is) */
 							PrerollMovie(movie, (TimeValue) 0, (Fixed) fixed1); // Preload portions
 //							SetMovieActive(movie, true); // Set movie active for servicing
-							
+
 							// Maybe I should delay after prerolling the movie, since the
 							// preroll stuff might be asynchrounous?
 							StartMovie(movie);
-				
-							while (!IsMovieDone(movie) && !aborted) 
+
+							while (!IsMovieDone(movie) && !aborted)
 							{
 								EventRecord event;
-							
+
 								if(WaitNextEvent(keyDownMask|autoKeyMask|mDownMask, &event, 2, nil))
 								{
 									switch(event.what)
 									{
 										case nullEvent:
 											break;
-											
+
 										case mouseDown:
 										case keyDown:
 										case autoKey:
@@ -761,21 +761,21 @@ void show_movie(
 									}
 								}
 								global_idle_proc();
-					
+
 								/* Give the movie time */
 								MoviesTask(movie, DoTheRightThing);
 							}
 
 							/* Paint the window black. */
 							paint_window_black();
-		
+
 							// Dispose of storage, and return
 							DisposeMovie(movie); // Movie
 						}
-		
+
 						CloseMovieFile(resRefNum); // reference to movie file
 					}
-					
+
 					ExitMovies();
 				}
 			}
@@ -789,22 +789,22 @@ void show_movie(
 /* ----------- PRIVATE CODE */
 /* Should be in shell.h and shell.c */
 static boolean machine_has_quicktime(
-	void) 
+	void)
 {
 	long response;
 	boolean has_quicktime= FALSE;
 	OSErr error;
 
 	error= Gestalt(gestaltQuickTime, &response);
-	if(!error) 
+	if(!error)
 	{
 		/* No error finding QuickTime.  Check for ICM so we can use Standard Preview */
 		error= Gestalt(gestaltCompressionMgr, &response);
-		if(!error) 
+		if(!error)
 		{
 			has_quicktime= TRUE;
 		}
 	}
-	
+
 	return has_quicktime;
 }

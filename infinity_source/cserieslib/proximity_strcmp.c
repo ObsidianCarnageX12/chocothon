@@ -56,7 +56,7 @@ short find_pattern(
 			}
 		}
 	}
-	
+
 	if (!longest)
 	{
 		return 0;
@@ -99,7 +99,7 @@ short find_pattern(
 			}
 		}
 	}
-	
+
 	total= longest;
 	if (total)
 	{

@@ -69,7 +69,7 @@ NetLookupOpen
 	---> zone to look in (pascal string, can be "*")
 	---> function to call when the list changes (call NetLookupUpdate(), below, to trigger this) (may be NULL)
 	---> function to call to filter names from the list (may be NULL)
-	
+
 	<--- error
 
 start the asynchronous PNBPLookup() machine.
@@ -89,7 +89,7 @@ OSErr NetLookupOpen(
 #ifdef TEST_MODEM
 	error= ModemLookupOpen(name, type, zone, version, updateProc, filterProc);
 #else
-	
+
 	assert(!lookupMPPPBPtr);
 
 	/* Note that this utilizes the mac extension for pstrings.. */
@@ -102,7 +102,7 @@ OSErr NetLookupOpen(
 	lookupEntity= (EntityNamePtr) NewPtrClear(sizeof(EntityName));
 	lookupBuffer= NewPtrClear(NAMES_LIST_BUFFER_SIZE);
 	lookupEntities= (NetLookupEntityPtr) NewPtr(MAXIMUM_LOOKUP_NAME_COUNT*sizeof(NetLookupEntity));
-	
+
 	error= MemError();
 	if (error==noErr)
 	{
@@ -114,14 +114,14 @@ OSErr NetLookupOpen(
 		lookupMPPPBPtr->NBP.parm.Lookup.retBuffPtr= lookupBuffer;
 		lookupMPPPBPtr->NBP.parm.Lookup.retBuffSize= NAMES_LIST_BUFFER_SIZE;
 		lookupMPPPBPtr->NBP.parm.Lookup.maxToGet= MAXIMUM_LOOKUP_NAME_COUNT;
-		error= PLookupName(lookupMPPPBPtr, TRUE);	
-	
+		error= PLookupName(lookupMPPPBPtr, TRUE);
+
 		lookupCount= 0; /* no names, initially */
 		lookupUpdateProc= updateProc; /* remember the caller’s update procedure */
 		lookupFilterProc= filterProc; /* remember the caller’s filter procedure */
 	}
 #endif
-	
+
 	return error;
 }
 
@@ -146,22 +146,22 @@ void NetLookupClose(
 	if (lookupMPPPBPtr)
 	{
 		MPPPBPtr myMPPPBPtr= (MPPPBPtr) NewPtrClear(sizeof(MPPParamBlock));
-		
+
 		myMPPPBPtr->NBPKILL.nKillQEl= (Ptr) lookupMPPPBPtr;
 		error= PKillNBP(myMPPPBPtr, FALSE);
 		/* presumably cbNotFound means the PNBPLookup has already terminated */
 		if (error!=reqAborted&&error!=noErr&&error!=cbNotFound) dprintf("PKillNBP() returned %d", error);
-	
+
 		DisposePtr((Ptr)lookupMPPPBPtr);
 		DisposePtr((Ptr)lookupEntity);
 		DisposePtr(lookupBuffer);
 		DisposePtr((Ptr)lookupEntities);
 		DisposePtr((Ptr)myMPPPBPtr);
-		
+
 		lookupMPPPBPtr= (MPPPBPtr) NULL;
 	}
 #endif
-		
+
 	return;
 }
 
@@ -184,15 +184,15 @@ void NetLookupRemove(
 	ModemLookupRemove(index);
 #else
 	assert(index>=0&&index<lookupCount);
-	
+
 	/* compact the entity list on top of the deleted entry, decrement lookupCount */
 	BlockMove(lookupEntities+index+1, lookupEntities+index, sizeof(NetLookupEntity)*(lookupCount-index));
 	lookupCount-= 1;
-	
+
 	/* tell the caller to make the change */
 	if (lookupUpdateProc) lookupUpdateProc(removeEntity, index);
 #endif
-	
+
 	return;
 }
 
@@ -221,7 +221,7 @@ void NetLookupInformation(
 	if (address) *address= lookupEntities[index].address;
 	if (entity) *entity= lookupEntities[index].entity;
 #endif
-	
+
 	return;
 }
 
@@ -248,7 +248,7 @@ void NetLookupUpdate(
 	ModemLookupUpdate();
 #else
 	assert(lookupMPPPBPtr);
-	
+
 	/* don’t do anything if the asynchronous PNBPLookupName() hasn’t returned */
 	if (lookupMPPPBPtr->NBP.ioResult!=asyncUncompleted)
 	{
@@ -256,10 +256,10 @@ void NetLookupUpdate(
 		for (entity_index=0;entity_index<entity_count;++entity_index)
 		{
 			boolean insert;
-			
+
 			/* get this entity’s address and entity structure */
 			NBPExtract(lookupBuffer, entity_count, entity_index+1, &entity, &address);
-			
+
 			if (lookupFilterProc == NULL || lookupFilterProc(&entity, &address))
 			{
 				/* see if we can find an old entry in our entity list with the same node, socket and
@@ -284,7 +284,7 @@ void NetLookupUpdate(
 						break;
 					}
 				}
-				
+
 				if (insert&&lookupCount<MAXIMUM_LOOKUP_NAME_COUNT)
 				{
 					BlockMove(lookupEntities+insertion_point, lookupEntities+insertion_point+1,
@@ -293,14 +293,14 @@ void NetLookupUpdate(
 					lookupEntities[insertion_point].entity= entity;
 					lookupEntities[insertion_point].persistence= ENTITY_PERSISTENCE;
 					lookupCount+= 1;
-	
+
 					/* only tell the caller we inserted the new entry after we’re ready to handle
 						him asking us about it */
 					if (lookupUpdateProc) lookupUpdateProc(insertEntity, insertion_point);
 				}
 			}
 		}
-		
+
 		/* find and remove all entities who haven’t responded in ENTITY_PERSISTENCE calls */
 		for (entity_index=0;entity_index<lookupCount;entity_index+= 1)
 		{
@@ -312,9 +312,9 @@ void NetLookupUpdate(
 				entity_index-= 1;
 			}
 		}
-		
+
 		/* start another asynchronous PNBPLookup() */
-		
+
 		lookupMPPPBPtr->NBP.interval= 4; /* 4*8 ticks == 32 ticks */
 		lookupMPPPBPtr->NBP.count= 2; /* 2 retries == 64 ticks */
 		lookupMPPPBPtr->NBP.ioCompletion= (XPPCompletionUPP) NULL; /* no completion routine */
@@ -322,12 +322,12 @@ void NetLookupUpdate(
 		lookupMPPPBPtr->NBP.parm.Lookup.retBuffPtr= lookupBuffer;
 		lookupMPPPBPtr->NBP.parm.Lookup.retBuffSize= NAMES_LIST_BUFFER_SIZE;
 		lookupMPPPBPtr->NBP.parm.Lookup.maxToGet= MAXIMUM_LOOKUP_NAME_COUNT;
-		
+
 		error= PLookupName(lookupMPPPBPtr, TRUE);
 		if (error!=noErr) dprintf("Subsequent PLookupName() returned %d", error);
 	}
 #endif
-	
+
 	return;
 }
 
@@ -338,22 +338,22 @@ OSErr NetGetZonePopupMenu(
 	Ptr zone_names;
 	short zone_count;
 	OSErr error;
-	
+
 	/* make sure we have a menu and delete all it’s items */
 	assert(menu);
 	while (CountMItems(menu)) DelMenuItem(menu, 1);
-	
+
 	zone_names= NewPtr(sizeof(Str32)*MAXIMUM_ZONE_NAMES);
 	if (zone_names)
 	{
 		SetCursor(*(GetCursor(watchCursor)));
 		error= NetGetZoneList(zone_names, MAXIMUM_ZONE_NAMES, &zone_count, local_zone);
 		(*local_zone)+= 1; /* adjust to be one-based for menu manager */
-		
+
 		if (error==noErr && zone_count>1)
 		{
 			short i;
-			
+
 			for (i= 0; i<zone_count; ++i)
 			{
 				AppendMenu(menu, "\p ");
@@ -362,7 +362,7 @@ OSErr NetGetZonePopupMenu(
 
 			CheckItem(menu, *local_zone, TRUE);
 		}
-		
+
 		DisposePtr(zone_names);
 	}
 	else
@@ -388,7 +388,7 @@ OSErr NetGetZoneList(
 	{
 		xpb->XCALL.zipInfoField[0]= 0;
 		xpb->XCALL.zipInfoField[1]= 0;
-		xpb->XCALL.ioCompletion= (XPPCompletionUPP) NULL;		
+		xpb->XCALL.ioCompletion= (XPPCompletionUPP) NULL;
 		xpb->XCALL.ioVRefNum= 0;
 		xpb->XCALL.ioRefNum= xppRefNum;
 		xpb->XCALL.csCode= xCall;
@@ -397,7 +397,7 @@ OSErr NetGetZoneList(
 		xpb->XCALL.xppRetry= 8;
 		xpb->XCALL.zipBuffPtr= (Ptr) zip_buffer;
 
-		/* get a list of all zones */		
+		/* get a list of all zones */
 		*zone_count= 0;
 		do
 		{
@@ -406,7 +406,7 @@ OSErr NetGetZoneList(
 			{
 				byte *read;
 				short i;
-				
+
 				for (i= 0, read= (unsigned char *)zip_buffer;
 					i<xpb->XCALL.zipNumZones && *zone_count<maximum_zone_names;
 					++i, read+= *read+1)
@@ -422,10 +422,10 @@ OSErr NetGetZoneList(
 		{
 			Str32 local_zone_name;
 			short i;
-			
+
 			/* sort the list */
 			qsort(zone_names, *zone_count, sizeof(Str32), (int (*)(const void *, const void *)) zone_name_compare);
-	
+
 			/* get our local zone name and locate it in the list */
 			error= NetGetLocalZoneName(local_zone_name);
 			if (error==noErr)
@@ -442,7 +442,7 @@ OSErr NetGetZoneList(
 				vwarn(i!=*zone_count, csprintf(temporary, "couldn’t find local zone '%p'", local_zone_name));
 			}
 		}
-			
+
 		DisposePtr(zip_buffer);
 		DisposePtr((Ptr)xpb);
 	}
@@ -450,7 +450,7 @@ OSErr NetGetZoneList(
 	{
 		error= MemError();
 	}
-	
+
 	return error;
 }
 
@@ -468,7 +468,7 @@ OSErr NetGetLocalZoneName(
 		xpb->XCALL.zipBuffPtr= (Ptr) local_zone_name;
 		xpb->XCALL.zipInfoField[0]= 0;
 		xpb->XCALL.zipInfoField[1]= 0;
-		
+
 		error= PBControl((ParmBlkPtr) xpb, FALSE);
 
 		DisposePtr((Ptr)xpb);
@@ -477,7 +477,7 @@ OSErr NetGetLocalZoneName(
 	{
 		error= MemError();
 	}
-	
+
 	return error;
 }
 

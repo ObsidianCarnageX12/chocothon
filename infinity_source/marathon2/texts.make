@@ -1,14 +1,14 @@
 # Friday, September 9, 1994 6:40:21 PM  (alain)
 
 # sorry for the lack of variables
-# this encryptes the text files into temp files, uses stream edit to prepare the list of files for 
+# this encryptes the text files into temp files, uses stream edit to prepare the list of files for
 #   rez, then rezs them, then deletes the encrypted files
-# there are three translate calls: 
+# there are three translate calls:
 #   the first one does a simple subsitution cipher to "encrypt" the text. Not very secure, but it does prevent casual inspection.
 #   the second one eliminates the annoying ' that stream edit accidently puts in if i have files with spaces in them.
 #   the third one translates some characters to " and ' because StreamEdit's print didn't want to print those, so i used special characters
 # The reason i use the directory command is because it makes the streamedit command much simpler
-# This expects the level files to be named Lnn≈ where nn is the level number, padded with a 
+# This expects the level files to be named Lnn≈ where nn is the level number, padded with a
 #   preceeding zero if it's a single digit.
 
 #final

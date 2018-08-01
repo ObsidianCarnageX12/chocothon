@@ -49,7 +49,7 @@ struct projectile_definition
 	world_distance speed;
 	world_distance maximum_range;
 
-	fixed sound_pitch;	
+	fixed sound_pitch;
 	short flyby_sound, rebound_sound;
 };
 
@@ -63,39 +63,39 @@ struct projectile_definition projectile_definitions[NUMBER_OF_PROJECTILE_TYPES]=
 		_effect_rocket_explosion, NONE, /* detonation effect, media_detonation_effect */
 		_effect_rocket_contrail, 1, NONE, /* contrail effect, ticks between contrails, maximum contrails */
 		NONE, /* media projectile promotion */
-			
+
 		WORLD_ONE/8, /* radius */
 		WORLD_ONE+WORLD_ONE_HALF, /* area-of-effect */
 		{_damage_explosion, 0, 250, 50}, /* damage */
-		
+
 		_can_toggle_control_panels|_guided, /* flags */
-		
+
 		WORLD_ONE/4, /* speed */
 		NONE, /* maximum range */
-		
+
 		_normal_frequency, /* sound pitch */
 		_snd_rocket_flyby, NONE, /* flyby sound, rebound sound */
 	},
-	
+
 	{	/* player’s grenade */
 		_collection_rocket, 3, /* collection number, shape number */
 		_effect_grenade_explosion, _medium_media_detonation_effect, /* detonation effect, media_detonation_effect */
 		_effect_grenade_contrail, 1, 8, /* contrail effect, ticks between contrails, maximum contrails */
 		NONE, /* media projectile promotion */
-		
+
 		0, /* radius */
 		WORLD_THREE_FOURTHS, /* area-of-effect */
 		{_damage_explosion, 0, 80, 20}, /* damage */
-		
+
 		_affected_by_gravity|_can_toggle_control_panels, /* flags */
-		
+
 		WORLD_ONE/4, /* speed */
 		NONE, /* maximum range */
-		
+
 		_normal_frequency, /* sound pitch */
 		_snd_grenade_flyby, NONE, /* flyby sound, rebound sound */
 	},
-	
+
 	{	/* player’s pistol bullet */
 		NONE, 0, /* collection number, shape number */
 		_effect_bullet_ricochet, _small_media_detonation_effect, /* detonation effect, media_detonation_effect */
@@ -105,16 +105,16 @@ struct projectile_definition projectile_definitions[NUMBER_OF_PROJECTILE_TYPES]=
 		0, /* radius */
 		0, /* area-of-effect */
 		{_damage_projectile, 0, 20, 8}, /* damage */
-		
+
 		_bleeding_projectile|_usually_pass_transparent_side, /* flags */
-		
+
 		WORLD_ONE, /* speed */
 		NONE, /* maximum range */
 
 		_normal_frequency, /* sound pitch */
 		NONE, NONE, /* flyby sound, rebound sound */
 	},
-	
+
 	{	/* player’s rifle bullet */
 		NONE, 0, /* collection number, shape number */
 		_effect_bullet_ricochet, _small_media_detonation_effect, /* detonation effect, media_detonation_effect */
@@ -124,9 +124,9 @@ struct projectile_definition projectile_definitions[NUMBER_OF_PROJECTILE_TYPES]=
 		0, /* radius */
 		0, /* area-of-effect */
 		{_damage_projectile, 0, 9, 6}, /* damage */
-		
+
 		_bleeding_projectile|_usually_pass_transparent_side, /* flags */
-		
+
 		WORLD_ONE, /* speed */
 		NONE, /* maximum range */
 
@@ -143,9 +143,9 @@ struct projectile_definition projectile_definitions[NUMBER_OF_PROJECTILE_TYPES]=
 		0, /* radius */
 		0, /* area-of-effect */
 		{_damage_shotgun_projectile, 0, 20, 4}, /* damage */
-		
+
 		_bleeding_projectile|_can_toggle_control_panels|_usually_pass_transparent_side, /* flags */
-		
+
 		WORLD_ONE, /* speed */
 		NONE, /* maximum range */
 
@@ -162,16 +162,16 @@ struct projectile_definition projectile_definitions[NUMBER_OF_PROJECTILE_TYPES]=
 		0, /* radius */
 		0, /* area-of-effect */
 		{_damage_electrical_staff, _alien_damage, 20, 5}, /* damage */
-		
+
 		_sometimes_pass_transparent_side|_alien_projectile|_melee_projectile|_penetrates_media, /* flags */
-		
+
 		WORLD_ONE_HALF, /* speed */
 		WORLD_ONE, /* maximum range */
 
 		_normal_frequency, /* sound pitch */
 		NONE, NONE, /* flyby sound, rebound sound */
 	},
-	
+
 	{	/* electrical melee staff projectile */
 		BUILD_COLLECTION(_collection_fighter, 2), 9, /* collection number, shape number */
 		_effect_fighter_projectile_detonation, _small_media_detonation_effect, /* detonation effect, media_detonation_effect */
@@ -181,31 +181,31 @@ struct projectile_definition projectile_definitions[NUMBER_OF_PROJECTILE_TYPES]=
 		0, /* radius */
 		0, /* area-of-effect */
 		{_damage_electrical_staff, _alien_damage, 30, 5}, /* damage */
-		
+
 		_sometimes_pass_transparent_side|_alien_projectile, /* flags */
-		
+
 		WORLD_ONE/8, /* speed */
 		NONE, /* maximum range */
 
 		_normal_frequency, /* sound pitch */
 		_snd_fighter_projectile_flyby, NONE, /* flyby sound, rebound sound */
 	},
-	
+
 	{	/* player’s flame thrower burst */
 		_collection_rocket, 6, /* collection number, shape number */
 		NONE, NONE, /* detonation effect, media_detonation_effect */
 		NONE, 0, 0, /* contrail effect, ticks between contrails, maximum contrails */
 		NONE, /* media projectile promotion */
-		
+
 		WORLD_ONE/3, /* radius */
 		0, /* area-of-effect */
 		{_damage_flame, 0, 8, 4}, /* damage */
-		
+
 		_sometimes_pass_transparent_side|_stop_when_animation_loops|_persistent, /* flags */
-		
+
 		WORLD_ONE/3, /* speed */
 		NONE, /* maximum range */
-		
+
 		_normal_frequency, /* sound pitch */
 		NONE, NONE, /* flyby sound, rebound sound */
 	},
@@ -219,9 +219,9 @@ struct projectile_definition projectile_definitions[NUMBER_OF_PROJECTILE_TYPES]=
 		0, /* radius */
 		0, /* area-of-effect */
 		{_damage_compiler_bolt, _alien_damage, 40, 10}, /* damage */
-		
+
 		_sometimes_pass_transparent_side|_alien_projectile, /* flags */
-		
+
 		WORLD_ONE/8, /* speed */
 		NONE, /* maximum range */
 
@@ -238,9 +238,9 @@ struct projectile_definition projectile_definitions[NUMBER_OF_PROJECTILE_TYPES]=
 		0, /* radius */
 		0, /* area-of-effect */
 		{_damage_compiler_bolt, _alien_damage, 40, 10}, /* damage */
-		
+
 		_sometimes_pass_transparent_side|_alien_projectile|_guided, /* flags */
-		
+
 		WORLD_ONE/12, /* speed */
 		NONE, /* maximum range */
 
@@ -257,15 +257,15 @@ struct projectile_definition projectile_definitions[NUMBER_OF_PROJECTILE_TYPES]=
 		WORLD_ONE/10, /* radius */
 		0, /* area-of-effect */
 		{_damage_alien_projectile, _alien_damage, 20, 8}, /* damage */
-		
+
 		_usually_pass_transparent_side|_alien_projectile|_can_toggle_control_panels, /* flags */
-		
+
 		WORLD_ONE/4, /* speed */
 		NONE, /* maximum range */
 
 		_snd_enforcer_projectile_flyby, NONE, /* flyby sound, rebound sound */
 	},
-	
+
 	{	/* _projectile_fusion_minor */
 		_collection_rocket, 11, /* collection number, shape number */
 		_effect_minor_fusion_detonation, _small_media_detonation_effect, /* detonation effect, media_detonation_effect */
@@ -275,9 +275,9 @@ struct projectile_definition projectile_definitions[NUMBER_OF_PROJECTILE_TYPES]=
 		WORLD_ONE/20, /* radius */
 		0, /* area-of-effect */
 		{_damage_fusion_bolt, 0, 30, 10}, /* damage */
-		
+
 		_usually_pass_transparent_side, /* flags */
-		
+
 		WORLD_ONE/4, /* speed */
 		NONE, /* maximum range */
 
@@ -294,9 +294,9 @@ struct projectile_definition projectile_definitions[NUMBER_OF_PROJECTILE_TYPES]=
 		WORLD_ONE/10, /* radius */
 		0, /* area-of-effect */
 		{_damage_fusion_bolt, 0, 80, 20}, /* damage */
-		
+
 		_sometimes_pass_transparent_side|_can_toggle_control_panels, /* flags */
-		
+
 		WORLD_ONE/3, /* speed */
 		NONE, /* maximum range */
 
@@ -313,9 +313,9 @@ struct projectile_definition projectile_definitions[NUMBER_OF_PROJECTILE_TYPES]=
 		0, /* radius */
 		0, /* area-of-effect */
 		{_damage_hunter_bolt, 0, 15, 5}, /* damage */
-		
+
 		_usually_pass_transparent_side|_alien_projectile, /* flags */
-		
+
 		WORLD_ONE/4, /* speed */
 		NONE, /* maximum range */
 
@@ -332,9 +332,9 @@ struct projectile_definition projectile_definitions[NUMBER_OF_PROJECTILE_TYPES]=
 		WORLD_ONE/4, /* radius */
 		0, /* area-of-effect */
 		{_damage_fist, 0, 50, 10}, /* damage (will be scaled by player’s velocity) */
-		
+
 		_usually_pass_transparent_side|_can_toggle_control_panels|_melee_projectile|_penetrates_media, /* flags */
-		
+
 		(3*WORLD_ONE)/4, /* speed */
 		(3*WORLD_ONE)/4, /* maximum range */
 
@@ -355,16 +355,16 @@ struct projectile_definition projectile_definitions[NUMBER_OF_PROJECTILE_TYPES]=
 		_effect_rocket_explosion, _medium_media_detonation_effect, /* detonation effect, media_detonation_effect */
 		_effect_rocket_contrail, 1, NONE, /* contrail effect, ticks between contrails, maximum contrails */
 		NONE, /* media projectile promotion */
-		
+
 		WORLD_ONE/8, /* radius */
 		WORLD_ONE+WORLD_ONE_HALF, /* area-of-effect */
 		{_damage_explosion, _alien_damage, 250, 50}, /* damage */
-		
+
 		_guided|_can_toggle_control_panels, /* flags */
-		
+
 		WORLD_ONE/4, /* speed */
 		NONE, /* maximum range */
-		
+
 		_normal_frequency, /* sound pitch */
 		NONE, NONE, /* flyby sound, rebound sound */
 	},
@@ -378,35 +378,35 @@ struct projectile_definition projectile_definitions[NUMBER_OF_PROJECTILE_TYPES]=
 		0, /* radius */
 		0, /* area-of-effect */
 		{_damage_projectile, _alien_damage, 15, 4}, /* damage */
-		
+
 		_bleeding_projectile|_usually_pass_transparent_side, /* flags */
-		
+
 		WORLD_ONE, /* speed */
 		NONE, /* maximum range */
 
 		_normal_frequency, /* sound pitch */
 		NONE, NONE, /* flyby sound, rebound sound */
 	},
-	
+
 	{ /* _projectile_trooper_grenade */
 		_collection_trooper, 5, /* collection number, shape number */
 		_effect_grenade_explosion, _medium_media_detonation_effect, /* detonation effect, media_detonation_effect */
 		_effect_grenade_contrail, 1, 8, /* contrail effect, ticks between contrails, maximum contrails */
 		NONE, /* media projectile promotion */
-		
+
 		0, /* radius */
 		WORLD_THREE_FOURTHS, /* area-of-effect */
 		{_damage_explosion, _alien_damage, 40, 20}, /* damage */
-		
+
 		_affected_by_gravity|_can_toggle_control_panels, /* flags */
-		
+
 		WORLD_ONE/5, /* speed */
 		NONE, /* maximum range */
-		
+
 		_normal_frequency, /* sound pitch */
 		NONE, NONE, /* flyby sound, rebound sound */
 	},
-	
+
 	{ /* _projectile_minor_defender */
 		BUILD_COLLECTION(_collection_defender, 0), 4, /* collection number, shape number */
 		_effect_minor_defender_detonation, _small_media_detonation_effect, /* detonation effect, media_detonation_effect */
@@ -416,16 +416,16 @@ struct projectile_definition projectile_definitions[NUMBER_OF_PROJECTILE_TYPES]=
 		WORLD_ONE/4, /* radius */
 		0, /* area-of-effect */
 		{_damage_defender, 0, 30, 8}, /* damage */
-		
+
 		_usually_pass_transparent_side, /* flags */
-		
+
 		WORLD_ONE/8, /* speed */
 		NONE, /* maximum range */
 
 		_normal_frequency, /* sound pitch */
 		_snd_defender_flyby, NONE, /* flyby sound, rebound sound */
 	},
-	
+
 	{ /* _projectile_major_defender */
 		BUILD_COLLECTION(_collection_defender, 1), 4, /* collection number, shape number */
 		_effect_major_defender_detonation, _small_media_detonation_effect, /* detonation effect, media_detonation_effect */
@@ -435,9 +435,9 @@ struct projectile_definition projectile_definitions[NUMBER_OF_PROJECTILE_TYPES]=
 		WORLD_ONE/4, /* radius */
 		0, /* area-of-effect */
 		{_damage_defender, 0, 30, 8}, /* damage */
-		
+
 		_usually_pass_transparent_side|_guided, /* flags */
-		
+
 		WORLD_ONE/6, /* speed */
 		NONE, /* maximum range */
 
@@ -450,16 +450,16 @@ struct projectile_definition projectile_definitions[NUMBER_OF_PROJECTILE_TYPES]=
 		_effect_grenade_explosion, _medium_media_detonation_effect, /* detonation effect, media_detonation_effect */
 		_effect_juggernaut_missile_contrail, 2, NONE, /* contrail effect, ticks between contrails, maximum contrails */
 		NONE, /* media projectile promotion */
-		
+
 		0, /* radius */
 		WORLD_THREE_FOURTHS, /* area-of-effect */
 		{_damage_explosion, _alien_damage, 40, 20}, /* damage */
-		
+
 		_affected_by_half_gravity|_can_toggle_control_panels|_guided|_positive_vertical_error, /* flags */
-		
+
 		WORLD_ONE/5, /* speed */
 		NONE, /* maximum range */
-		
+
 		_normal_frequency, /* sound pitch */
 		NONE, NONE, /* flyby sound, rebound sound */
 	},
@@ -473,9 +473,9 @@ struct projectile_definition projectile_definitions[NUMBER_OF_PROJECTILE_TYPES]=
 		WORLD_ONE/8, /* radius */
 		0, /* area-of-effect */
 		{_damage_energy_drain, 0, 4, 0}, /* damage (will be scaled by player’s velocity) */
-		
+
 		_melee_projectile|_penetrates_media, /* flags */
-		
+
 		(3*WORLD_ONE)/4, /* speed */
 		(3*WORLD_ONE)/4, /* maximum range */
 
@@ -492,9 +492,9 @@ struct projectile_definition projectile_definitions[NUMBER_OF_PROJECTILE_TYPES]=
 		WORLD_ONE/8, /* radius */
 		0, /* area-of-effect */
 		{_damage_energy_drain, 0, 8, 0}, /* damage (will be scaled by player’s velocity) */
-		
+
 		_melee_projectile|_penetrates_media, /* flags */
-		
+
 		(3*WORLD_ONE)/4, /* speed */
 		(3*WORLD_ONE)/4, /* maximum range */
 
@@ -511,9 +511,9 @@ struct projectile_definition projectile_definitions[NUMBER_OF_PROJECTILE_TYPES]=
 		WORLD_ONE/8, /* radius */
 		0, /* area-of-effect */
 		{_damage_oxygen_drain, 0, 4, 0}, /* damage (will be scaled by player’s velocity) */
-		
+
 		_melee_projectile|_penetrates_media, /* flags */
-		
+
 		(3*WORLD_ONE)/4, /* speed */
 		(3*WORLD_ONE)/4, /* maximum range */
 
@@ -530,9 +530,9 @@ struct projectile_definition projectile_definitions[NUMBER_OF_PROJECTILE_TYPES]=
 		0, /* radius */
 		0, /* area-of-effect */
 		{_damage_hummer_bolt, 0, 15, 5}, /* damage */
-		
+
 		_usually_pass_transparent_side|_alien_projectile, /* flags */
-		
+
 		WORLD_ONE/8, /* speed */
 		NONE, /* maximum range */
 
@@ -549,9 +549,9 @@ struct projectile_definition projectile_definitions[NUMBER_OF_PROJECTILE_TYPES]=
 		0, /* radius */
 		0, /* area-of-effect */
 		{_damage_hummer_bolt, 0, 15, 5}, /* damage */
-		
+
 		_usually_pass_transparent_side|_alien_projectile, /* flags */
-		
+
 		WORLD_ONE/6, /* speed */
 		NONE, /* maximum range */
 
@@ -568,9 +568,9 @@ struct projectile_definition projectile_definitions[NUMBER_OF_PROJECTILE_TYPES]=
 		0, /* radius */
 		0, /* area-of-effect */
 		{_damage_hummer_bolt, 0, 15, 5}, /* damage */
-		
+
 		_guided|_usually_pass_transparent_side|_alien_projectile, /* flags */
-		
+
 		WORLD_ONE/8, /* speed */
 		NONE, /* maximum range */
 
@@ -587,9 +587,9 @@ struct projectile_definition projectile_definitions[NUMBER_OF_PROJECTILE_TYPES]=
 		WORLD_ONE/8, /* radius */
 		WORLD_ONE, /* area-of-effect */
 		{_damage_explosion, 0, 20, 10}, /* damage */
-		
+
 		_can_toggle_control_panels|_sometimes_pass_transparent_side|_alien_projectile|_rebounds_from_floor|_doubly_affected_by_gravity, /* flags */
-		
+
 		WORLD_ONE/10, /* speed */
 		NONE, /* maximum range */
 
@@ -606,9 +606,9 @@ struct projectile_definition projectile_definitions[NUMBER_OF_PROJECTILE_TYPES]=
 		WORLD_ONE/8, /* radius */
 		WORLD_ONE, /* area-of-effect */
 		{_damage_explosion, 0, 40, 10}, /* damage */
-		
+
 		_guided|_can_toggle_control_panels|_sometimes_pass_transparent_side|_alien_projectile|_rebounds_from_floor|_doubly_affected_by_gravity, /* flags */
-		
+
 		WORLD_ONE/8, /* speed */
 		NONE, /* maximum range */
 
@@ -625,9 +625,9 @@ struct projectile_definition projectile_definitions[NUMBER_OF_PROJECTILE_TYPES]=
 		WORLD_ONE/4, /* radius */
 		NONE, /* area-of-effect */
 		{NONE, 0, 40, 10}, /* damage */
-		
+
 		_persistent_and_virulent|_penetrates_media|_becomes_item_on_detonation|_can_toggle_control_panels|_rebounds_from_floor|_doubly_affected_by_gravity|_penetrates_media, /* flags */
-		
+
 		0, /* speed */
 		NONE, /* maximum range */
 
@@ -644,9 +644,9 @@ struct projectile_definition projectile_definitions[NUMBER_OF_PROJECTILE_TYPES]=
 		WORLD_ONE/20, /* radius */
 		WORLD_ONE, /* area-of-effect */
 		{_damage_fusion_bolt, 0, 30, 10}, /* damage */
-		
+
 		0, /* flags */
-		
+
 		WORLD_ONE/4, /* speed */
 		NONE, /* maximum range */
 
@@ -663,9 +663,9 @@ struct projectile_definition projectile_definitions[NUMBER_OF_PROJECTILE_TYPES]=
 		WORLD_ONE/10, /* radius */
 		2*WORLD_ONE, /* area-of-effect */
 		{_damage_fusion_bolt, 0, 80, 20}, /* damage */
-		
+
 		0, /* flags */
-		
+
 		WORLD_ONE/3, /* speed */
 		NONE, /* maximum range */
 
@@ -682,9 +682,9 @@ struct projectile_definition projectile_definitions[NUMBER_OF_PROJECTILE_TYPES]=
 		WORLD_ONE/10, /* radius */
 		4*WORLD_ONE, /* area-of-effect */
 		{_damage_fusion_bolt, 0, 500, 0}, /* damage */
-		
+
 		0, /* flags */
-		
+
 		WORLD_ONE/3, /* speed */
 		NONE, /* maximum range */
 
@@ -701,16 +701,16 @@ struct projectile_definition projectile_definitions[NUMBER_OF_PROJECTILE_TYPES]=
 		0, /* radius */
 		0, /* area-of-effect */
 		{_damage_yeti_claws, _alien_damage, 20, 5}, /* damage */
-		
+
 		_sometimes_pass_transparent_side|_alien_projectile|_melee_projectile|_penetrates_media, /* flags */
-		
+
 		WORLD_ONE_HALF, /* speed */
 		WORLD_ONE, /* maximum range */
 
 		_normal_frequency, /* sound pitch */
 		NONE, NONE, /* flyby sound, rebound sound */
 	},
-	
+
 	{	/* _projectile_sewage_yeti */
 		BUILD_COLLECTION(_collection_yeti, 0), 10, /* collection number, shape number */
 		_effect_sewage_yeti_projectile_detonation, _small_media_detonation_effect, /* detonation effect, media_detonation_effect */
@@ -720,9 +720,9 @@ struct projectile_definition projectile_definitions[NUMBER_OF_PROJECTILE_TYPES]=
 		0, /* radius */
 		0, /* area-of-effect */
 		{_damage_yeti_projectile, 0, 15, 5}, /* damage */
-		
+
 		_usually_pass_transparent_side|_alien_projectile|_affected_by_half_gravity, /* flags */
-		
+
 		WORLD_ONE/8, /* speed */
 		NONE, /* maximum range */
 
@@ -739,9 +739,9 @@ struct projectile_definition projectile_definitions[NUMBER_OF_PROJECTILE_TYPES]=
 		0, /* radius */
 		0, /* area-of-effect */
 		{_damage_flame, 0, 30, 10}, /* damage */
-		
+
 		_usually_pass_transparent_side|_alien_projectile, /* flags */
-		
+
 		WORLD_ONE/8, /* speed */
 		NONE, /* maximum range */
 
@@ -758,9 +758,9 @@ struct projectile_definition projectile_definitions[NUMBER_OF_PROJECTILE_TYPES]=
 		0, /* radius */
 		0, /* area-of-effect */
 		{_damage_projectile, 0, 9, 6}, /* damage */
-		
+
 		_bleeding_projectile|_usually_pass_transparent_side|_projectile_passes_media_boundary, /* flags */
-		
+
 		WORLD_ONE, /* speed */
 		NONE, /* maximum range */
 

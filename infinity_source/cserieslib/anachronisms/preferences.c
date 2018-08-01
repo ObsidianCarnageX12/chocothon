@@ -39,7 +39,7 @@ struct preferences_info
 {
 	short prefVRefNum;
 	long prefDirID;
-	
+
 	char prefName[1];
 };
 
@@ -55,17 +55,17 @@ OSErr write_preferences_file(
 	long size;
 	OSErr error;
 	short refNum;
-	
+
 	error= HOpen(prefInfo->prefVRefNum, prefInfo->prefDirID, prefInfo->prefName, fsRdWrPerm, &refNum);
 	if (error==noErr)
 	{
 		size= GetPtrSize(preferences);
 		assert(size>0);
-		
+
 		error= FSWrite(refNum, &size, preferences);
 		FSClose(refNum);
 	}
-	
+
 	return error;
 }
 
@@ -122,7 +122,7 @@ OSErr read_preferences_file(
 					size= MIN(expected_size, actual_size);
 					error= FSRead(refNum, &size, *preferences);
 					FSClose(refNum);
-					
+
 					if (error==noErr)
 					{
 						/* if we've got the wrong size or the wrong version, reinitialize */
@@ -134,7 +134,7 @@ OSErr read_preferences_file(
 					}
 				}
 				break;
-			
+
 			case fnfErr:
 				error= HCreate(prefInfo->prefVRefNum, prefInfo->prefDirID, prefInfo->prefName,
 					prefCreator, prefType);
@@ -144,22 +144,22 @@ OSErr read_preferences_file(
 					error= write_preferences_file(*preferences);
 				}
 				break;
-			
+
 			/* errors besides noErr and fnfErr get returned */
 		}
-		
+
 		DisposePtr((Ptr)infoPB);
 	}
 	else
 	{
 		error= MemError();
 	}
-	
+
 	if (error!=noErr)
 	{
 		/* if something is broken, make sure we at least return valid prefs */
 		initialize_preferences(*preferences);
 	}
-	
+
 	return error;
 }

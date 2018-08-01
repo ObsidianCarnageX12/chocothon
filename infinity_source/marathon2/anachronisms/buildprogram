@@ -126,28 +126,28 @@ end
 
 #options for PowerPC full versions
 if "{program}" == "{Application}.alpha.ppc" || "{program}" == "{Application}.alpha" || "{program}" == "{Application}.alpha.fat"
-	Set ObjPPC ":objects:game:ppc:alpha:"	
+	Set ObjPPC ":objects:game:ppc:alpha:"
 	Set VerRezOptions "-d DEBUG"
 	Set SymbolsPPC "-sym on"
 	Set VersionPPCCOptions "-opt off {SymbolsPPC} -d GAME -d ALPHA -d DEBUG -d COMPILE_TIME=`Date -n`"
 	Set TargPPC "{Application}.alpha.ppc"
 	Set CSeriesLibrariesPPC "{CSeriesLibraries}cseries.sym.xcoff"
 else if "{program}" == "{Application}.beta.ppc" || "{program}" == "{Application}.beta" || "{program}" == "{Application}.beta.fat"
-	Set ObjPPC ":objects:game:ppc:beta:"	
+	Set ObjPPC ":objects:game:ppc:beta:"
 	Set VerRezOptions "-d DEBUG"
 	Set SymbolsPPC "-sym off"
 	Set VersionPPCCOptions "-opt speed {SymbolsPPC} -d GAME -d DEBUG -d BETA -d COMPILE_TIME=`Date -n`"
 	Set TargPPC "{Application}.beta.ppc"
 	Set CSeriesLibrariesPPC "{CSeriesLibraries}cseries.debug.xcoff"
 else if "{program}" == "{Application}.gamma.ppc" || "{program}" == "{Application}.gamma" || "{program}" == "{Application}.gamma.fat"
-	Set ObjPPC ":objects:game:ppc:beta:"	
+	Set ObjPPC ":objects:game:ppc:beta:"
 	Set VerRezOptions ""
 	Set SymbolsPPC "-sym off"
 	Set VersionPPCCOptions "-opt speed {SymbolsPPC} -d GAME -d DEBUG -d GAMMA -d COMPILE_TIME=`Date -n`"
 	Set TargPPC "{Application}.gamma.ppc"
 	Set CSeriesLibrariesPPC "{CSeriesLibraries}cseries.debug.xcoff"
 else if "{program}" == "{Application}.ppc" || "{program}" == "{Application}" || "{program}" == "{Application}.fat"
-	Set ObjPPC ":objects:game:ppc:final:"	
+	Set ObjPPC ":objects:game:ppc:final:"
 	Set VerRezOptions ""
 	Set SymbolsPPC "-sym off"
 	Set VersionPPCCOptions "-opt speed {SymbolsPPC} -d GAME -d FINAL"
@@ -156,21 +156,21 @@ else if "{program}" == "{Application}.ppc" || "{program}" == "{Application}" || 
 
 #options for PowerPC demo versions
 else if "{program}" == "{Application}.demo.alpha.ppc" || "{program}" == "{Application}.demo.alpha" || "{program}" == "{Application}.demo.alpha.fat"
-	Set ObjPPC ":objects:demo:ppc:alpha:"	
+	Set ObjPPC ":objects:demo:ppc:alpha:"
 	Set VerRezOptions "-d DEBUG -d DEMO"
 	Set SymbolsPPC "-sym on"
 	Set VersionPPCCOptions "-opt off {SymbolsPPC} -d ALPHA -d DEMO -d DEBUG -d COMPILE_TIME=`Date -n`"
 	Set DemoTargPPC "{Application}.demo.alpha.ppc"
 	Set CSeriesLibrariesPPC "{CSeriesLibraries}cseries.sym.xcoff"
 else if "{program}" == "{Application}.demo.beta.ppc" || "{program}" == "{Application}.demo.beta" || "{program}" == "{Application}.demo.beta.fat"
-	Set ObjPPC ":objects:demo:ppc:beta:"	
+	Set ObjPPC ":objects:demo:ppc:beta:"
 	Set VerRezOptions "-d DEBUG -d DEMO"
 	Set SymbolsPPC "-sym off"
 	Set VersionPPCCOptions "-opt speed {SymbolsPPC} -d BETA -d DEMO -d DEBUG -d COMPILE_TIME=`Date -n`"
 	Set DemoTargPPC "{Application}.demo.beta.ppc"
 	Set CSeriesLibrariesPPC "{CSeriesLibraries}cseries.debug.xcoff"
 else if "{program}" == "{Application}.demo.ppc" || "{program}" == "{Application}.demo" || "{program}" == "{Application}.demo.fat"
-	Set ObjPPC ":objects:demo:ppc:final:"	
+	Set ObjPPC ":objects:demo:ppc:final:"
 	Set VerRezOptions "-d DEMO"
 	Set SymbolsPPC "-sym off"
 	Set VersionPPCCOptions "-opt speed {SymbolsPPC} -d FINAL -d DEMO"
@@ -225,7 +225,7 @@ end
 # Select the makefile.
 Set makefile `(Files -t TEXT "{program}".make || ∂
 	Files -t TEXT MakeFile || Echo '""') ≥ Dev:Null`
-	
+
 # if we selected "MakeFile" but we didn't get a valid 68k or PPC target then we don't know
 # what we're doing (or at least the environment variables won't be set up right so even if we
 # think we know what we're doing make won't have a clue) and we should punt.

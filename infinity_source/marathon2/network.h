@@ -39,11 +39,11 @@ typedef struct game_info
 	short    difficulty_level;
 	boolean  server_is_playing; // if FALSE, then observing
 	boolean  allow_mic;
-	
+
 	// where the game takes place
 	short    level_number;
 	char     level_name[MAX_LEVEL_NAME_LENGTH+1];
-	
+
 	// network parameters
 	short    initial_updates_per_packet;
 	short    initial_update_latency;
@@ -91,7 +91,7 @@ typedef void (*CheckPlayerProcPtr)(short player_index, short num_players);
 boolean NetEnter(void);
 void NetExit(void);
 
-boolean NetGather(void *game_data, short game_data_size, void *player_data, 
+boolean NetGather(void *game_data, short game_data_size, void *player_data,
 	short player_data_size);
 boolean NetGatherPlayer(short player_index, CheckPlayerProcPtr check_player);
 

@@ -8,7 +8,7 @@
 /* Open the file, and allocate whatever internal structures are necessary in the */
 /*  preferences pointer.. */
 boolean w_open_preferences_file(
-	char *prefName, 
+	char *prefName,
 	unsigned long preferences_file_type); // ostype for mac, extension for dos
 
 void *w_get_data_from_preferences(
@@ -16,7 +16,7 @@ void *w_get_data_from_preferences(
 	short expected_size,				/* Data size */
 	void (*initialize)(void *prefs),	/* Call if I have to allocate it.. */
 	boolean (*validate)(void *prefs));	/* Verify function-> fixes if bad and returns TRUE */
-	
+
 void w_write_preferences_file(void);
 
 /* ------ local structures */
@@ -46,7 +46,7 @@ struct preferences_dialog_data {
 	void (*setup_dialog_func)(DialogPtr dialog, short first_item, void *prefs);
 
 	/* Called when a user item is hit */
-	void (*item_hit_func)(DialogPtr dialog, short first_item, void *prefs, 
+	void (*item_hit_func)(DialogPtr dialog, short first_item, void *prefs,
 		short item_hit);
 
 	/* Use this to read in the edittext fields, etc. (return FALSE to abort teardown) */

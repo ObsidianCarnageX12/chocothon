@@ -38,33 +38,33 @@ struct item_definition item_definitions[]=
 	// rocket launcher and ammo
 	{_weapon, 13, 13, BUILD_DESCRIPTOR(_collection_items, 12), 1, _environment_vacuum},
 	{_ammunition, 14, 15, BUILD_DESCRIPTOR(_collection_items, 7), 4, _environment_vacuum},
-	
+
 	// invisibility, invincibility, invfravision
 	{_powerup, NONE, NONE, BUILD_DESCRIPTOR(_collection_items, 8), 1, 0},
-	{_powerup, NONE, NONE, BUILD_DESCRIPTOR(_collection_items, 9), 1, 0}, 
-	{_powerup, NONE, NONE, BUILD_DESCRIPTOR(_collection_items, 14), 1, 0}, 
+	{_powerup, NONE, NONE, BUILD_DESCRIPTOR(_collection_items, 9), 1, 0},
+	{_powerup, NONE, NONE, BUILD_DESCRIPTOR(_collection_items, 14), 1, 0},
 
 	// alien weapon and ammunition
-	{_weapon, 16, 16, BUILD_DESCRIPTOR(_collection_items, 13), 1, 0}, 
-	{_ammunition, 17, 18, NONE, 999, 0}, 
-	
+	{_weapon, 16, 16, BUILD_DESCRIPTOR(_collection_items, 13), 1, 0},
+	{_ammunition, 17, 18, NONE, 999, 0},
+
 	// flamethrower and ammo
-	{_weapon, 19, 19, BUILD_DESCRIPTOR(_collection_items, 10), 1, _environment_vacuum}, 
+	{_weapon, 19, 19, BUILD_DESCRIPTOR(_collection_items, 10), 1, _environment_vacuum},
 	{_ammunition, 20, 21, BUILD_DESCRIPTOR(_collection_items, 11), 3, _environment_vacuum},
-	
+
 	/* extravision powerup */
 	{_powerup, NONE, NONE, BUILD_DESCRIPTOR(_collection_items, 15), 1, 0},
-	
+
 	// energy and oxygen recharges
 	{_powerup, NONE, NONE, BUILD_DESCRIPTOR(_collection_items, 23), 1, 0}, /* oxygen recharge */
 	{_powerup, NONE, NONE, BUILD_DESCRIPTOR(_collection_items, 20), 1, 0}, /* x1 recharge */
 	{_powerup, NONE, NONE, BUILD_DESCRIPTOR(_collection_items, 21), 1, 0}, /* x2 recharge */
 	{_powerup, NONE, NONE, BUILD_DESCRIPTOR(_collection_items, 22), 1, 0}, /* x3 recharge */
-	
+
 	// shotgun and ammo
-	{_weapon, 27, 28, BUILD_DESCRIPTOR(_collection_items, 18), 2, 0}, 
+	{_weapon, 27, 28, BUILD_DESCRIPTOR(_collection_items, 18), 2, 0},
 	{_ammunition, 17, 18, BUILD_DESCRIPTOR(_collection_items, 19), 80, 0},
-	
+
 	// _i_spht_door_key, _i_uplink_chip
 	{_item, 29, 30, BUILD_DESCRIPTOR(_collection_items, 17), 8, 0},
 	{_item, 31, 32, BUILD_DESCRIPTOR(_collection_items, 16), 1, 0},
