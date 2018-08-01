@@ -35,12 +35,12 @@ boolean game_is_over(void);
 enum
 {
 	_network_compass_all_off= 0,
-	
+
 	_network_compass_nw= 0x0001,
 	_network_compass_ne= 0x0002,
 	_network_compass_sw= 0x0004,
 	_network_compass_se= 0x0008,
-	
+
 	_network_compass_all_on= 0x000f
 };
 

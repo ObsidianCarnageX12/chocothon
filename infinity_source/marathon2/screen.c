@@ -224,11 +224,11 @@ void initialize_screen(
 		enough_memory_for_full_screen= (FreeMem()>FREE_MEMORY_FOR_FULL_SCREEN) ? TRUE : FALSE;
 #endif
 	}
-	
+
 	if (mode->bit_depth==32 && !enough_memory_for_32bit) mode->bit_depth= 16;
 	if (mode->bit_depth==16 && !enough_memory_for_16bit) mode->bit_depth= 8;
 	interface_bit_depth= bit_depth= mode->bit_depth;
-	
+
 	/*	CJD -- Set up the DSp attributes before we ask it to request a context	*/
 #if SUPPORT_DRAW_SPROCKET
 	InitDrawSprocketAttributes(&gDrawContextAttributes);
@@ -252,7 +252,7 @@ void initialize_screen(
 			gDrawContextAttributes.backBufferBestDepth	= 16;
 			gDrawContextAttributes.displayBestDepth		= 16;
 			break;
-			
+
 		default:
 			gDrawContextAttributes.backBufferDepthMask	= kDSpDepthMask_8;
 			gDrawContextAttributes.displayDepthMask		= kDSpDepthMask_8;
@@ -261,7 +261,7 @@ void initialize_screen(
 	}
 
 	gDrawContextAttributes.pageCount			= 2;
-	
+
 #else
 	switch (mode->acceleration)
 	{
@@ -277,7 +277,7 @@ void initialize_screen(
 #if SUPPORT_DRAW_SPROCKET
 	{
 	OSStatus	theError;
-	
+
 		theError = DSpFindBestContext(&gDrawContextAttributes, &gDrawContext);
 		if (theError != noErr)
 			alert_user(fatalError, strERRORS, badMonitor, -1);
@@ -288,7 +288,7 @@ void initialize_screen(
 		if (theError)
 			alert_user(fatalError, strERRORS, badMonitor, -1);
 	}
-	
+
 #else
 	/* beg, borrow or steal an n-bit device */
 	graphics_preferences->device_spec.bit_depth= interface_bit_depth;
@@ -317,7 +317,7 @@ void initialize_screen(
 	{
 		graphics_preferences->device_spec.width= DESIRED_SCREEN_WIDTH;
 		graphics_preferences->device_spec.height= DESIRED_SCREEN_HEIGHT;
-		
+
 		uncorrected_color_table= (struct color_table *)malloc(sizeof(struct color_table));
 		world_color_table= (struct color_table *)malloc(sizeof(struct color_table));
 		visible_color_table= (struct color_table *)malloc(sizeof(struct color_table));
@@ -347,11 +347,11 @@ void initialize_screen(
 		{
 		OSStatus	theError;
 			DisplayIDType theID;
-			
+
 			DSpContext_FadeGammaOut(NULL, NULL);
 			theError = DSpContext_SetState(gDrawContext, kDSpContextState_Active);
 			DSpContext_FadeGammaIn(NULL, NULL);
-			
+
 			if (theError)
 			{
 				DebugStr("\pCould not set context state to active");
@@ -365,7 +365,7 @@ void initialize_screen(
 			theError = DSpContext_GetDisplayID( gDrawContext, &theID );
 			if( theError )
 				DebugStr("\p sh-t happened again ");
-				
+
 			DMGetGDeviceByDisplayID( theID, &world_device, false );
 			screen_window = (WindowPtr)world_pixels;
 		}
@@ -373,7 +373,7 @@ void initialize_screen(
 		/* allocate the bitmap_definition structure for our GWorld (it is reinitialized every frame */
 		world_pixels_structure= (struct bitmap_definition *) NewPtr(sizeof(struct bitmap_definition)+sizeof(pixel8 *)*MAXIMUM_WORLD_HEIGHT);
 		assert(world_pixels_structure);
-		
+
 		/* allocate and initialize our view_data structure; we don’t call initialize_view_data
 			anymore (change_screen_mode does that) */
 		world_view= (struct view_data *) NewPtr(sizeof(struct view_data));
@@ -386,7 +386,7 @@ void initialize_screen(
 
 		/* make sure everything gets cleaned up after we leave */
 		atexit(restore_world_device);
-	
+
 #if !SUPPORT_DRAW_SPROCKET
 		world_pixels= (GWorldPtr) NULL;
 #endif
@@ -395,12 +395,12 @@ void initialize_screen(
 	{
 		unload_all_collections();
 	}
-	
+
 	if (!screen_initialized || MatchGDSpec(&restore_spec)!=MatchGDSpec(&graphics_preferences->device_spec))
 	{
 		if (screen_initialized)
 		{
-	
+
 			/* get rid of the menu bar */
 			HideMenuBar(GetMainDevice());
 
@@ -408,9 +408,9 @@ void initialize_screen(
 			SetPort(screen_window);
 			PaintRect(&screen_window->portRect);
 			SetPort(old_port);
-			
+
 			SetDepthGDSpec(&restore_spec);
-	
+
 			/* get rid of the menu bar */
 			HideMenuBar(GetMainDevice());
 
@@ -431,7 +431,7 @@ void initialize_screen(
 		}
 #endif
 	}
-	
+
 	/* CAF -- just commenting out stuff that would make us crash */
 #if !SUPPORT_DRAW_SPROCKET
 	SetDepthGDSpec(&graphics_preferences->device_spec);
@@ -445,17 +445,17 @@ void initialize_screen(
 #endif
 	{
 		Point origin;
-		
+
 		origin.h= - (RECTANGLE_WIDTH(&(*world_device)->gdRect)-DESIRED_SCREEN_WIDTH)/2;
 		origin.v= - (RECTANGLE_HEIGHT(&(*world_device)->gdRect)-DESIRED_SCREEN_HEIGHT)/2;
 		if (origin.v>0) origin.v= 0;
-		
+
 		GetPort(&old_port);
 		SetPort(screen_window);
 		SetOrigin(origin.h, origin.v);
 		SetPort(old_port);
 	}
-	
+
 	/* allocate and initialize our GWorld */
 	calculate_destination_frame(mode->size, mode->high_resolution, &bounds);
 
@@ -468,7 +468,7 @@ void initialize_screen(
 	change_screen_mode(mode, FALSE);
 
 	screen_initialized= TRUE;
-	
+
 	return;
 }
 
@@ -476,7 +476,7 @@ void enter_screen(
 	void)
 {
 	GrafPtr old_port;
-	
+
 	if (world_view->overhead_map_active) set_overhead_map_status(FALSE);
 	if (world_view->terminal_mode_active) set_terminal_status(FALSE);
 
@@ -498,11 +498,11 @@ void enter_screen(
 
 	{
 		Point origin;
-		
+
 		origin.h= - (RECTANGLE_WIDTH(&(*world_device)->gdRect)-DESIRED_SCREEN_WIDTH)/2;
 		origin.v= - (RECTANGLE_HEIGHT(&(*world_device)->gdRect)-DESIRED_SCREEN_HEIGHT)/2;
 		if (origin.v>0) origin.v= 0;
-		
+
 		GetPort(&old_port);
 		SetPort(screen_window);
 		SetOrigin(origin.h, origin.v);
@@ -557,11 +557,11 @@ void exit_screen(
 	{
 		GrafPtr	old_port;
 		Point origin;
-		
+
 		origin.h= - (RECTANGLE_WIDTH(&(*world_device)->gdRect)-DESIRED_SCREEN_WIDTH)/2;
 		origin.v= - (RECTANGLE_HEIGHT(&(*world_device)->gdRect)-DESIRED_SCREEN_HEIGHT)/2;
 		if (origin.v>0) origin.v= 0;
-		
+
 		GetPort(&old_port);
 		SetPort(screen_window);
 		SetOrigin(origin.h, origin.v);
@@ -579,7 +579,7 @@ void exit_screen(
 			valkyrie_end();
 			break;
 	}
-	
+
 	return;
 }
 
@@ -606,7 +606,7 @@ void change_screen_mode(
 			}
 			break;
 	}
-	
+
 	/* This makes sure that the terminal and map use their own resolutions */
 	world_view->overhead_map_active= FALSE;
 	world_view->terminal_mode_active= FALSE;
@@ -629,7 +629,7 @@ void change_screen_mode(
 			if (redraw) valkyrie_erase_graphic_key_frame(0xfe);
 			break;
 	}
-	
+
 	/* save parameters */
 	screen_mode= *mode;
 
@@ -641,7 +641,7 @@ void change_screen_mode(
 	error= myUpdateGWorld(&world_pixels, 0, &bounds, (CTabHandle) NULL, (GDHandle) NULL, 0);
 	if (error!=noErr) alert_user(fatalError, strERRORS, outOfMemory, error);
 #endif
-	
+
 	calculate_source_frame(mode->size, mode->high_resolution, &bounds);
 	width= RECTANGLE_WIDTH(&bounds), height= RECTANGLE_HEIGHT(&bounds);
 
@@ -694,7 +694,7 @@ void render_screen(
 			initialize_view_data(world_view);
 		}
 	}
-	
+
 	if (PLAYER_HAS_MAP_OPEN(current_player))
 	{
 		if (!world_view->overhead_map_active) set_overhead_map_status(TRUE);
@@ -747,7 +747,7 @@ void render_screen(
 				{
 					GDHandle old_device;
 					CGrafPtr old_port;
-					
+
 					myGetGWorld(&old_port, &old_device);
 					mySetGWorld(world_pixels, (GDHandle) NULL);
 					EraseRect(&world_pixels->portRect);
@@ -758,7 +758,7 @@ void render_screen(
 #endif /* else DIRECT_SCREEN_TEST */
 			precalculate_bitmap_row_addresses(world_pixels_structure);
 			break;
-		
+
 		default:
 			halt();
 	}
@@ -774,14 +774,14 @@ void render_screen(
 
 		get_binocular_vision_origins(current_player_index, &left_origin, &left_polygon_index, &left_angle,
 			&right_origin, &right_polygon_index, &right_angle);
-		
+
 		world_pixels_structure->bytes_per_row*= 2;
 		precalculate_bitmap_row_addresses(world_pixels_structure);
 		world_view->origin= left_origin;
 		world_view->origin_polygon_index= left_polygon_index;
 		world_view->yaw= left_angle;
 		render_view(world_view, world_pixels_structure);
-		
+
 		world_pixels_structure->row_addresses[0]+= world_pixels_structure->bytes_per_row/2;
 		precalculate_bitmap_row_addresses(world_pixels_structure);
 		world_view->origin= right_origin;
@@ -810,7 +810,7 @@ void render_screen(
 			update_screen();
 #endif
 			break;
-		
+
 		default:
 			halt();
 	}
@@ -847,7 +847,7 @@ void change_screen_clut(
 		memcpy(uncorrected_color_table, color_table, sizeof(struct color_table));
 		memcpy(interface_color_table, color_table, sizeof(struct color_table));
 	}
-	
+
 	if (bit_depth==16 || bit_depth==32)
 	{
 		build_direct_color_table(uncorrected_color_table, bit_depth);
@@ -867,14 +867,14 @@ void change_screen_clut(
 	{
 		Rect bounds;
 		OSErr error;
-	
+
 		calculate_adjusted_source_frame(&screen_mode, &bounds);
 #if ! SUPPORT_DRAW_SPROCKET
 		error= myUpdateGWorld(&world_pixels, 0, &bounds, (CTabHandle) NULL, (GDHandle) NULL, 0);
 		if (error!=noErr) alert_user(fatalError, strERRORS, outOfMemory, error);
 #endif
 	}
-		
+
 	return;
 }
 
@@ -885,20 +885,20 @@ void build_direct_color_table(
 	struct rgb_color *color;
 	short maximum_component;
 	short i;
-	
+
 	switch (bit_depth)
 	{
 		case 16: maximum_component= PIXEL16_MAXIMUM_COMPONENT; break;
 		case 32: maximum_component= PIXEL32_MAXIMUM_COMPONENT; break;
 		default: halt();
 	}
-	
+
 	color_table->color_count= maximum_component+1;
 	for (i= 0, color= color_table->colors; i<=maximum_component; ++i, ++color)
 	{
 		color->red= color->green= color->blue= (i*0xffff)/maximum_component;
 	}
-	
+
 	return;
 }
 
@@ -911,17 +911,17 @@ void render_computer_interface(
 
 	GetGWorld(&old_gworld, &old_device);
 	SetGWorld(world_pixels, (GDHandle) NULL);
-	
+
 	data.left= 0; data.right= view->screen_width;
 	data.top= 0; data.bottom= view->screen_height;
-	
+
 	switch (screen_mode.size)
 	{
 			case _50_percent:
 			case _75_percent:
 				halt();
 				break;
-				
+
 			case _100_percent:
 				data.vertical_offset= 0;
 				break;
@@ -937,7 +937,7 @@ void render_computer_interface(
 	TextFace(normal);
 	TextSize(0);
 	SetGWorld(old_gworld, old_device);
-	
+
 	return;
 }
 
@@ -950,7 +950,7 @@ void render_overhead_map(
 
 	GetGWorld(&old_gworld, &old_device);
 	SetGWorld(world_pixels, (GDHandle) NULL);
-	
+
 	PaintRect(&world_pixels->portRect);
 
 	overhead_data.scale= view->overhead_map_scale;
@@ -962,7 +962,7 @@ void render_overhead_map(
 	overhead_data.width= view->screen_width;
 	overhead_data.height= view->screen_height;
 	overhead_data.top= overhead_data.left= 0;
-	
+
 	_render_overhead_map(&overhead_data);
 
 	RGBForeColor(&rgb_black);
@@ -971,7 +971,7 @@ void render_overhead_map(
 	TextFace(normal);
 	TextSize(0);
 	SetGWorld(old_gworld, old_device);
-	
+
 	return;
 }
 
@@ -979,7 +979,7 @@ void zoom_overhead_map_out(
 	void)
 {
 	world_view->overhead_map_scale= FLOOR(world_view->overhead_map_scale-1, OVERHEAD_MAP_MINIMUM_SCALE);
-	
+
 	return;
 }
 
@@ -987,7 +987,7 @@ void zoom_overhead_map_in(
 	void)
 {
 	world_view->overhead_map_scale= CEILING(world_view->overhead_map_scale+1, OVERHEAD_MAP_MAXIMUM_SCALE);
-	
+
 	return;
 }
 
@@ -1018,14 +1018,14 @@ boolean machine_supports_16bit(
 
 	/* Make sure that enough_memory_for_16bit is valid */
 	calculate_screen_options();
-	
+
 	test_spec= *spec;
 	test_spec.bit_depth= 16;
 	if (!HasDepthGDSpec(&test_spec)) /* automatically searches for grayscale devices */
 	{
 		found_16bit_device= FALSE;
 	}
-	
+
 	return found_16bit_device && enough_memory_for_16bit;
 }
 
@@ -1044,7 +1044,7 @@ boolean machine_supports_32bit(
 	{
 		found_32bit_device= FALSE;
 	}
-	
+
 	return found_32bit_device && enough_memory_for_32bit;
 }
 
@@ -1052,14 +1052,14 @@ short hardware_acceleration_code(
 	GDSpecPtr spec)
 {
 	short acceleration_code= _no_acceleration;
-	
+
 	calculate_screen_options();
 
 	if (machine_has_valkyrie(spec) && enough_memory_for_16bit)
 	{
 		acceleration_code= _valkyrie_acceleration;
 	}
-	
+
 	return acceleration_code;
 }
 
@@ -1068,11 +1068,11 @@ void update_screen_window(
 	EventRecord *event)
 {
 	#pragma unused (window,event)
-	
+
 	draw_interface();
 	change_screen_mode(&screen_mode, TRUE);
 	assert_world_color_table(interface_color_table, world_color_table);
-	
+
 	return;
 }
 
@@ -1082,7 +1082,7 @@ void activate_screen_window(
 	boolean active)
 {
 	#pragma unused (window,event,active)
-	
+
 	return;
 }
 
@@ -1093,12 +1093,12 @@ void animate_screen_clut(
 	boolean full_screen)
 {
 	CTabHandle macintosh_color_table= build_macintosh_color_table(color_table);
-	
+
 	if (macintosh_color_table)
 	{
 		GDHandle old_device;
 
-		HLock((Handle)macintosh_color_table);	
+		HLock((Handle)macintosh_color_table);
 		old_device= GetGDevice();
 		SetGDevice(world_device);
 		switch (screen_mode.acceleration)
@@ -1110,7 +1110,7 @@ void animate_screen_clut(
 					break;
 				}
 				// if we’re doing full-screen fall through to LowLevelSetEntries
-	
+
 			case _no_acceleration:
 #if SUPPORT_DRAW_SPROCKET
 				DSpContext_SetCLUTEntries( gDrawContext, (*macintosh_color_table)->ctTable, 0,
@@ -1120,11 +1120,11 @@ void animate_screen_clut(
 #endif
 				break;
 		}
-		
+
 		DisposeHandle((Handle)macintosh_color_table);
 		SetGDevice(old_device);
 	}
-	
+
 	return;
 }
 
@@ -1135,7 +1135,7 @@ void assert_world_color_table(
 	if (interface_bit_depth==8 && interface_color_table->color_count)
 	{
 		CTabHandle macintosh_color_table= build_macintosh_color_table(interface_color_table);
-		
+
 		if (macintosh_color_table)
 		{
 #if SUPPORT_DRAW_SPROCKET
@@ -1143,7 +1143,7 @@ void assert_world_color_table(
 				(*macintosh_color_table)->ctSize );
 #else
 			GDHandle old_device;
-			
+
 			HLock((Handle)macintosh_color_table);
 			old_device= GetGDevice();
 			SetGDevice(world_device);
@@ -1153,9 +1153,9 @@ void assert_world_color_table(
 #endif
 		}
 	}
-	
+
 	if (world_color_table && world_color_table->color_count) animate_screen_clut(world_color_table, FALSE);
-	
+
 	return;
 }
 
@@ -1164,7 +1164,7 @@ void darken_world_window(
 {
 	GrafPtr old_port;
 	Rect bounds;
-	
+
 	GetPort(&old_port);
 	SetPort(screen_window);
 	PenPat(&qd.gray);
@@ -1174,7 +1174,7 @@ void darken_world_window(
 	PenMode(srcCopy);
 	PenPat(&qd.black);
 	SetPort(old_port);
-	
+
 	return;
 }
 
@@ -1184,7 +1184,7 @@ void validate_world_window(
 #if ! SUPPORT_DRAW_SPROCKET
 	GrafPtr old_port;
 	Rect bounds;
-	
+
 	GetPort(&old_port);
 	SetPort(screen_window);
 	calculate_destination_frame(screen_mode.size, screen_mode.high_resolution, &bounds);
@@ -1198,7 +1198,7 @@ void validate_world_window(
 			valkyrie_erase_graphic_key_frame(0xfe);
 			break;
 	}
-	
+
 	return;
 }
 
@@ -1212,7 +1212,7 @@ void change_gamma_level(
 	assert_world_color_table(interface_color_table, world_color_table);
 	change_screen_mode(&screen_mode, FALSE);
 	set_fade_effect(NONE);
-	
+
 	return;
 }
 
@@ -1226,7 +1226,7 @@ static void update_fps_display(
 		long ticks= TickCount();
 		GrafPtr old_port;
 		char fps[100];
-		
+
 		frame_ticks[frame_index]= ticks;
 		frame_index= (frame_index+1)%FRAME_SAMPLE_SIZE;
 		if (frame_count<FRAME_SAMPLE_SIZE)
@@ -1257,7 +1257,7 @@ static void update_fps_display(
 	{
 		frame_count= frame_index= 0;
 	}
-	
+
 	return;
 }
 
@@ -1265,7 +1265,7 @@ static void set_overhead_map_status( /* it has changed, this is the new status *
 	boolean status)
 {
 	static struct screen_mode_data previous_screen_mode;
-	
+
 	if (!status)
 	{
 		screen_mode= previous_screen_mode;
@@ -1285,7 +1285,7 @@ static void set_overhead_map_status( /* it has changed, this is the new status *
 	world_view->overhead_map_active= status;
 	change_screen_mode(&screen_mode, TRUE);
 	world_view->overhead_map_active= status;
-	
+
 	return;
 }
 
@@ -1295,7 +1295,7 @@ static void set_terminal_status( /* It has changed, this is the new state.. */
 	static struct screen_mode_data previous_screen_mode;
 	boolean restore_effect= FALSE;
 	short effect, phase;
-	
+
 	if(!status)
 	{
 		screen_mode= previous_screen_mode;
@@ -1330,7 +1330,7 @@ static void set_terminal_status( /* It has changed, this is the new state.. */
 
 	/* Dirty the view.. */
 	dirty_terminal_view(current_player_index);
-	
+
 	return;
 }
 
@@ -1345,12 +1345,12 @@ static void restore_world_device(
 			valkyrie_restore();
 			break;
 	}
-	
+
 	GetPort(&old_port);
 	SetPort(screen_window);
 	PaintRect(&screen_window->portRect);
 	SetPort(old_port);
-	
+
 #if !SUPPORT_DRAW_SPROCKET
 
 	ShowMenuBar();
@@ -1373,11 +1373,11 @@ static void restore_world_device(
 
 #if ! SUPPORT_DRAW_SPROCKET
 	myDisposeGWorld(world_pixels);
-	
+
 	CloseWindow(screen_window);
 	CloseWindow(backdrop_window);
 #endif
-	
+
 	return;
 }
 
@@ -1386,7 +1386,7 @@ static void update_screen(
 	void)
 {
 	Rect source, destination;
-	
+
 	calculate_source_frame(screen_mode.size, screen_mode.high_resolution, &source);
 	calculate_destination_frame(screen_mode.size, screen_mode.high_resolution, &destination);
 
@@ -1394,7 +1394,7 @@ static void update_screen(
 	{
 		GrafPtr old_port;
 		RGBColor old_forecolor, old_backcolor;
-		
+
 		GetPort(&old_port);
 		SetPort(screen_window);
 
@@ -1402,9 +1402,9 @@ static void update_screen(
 		GetBackColor(&old_backcolor);
 		RGBForeColor(&rgb_black);
 		RGBBackColor(&rgb_white);
-		
+
 		OffsetRect(&source, -source.left, -source.top);
-		
+
 #if SUPPORT_DRAW_SPROCKET
 		DSpContext_InvalBackBufferRect(gDrawContext, &source );
 		DSpContext_SwapBuffers(gDrawContext, NULL, NULL);
@@ -1413,7 +1413,7 @@ static void update_screen(
 		CopyBits((BitMapPtr)*world_pixels->portPixMap, &screen_window->portBits,
 			&source, &destination, srcCopy, (RgnHandle) NULL);
 #endif
-		
+
 		RGBForeColor(&old_forecolor);
 		RGBBackColor(&old_backcolor);
 		SetPort(old_port);
@@ -1425,24 +1425,24 @@ static void update_screen(
 		struct copy_screen_data data;
 		short source_rowBytes, destination_rowBytes, source_width, destination_width;
 		PixMapHandle screen_pixmap= (*world_device)->gdPMap;
-		
+
 #if ! SUPPORT_DRAW_SPROCKET
 		source_rowBytes= (*myGetGWorldPixMap(world_pixels))->rowBytes&0x3fff;
 #else
 		source_rowBytes = (*world_pixels->portPixMap)->rowBytes & 0x3FFF;
 #endif
-		
+
 		destination_rowBytes= (*screen_pixmap)->rowBytes&0x3fff;
 		source_width= RECTANGLE_WIDTH(&source);
 		destination_width= RECTANGLE_WIDTH(&destination);
-		
+
 #if ! SUPPORT_DRAW_SPROCKET
 		data.source= (byte *)myGetPixBaseAddr(world_pixels);
 #else
 		data.source = (byte *)(*world_pixels->portPixMap)->baseAddr;
-#endif		
+#endif
 		data.source_slop= source_rowBytes-source_width*pelsize;
-		
+
 		data.destination= (byte *)(*screen_pixmap)->baseAddr + (destination.top-screen_window->portRect.top)*destination_rowBytes +
 			(destination.left-screen_window->portRect.left)*pelsize;
 		data.destination_slop= destination_rowBytes-destination_width*pelsize;
@@ -1495,7 +1495,7 @@ void calculate_destination_frame(
 	Rect *frame)
 {
 	#pragma unused (high_resolution)
-	
+
 	/* calculate destination frame */
 	switch (size)
 	{
@@ -1512,13 +1512,13 @@ void calculate_destination_frame(
 			SetRect(frame, 0, 0, DEFAULT_WORLD_WIDTH/2, DEFAULT_WORLD_HEIGHT/2);
 			break;
 	}
-	
+
 	if (size!=_full_screen)
 	{
-		OffsetRect(frame, WORLD_H+((DEFAULT_WORLD_WIDTH-frame->right)>>1), 
+		OffsetRect(frame, WORLD_H+((DEFAULT_WORLD_WIDTH-frame->right)>>1),
 			WORLD_V+((DEFAULT_WORLD_HEIGHT-frame->bottom)>>1));
 	}
-	
+
 	return;
 }
 
@@ -1552,7 +1552,7 @@ static void calculate_adjusted_source_frame(
 	// assure that our width is an odd-multiple of our cache line size
 	if (width&(CACHE_LINE_SIZE-1)) width= (width&~(CACHE_LINE_SIZE-1)) + CACHE_LINE_SIZE;
 	if (!((width>>BITS_PER_CACHE_LINE)&1)) width+= CACHE_LINE_SIZE;
-	
+
 	// restore width in pixels
 	switch (mode->bit_depth)
 	{
@@ -1584,7 +1584,7 @@ static void calculate_source_frame(
 	}
 	OffsetRect(frame, (*world_device)->gdRect.left-frame->left,
 		(*world_device)->gdRect.top-frame->top);
-	
+
 	return;
 }
 
@@ -1592,7 +1592,7 @@ static void calculate_screen_options(
 	void)
 {
 	static boolean screen_options_initialized= FALSE;
-	
+
 	if(!screen_options_initialized)
 	{
 		enough_memory_for_16bit= (FreeMem()>FREE_MEMORY_FOR_16BIT) ? TRUE : FALSE;
@@ -1656,19 +1656,19 @@ void quadruple_screen(
 						out2= ((unsigned long)(((word)(in&0xff)) | ((word)(in<<8)))) | (unsigned long)((((in>>8)&0xff) | (in&0xff00))<<16);
 						in>>= 16;
 						out1= ((unsigned long)(((word)(in&0xff)) | ((word)(in<<8)))) | (unsigned long)((((in>>8)&0xff) | (in&0xff00))<<16);
-						
+
 						*write1++= out1, *write2++= out1;
 						*write1++= out2, *write2++= out2;
 					}
 				}
 			}
 		}
-		
+
 		(byte*)read+= data->source_slop;
 		(byte*)write1+= data->destination_slop;
 		(byte*)write2+= data->destination_slop;
 	}
-	
+
 	return;
 }
 #endif
@@ -1680,7 +1680,7 @@ InitDrawSprocketAttributes(DSpContextAttributes *inAttributes)
 {
 	if( NULL == inAttributes )
 		DebugStr("\pNULL context sent to InitDrawSprocketAttributes!");
-		
+
 	inAttributes->frequency					= 0;
 	inAttributes->displayWidth				= 0;
 	inAttributes->displayHeight				= 0;

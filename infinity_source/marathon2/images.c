@@ -44,13 +44,13 @@ void initialize_images_manager(
 	error= get_file_spec(&file, strFILENAMES, filenameIMAGES, strPATHS);
 	if (error==noErr)
 	{
-		boolean was_aliased, is_folder; 
-	
+		boolean was_aliased, is_folder;
+
 		ResolveAliasFile(&file, TRUE, &is_folder, &was_aliased);
 		images_file_handle= FSpOpenResFile(&file, fsRdPerm);
 		error= ResError();
 	}
-	
+
 	if (error!=noErr || images_file_handle==NONE)
 	{
 		alert_user(fatalError, strERRORS, badExtraFileLocations, error);
@@ -66,16 +66,16 @@ PicHandle get_picture_resource_from_images(
 {
 	short old_resfile;
 	PicHandle picture;
-	
+
 	assert(images_file_handle != NONE);
 	old_resfile= CurResFile();
 	UseResFile(images_file_handle);
-	picture= (PicHandle) Get1Resource('PICT', 
+	picture= (PicHandle) Get1Resource('PICT',
 		determine_pict_resource_id('PICT', base_resource,
 		_images_file_delta16, _images_file_delta32));
 //	if (picture) HNoPurge((Handle)picture);
 	UseResFile(old_resfile);
-	
+
 	return picture;
 }
 
@@ -83,14 +83,14 @@ void set_scenario_images_file(
 	FileDesc *file)
 {
 	static boolean installed= FALSE;
-	boolean was_aliased, is_folder; 
+	boolean was_aliased, is_folder;
 
 	if(scenario_file_handle!=NONE)
 	{
 		CloseResFile(scenario_file_handle);
 		scenario_file_handle= NONE;
 	}
-	
+
 	ResolveAliasFile((FSSpec *) file, TRUE, &is_folder, &was_aliased);
 	scenario_file_handle= FSpOpenResFile((FSSpec *) file, fsRdPerm);
 	vassert(!ResError(), csprintf(temporary, "ResError was #%d, FileHandle is %08X, spec follows ;dm %08X fsspec",
@@ -104,13 +104,13 @@ SndListHandle get_sound_resource_from_scenario(
 {
 	SndListHandle sound_handle;
 	short old_resfile;
-	
+
 	old_resfile= CurResFile();
 	UseResFile(scenario_file_handle);
 	sound_handle= (SndListHandle) Get1Resource('snd ', resource_number);
 	if (sound_handle) HNoPurge((Handle)sound_handle);
 	UseResFile(old_resfile);
-	
+
 	return sound_handle;
 }
 
@@ -119,16 +119,16 @@ PicHandle get_picture_resource_from_scenario(
 {
 	short old_resfile;
 	PicHandle picture;
-	
+
 	assert(scenario_file_handle != NONE);
 	old_resfile= CurResFile();
 	UseResFile(scenario_file_handle);
-	picture= (PicHandle) Get1Resource('PICT', 
+	picture= (PicHandle) Get1Resource('PICT',
 		determine_pict_resource_id('PICT', base_resource,
 			_scenario_file_delta16, _scenario_file_delta32));
 	if (picture) HNoPurge((Handle)picture);
 	UseResFile(old_resfile);
-	
+
 	return picture;
 }
 
@@ -142,7 +142,7 @@ struct color_table *calculate_picture_clut(
 	if (resource)
 	{
 		HNoPurge(resource);
-		
+
 		/* Allocate the space.. */
 		picture_table= (struct color_table *) malloc(sizeof(struct color_table));
 		assert(picture_table);
@@ -156,7 +156,7 @@ struct color_table *calculate_picture_clut(
 
 		ReleaseResource(resource);
 	}
-	
+
 	return picture_table;
 }
 
@@ -165,13 +165,13 @@ struct color_table *build_8bit_system_color_table(
 {
 	struct color_table *system_colors;
 	CTabHandle clut= GetCTable(8);
-	
+
 	system_colors= (struct color_table *) malloc(sizeof(struct color_table));
 	assert(system_colors);
-	
+
 	build_color_table(system_colors, clut);
 	DisposeCTable(clut);
-	
+
 	return system_colors;
 }
 
@@ -180,7 +180,7 @@ boolean images_picture_exists(
 {
 	PicHandle picture= get_picture_resource_from_images(base_resource);
 	boolean exists= FALSE;
-	
+
 	if(picture)
 	{
 		exists= TRUE;
@@ -195,7 +195,7 @@ boolean scenario_picture_exists(
 {
 	PicHandle picture= get_picture_resource_from_scenario(base_resource);
 	boolean exists= FALSE;
-	
+
 	if(picture)
 	{
 		exists= TRUE;
@@ -209,10 +209,10 @@ void draw_full_screen_pict_resource_from_images(
 	short pict_resource_number)
 {
 	PicHandle picture;
-	
+
 	picture= get_picture_resource_from_images(pict_resource_number);
 	draw_picture(picture);
-	
+
 	return;
 }
 
@@ -220,10 +220,10 @@ void draw_full_screen_pict_resource_from_scenario(
 	short pict_resource_number)
 {
 	PicHandle picture;
-	
+
 	picture= get_picture_resource_from_scenario(pict_resource_number);
 	draw_picture(picture);
-	
+
 	return;
 }
 
@@ -235,7 +235,7 @@ void scroll_full_screen_pict_resource_from_scenario(
 	boolean text_block)
 {
 	PicHandle picture= get_picture_resource_from_scenario(pict_resource_number);
-	
+
 	if (picture)
 	{
 		short picture_width= RECTANGLE_WIDTH(&(*picture)->picFrame);
@@ -245,11 +245,11 @@ void scroll_full_screen_pict_resource_from_scenario(
 		boolean scroll_horizontal= picture_width>screen_width;
 		boolean scroll_vertical= picture_height>screen_height;
 		Rect picture_frame= (*picture)->picFrame;
-		
+
 		HNoPurge((Handle)picture);
-		
+
 		OffsetRect(&picture_frame, -picture_frame.left, -picture_frame.top);
-		
+
 		if (scroll_horizontal || scroll_vertical)
 		{
 			GWorldPtr pixels= (GWorldPtr) NULL;
@@ -258,14 +258,14 @@ void scroll_full_screen_pict_resource_from_scenario(
 
 			/* Flush the events.. */
 			FlushEvents(keyDownMask|keyUpMask|autoKeyMask|mDownMask|mUpMask, 0);
-			
+
 			if (error==noErr)
 			{
 				CGrafPtr old_port;
 				GDHandle old_device;
 				PixMapHandle pixmap;
 				boolean locked;
-				
+
 				GetGWorld(&old_port, &old_device);
 				SetGWorld(pixels, (GDHandle) NULL);
 
@@ -278,7 +278,7 @@ void scroll_full_screen_pict_resource_from_scenario(
 				DrawPicture(picture, &picture_frame);
 				HUnlock((Handle) picture);
 				SetGWorld(old_port, old_device);
-				
+
 				{
 					long start_tick= TickCount();
 					boolean done= FALSE;
@@ -289,7 +289,7 @@ void scroll_full_screen_pict_resource_from_scenario(
 
 					GetPort(&old_port);
 					SetPort(screen_window);
-			
+
 					GetForeColor(&old_forecolor);
 					GetBackColor(&old_backcolor);
 					RGBForeColor(&rgb_black);
@@ -299,13 +299,13 @@ void scroll_full_screen_pict_resource_from_scenario(
 					{
 						Rect source, destination;
 						short delta;
-						
+
 						delta= (TickCount()-start_tick)/(text_block ? (2*SCROLLING_SPEED) : SCROLLING_SPEED);
 						if (scroll_horizontal && delta>picture_width-screen_width) delta= picture_width-screen_width, done= TRUE;
 						if (scroll_vertical && delta>picture_height-screen_height) delta= picture_height-screen_height, done= TRUE;
-						
+
 						SetRect(&destination, 0, 0, 640, 480);
-						
+
 						SetRect(&source, 0, 0, screen_width, screen_height);
 						OffsetRect(&source, scroll_horizontal ? delta : 0, scroll_vertical ? delta : 0);
 
@@ -316,8 +316,8 @@ void scroll_full_screen_pict_resource_from_scenario(
 #else
 						CopyBits((BitMapPtr)*pixels->portPixMap, &screen_window->portBits,
 							&source, &destination, srcCopy, (RgnHandle) NULL);
-#endif		
-						
+#endif
+
 						/* You can't do this, because it calls flushevents every time.. */
 //						if(wait_for_click_or_keypress(0)!=NONE) done= TRUE;
 
@@ -331,13 +331,13 @@ void scroll_full_screen_pict_resource_from_scenario(
 							{
 								case nullEvent:
 									break;
-									
+
 								case mouseDown:
 								case keyDown:
 								case autoKey:
 									aborted= TRUE;
 									break;
-								
+
 								default:
 									halt();
 									break;
@@ -351,14 +351,14 @@ void scroll_full_screen_pict_resource_from_scenario(
 					SetPort(old_port);
 				}
 
-				UnlockPixels(pixmap);				
+				UnlockPixels(pixmap);
 				DisposeGWorld(pixels);
 			}
 		}
-		
+
 		ReleaseResource((Handle)picture);
 	}
-					
+
 	return;
 }
 
@@ -377,29 +377,29 @@ static short determine_pict_resource_id(
 	{
 		Handle resource;
 		short next_bit_depth;
-	
+
 		actual_id= base_id;
 		switch(bit_depth)
 		{
-			case 8:	
-				next_bit_depth= 0; 
+			case 8:
+				next_bit_depth= 0;
 				break;
-				
-			case 16: 
+
+			case 16:
 				next_bit_depth= 8;
-				actual_id += delta16; 
+				actual_id += delta16;
 				break;
-				
-			case 32: 
+
+			case 32:
 				next_bit_depth= 16;
-				actual_id += delta32;	
+				actual_id += delta32;
 				break;
-				
-			default: 
-				halt(); 
+
+			default:
+				halt();
 				break;
 		}
-		
+
 		SetResLoad(FALSE);
 		resource= GetResource(pict_resource_type, actual_id);
 		if(resource)
@@ -431,7 +431,7 @@ static void shutdown_images_handler(
 	{
 		CloseResFile(scenario_file_handle);
 	}
-	
+
 	return;
 }
 
@@ -444,7 +444,7 @@ static void draw_picture(
 	{
 		Rect bounds;
 		GrafPtr old_port;
-		
+
 		bounds= (*picture)->picFrame;
 		AdjustRect(&window->portRect, &bounds, &bounds, centerRect);
 		OffsetRect(&bounds, bounds.left<0 ? -bounds.left : 0, bounds.top<0 ? -bounds.top : 0);
@@ -461,7 +461,7 @@ static void draw_picture(
 
 		{
 			RgnHandle new_clip_region= NewRgn();
-			
+
 			if (new_clip_region)
 			{
 #if !SUPPORT_DRAW_SPROCKET
@@ -475,7 +475,7 @@ static void draw_picture(
 				HLock((Handle) picture);
 				DrawPicture(picture, &bounds);
 				HUnlock((Handle) picture);
-				
+
 #if SUPPORT_DRAW_SPROCKET
 				DSpContext_InvalBackBufferRect( gDrawContext, &bounds );
 				DSpContext_SwapBuffers( gDrawContext, NULL, NULL );
@@ -484,18 +484,18 @@ static void draw_picture(
 
 #if !SUPPORT_DRAW_SPROCKET
 				window->clipRgn= old_clip_region;
-				
+
 				DisposeRgn(new_clip_region);
 #endif
 			}
 		}
-		
+
 #if !SUPPORT_DRAW_SPROCKET
 		ValidRect(&window->portRect);
 #endif
 
 		SetPort(old_port);
-		
+
 		if (!(HGetState((Handle)picture) & 0x40)) ReleaseResource((Handle) picture);
 	}
 

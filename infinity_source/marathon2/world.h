@@ -106,7 +106,7 @@ struct world_location3d
 {
 	world_point3d point;
 	short polygon_index;
-	
+
 	angle yaw, pitch;
 
 	world_vector3d velocity;

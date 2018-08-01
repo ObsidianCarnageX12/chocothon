@@ -50,7 +50,7 @@ void draw_panels(
 
 		update_everything(NONE);
 		ReleaseResource((Handle) picture);
-	
+
 		SetOrigin(0, 0);
 		_restore_port();
 	} else {
@@ -62,7 +62,7 @@ void draw_panels(
 	{
 		GrafPtr old_port;
 		RGBColor old_forecolor, old_backcolor;
-		
+
 		GetPort(&old_port);
 		SetPort(screen_window);
 
@@ -70,11 +70,11 @@ void draw_panels(
 		GetBackColor(&old_backcolor);
 		RGBForeColor(&rgb_black);
 		RGBBackColor(&rgb_white);
-		
+
 		/* Slam it to the screen. */
 		CopyBits((BitMapPtr)*world_pixels->portPixMap, &screen_window->portBits, //(BitMapPtr)*screen_pixmap,
 			&source, &destination, srcCopy, (RgnHandle) NULL);
-		
+
 		RGBForeColor(&old_forecolor);
 		RGBBackColor(&old_backcolor);
 		SetPort(old_port);

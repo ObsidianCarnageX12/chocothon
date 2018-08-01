@@ -13,10 +13,10 @@ struct collection_header /* 32 bytes */
 	long offset, length;
 	long offset16, length16;
 
-#ifdef mac	
+#ifdef mac
 	struct collection_definition **collection;
 	void **shading_tables;
-	
+
 	short unused[2];
 #endif
 

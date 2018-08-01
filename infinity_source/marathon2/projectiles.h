@@ -69,28 +69,28 @@ enum /* projectile types */
 struct projectile_data /* 32 bytes */
 {
 	short type;
-	
+
 	short object_index;
 
 	short target_index; /* for guided projectiles, the current target index */
 
 	angle elevation; /* facing is stored in the projectile’s object */
-	
+
 	short owner_index; /* ownerless if NONE */
 	short owner_type; /* identical to the monster type which fired this projectile (valid even if owner==NONE) */
 	word flags; /* [slot_used.1] [played_flyby_sound.1] [has_caused_damage.1] [unused.13] */
-	
+
 	/* some projectiles leave n contrails effects every m ticks */
 	short ticks_since_last_contrail, contrail_count;
 
 	world_distance distance_travelled;
-	
+
 	world_distance gravity; /* velocity due to gravity for projectiles affected by it */
-	
+
 	fixed damage_scale;
-	
+
 	short permutation; /* item type if we create one */
-	
+
 	short unused[2];
 };
 

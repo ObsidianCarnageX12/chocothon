@@ -21,7 +21,7 @@ pixel8 *calculate_bitmap_origin(
 	struct bitmap_definition *bitmap)
 {
 	pixel8 *origin;
-	
+
 	origin= (pixel8 *) (((byte *)bitmap) + sizeof(struct bitmap_definition));
 	if (bitmap->flags&_COLUMN_ORDER_BIT)
 	{
@@ -31,7 +31,7 @@ pixel8 *calculate_bitmap_origin(
 	{
 		origin+= bitmap->height*sizeof(pixel8 *);
 	}
-	
+
 	return origin;
 }
 
@@ -41,16 +41,16 @@ void erase_bitmap(
 {
 	short rows, columns;
 	short row, column;
-	
+
 	assert(bitmap->bytes_per_row!=NONE);
-	
+
 	rows= (bitmap->flags&_COLUMN_ORDER_BIT) ? bitmap->width : bitmap->height;
 	columns= (bitmap->flags&_COLUMN_ORDER_BIT) ? bitmap->height : bitmap->width;
 
 	for (row=0;row<rows;++row)
 	{
 		register void *pixels= bitmap->row_addresses[row];
-		
+
 		switch (bitmap->bit_depth)
 		{
 			case 8:
@@ -59,12 +59,12 @@ void erase_bitmap(
 			case 16:
 				for (column=0;column<columns;++column) *((pixel16 *)pixels)++= (pixel16) pel;
 				break;
-			
+
 			default:
 				halt();
 		}
 	}
-	
+
 	return;
 }
 
@@ -73,7 +73,7 @@ void remap_bitmap(
 	pixel8 *table)
 {
 	short row, rows, columns;
-	
+
 	rows= (bitmap->flags&_COLUMN_ORDER_BIT) ? bitmap->width : bitmap->height;
 	columns= (bitmap->flags&_COLUMN_ORDER_BIT) ? bitmap->height : bitmap->width;
 
@@ -89,7 +89,7 @@ void remap_bitmap(
 #ifdef MARATHON1
 		short run_count;
 		pixel8 *pixels;
-		
+
 		pixels= bitmap->row_addresses[0];
 		for (row= 0; row<rows; ++row)
 		{
@@ -106,19 +106,19 @@ void remap_bitmap(
 
 #ifdef MARATHON2
 		pixel8 *pixels;
-		
+
 		pixels= bitmap->row_addresses[0];
 		for (row= 0; row<rows; ++row)
 		{
 			short first, last;
-			
+
 			first= *((short *)pixels)++, last= *((short *)pixels)++;
 			map_bytes(pixels, table, last-first);
 			pixels+= last-first;
 		}
 #endif
 	}
-	
+
 	return;
 }
 
@@ -147,7 +147,7 @@ void precalculate_bitmap_row_addresses(
 		for (row= 0; row<rows; ++row)
 		{
 			short run_count;
-			
+
 			*table++= row_address;
 			while (run_count= *((short*)row_address)++)
 			{
@@ -160,15 +160,15 @@ void precalculate_bitmap_row_addresses(
 		for (row= 0; row<rows; ++row)
 		{
 			short first, last;
-			
+
 			*table++= row_address;
-			
+
 			first= *((short *)row_address)++, last= *((short *)row_address)++;
 			row_address+= last-first;
 		}
 #endif
 	}
-	
+
 	return;
 }
 
@@ -182,7 +182,7 @@ void map_bytes(
 		*buffer= table[*buffer];
 		buffer+= 1;
 	}
-	
+
 	return;
 }
 
@@ -192,18 +192,18 @@ long bitmap_size(
 {
 	pixel8 *read= bitmap->row_addresses[0];
 	long size;
-	
+
 	if (bitmap->bytes_per_row==NONE)
 	{
 		short row;
-		
+
 		size= 0;
 		for (row= 0; row<rows; ++row)
 		{
 			short first= *((short *)read)++;
 			short last= *((short *)read)++;
 			short run_length= last-first;
-			
+
 			read+= run_length;
 			size+= 2*sizeof(short) + run_length;
 		}
@@ -212,7 +212,7 @@ long bitmap_size(
 	{
 		size= bitmap->width*bitmap->height;
 	}
-	
+
 	return size;
 }
 #endif

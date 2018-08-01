@@ -18,9 +18,9 @@ struct scenery_definition
 {
 	word flags;
 	shape_descriptor shape;
-	
+
 	world_distance radius, height;
-	
+
 	short destroyed_effect;
 	shape_descriptor destroyed_shape;
 };
@@ -44,7 +44,7 @@ struct scenery_definition scenery_definitions[]=
 	{_scenery_is_solid, BUILD_DESCRIPTOR(_collection_scenery2, 14), WORLD_ONE_FOURTH, WORLD_ONE_HALF}, // block
 	{_scenery_is_solid, BUILD_DESCRIPTOR(_collection_scenery2, 15), WORLD_ONE_FOURTH, WORLD_ONE_HALF}, // block
 	{_scenery_is_solid, BUILD_DESCRIPTOR(_collection_scenery2, 16), WORLD_ONE_FOURTH, WORLD_ONE_HALF}, // block
-	
+
 	// water
 	{0, BUILD_DESCRIPTOR(_collection_scenery1, 4)}, // pistol clip
 	{_scenery_is_solid|_scenery_can_be_destroyed, BUILD_DESCRIPTOR(_collection_scenery1, 5), WORLD_ONE/6, -WORLD_ONE/8, _effect_water_lamp_breaking, BUILD_DESCRIPTOR(_collection_scenery1, 6)}, // short light

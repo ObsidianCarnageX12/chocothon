@@ -42,7 +42,7 @@ void HideMenuBar(
 {
 	RgnHandle device_region;
 	static boolean first_time= TRUE;
-	
+
 	// <6/17/96 AMR> Commented out the following because it's called every time the depth
 	// or resolution is changed to resquare the corners of the main device.
 //	assert(!menu_bar_hidden);
@@ -50,26 +50,26 @@ void HideMenuBar(
 	if (device==GetMainDevice())
 	{
 		Rect device_bounds= (*device)->gdRect;
-		
+
 		if (first_time)
 		{
 			first_time= FALSE;
-			
+
 			old_menu_bar_height= LMGetMBarHeight();
 			LMSetMBarHeight(0);
-		
+
 			old_gray_region= NewRgn();
 			CopyRgn(LMGetGrayRgn(), old_gray_region);
 		}
-		
+
 		device_region= NewRgn();
 		RectRgn(device_region, &device_bounds);
 		UnionRgn(LMGetGrayRgn(), device_region, LMGetGrayRgn());
 		DisposeRgn(device_region);
-		
+
 		menu_bar_hidden= TRUE;
 	}
-	
+
 	return;
 }
 
@@ -95,7 +95,7 @@ GDHandle MostDevice(
 	GDHandle device, largest_device;
 	long largest_area, area;
 	Rect intersection;
-	
+
 	largest_area= 0;
 	largest_device= (GDHandle) NULL;
 	for (device= GetDeviceList(); device; device= GetNextDevice(device))
@@ -113,7 +113,7 @@ GDHandle MostDevice(
 			}
 		}
 	}
-	
+
 	return largest_device;
 }
 
@@ -130,7 +130,7 @@ GDHandle BestDevice(
 	if (!best_device)
 	{
 		GDHandle device;
-		
+
 		for (device= GetDeviceList(); device && !best_device; device= GetNextDevice(device))
 		{
 			if (TestDeviceAttribute(device, screenDevice) && TestDeviceAttribute(device, screenActive))
@@ -146,7 +146,7 @@ GDHandle BestDevice(
 	{
 		spec= *device_spec;
 		spec.flags&= ~deviceIsColor;
-		
+
 		if (best_device= BestDevice(&spec)) *device_spec= spec;
 	}
 
@@ -165,21 +165,21 @@ void LowLevelSetEntries(
 	if (count)
 	{
 		GDHandle device= GetGDevice();
-	
+
 		parameters.csStart= start;
 		parameters.csCount= count;
 		parameters.csTable= (ColorSpec *) StripAddress((Ptr)aTable);
-	
+
 		memset(&pb, 0, sizeof(CntrlParam));
 		pb.ioCompletion= (IOCompletionUPP) NULL;
 		pb.ioVRefNum= 0;
 		pb.ioCRefNum= (*device)->gdRefNum;
 		pb.csCode= (*device)->gdType==directType ? cscDirectSetEntries : cscSetEntries;
 		*((Ptr*)&pb.csParam)= (Ptr) &parameters;
-		
+
 		error= PBControl((ParmBlkPtr)&pb, FALSE);
 		vwarn(error==noErr, csprintf(temporary, "Control(cscXSetEntries, ...) returned #%d;g;", error));
-	}	
+	}
 	return;
 }
 
@@ -187,9 +187,9 @@ short GetSlotFromGDevice(
 	GDHandle device)
 {
 	AuxDCEHandle DCE= (AuxDCEHandle) GetDCtlEntry((*device)->gdRefNum);
-	
+
 	assert(DCE);
-	
+
 	return DCE ? (*DCE)->dCtlSlot : 0;
 }
 
@@ -210,7 +210,7 @@ OSErr GetNameFromGDevice(
 		mySpBPtr->spDrvrSW= 0;
 		mySpBPtr->spDrvrHW= 0;
 		mySpBPtr->spTBMask= 0;
-		
+
 		error= SNextTypeSRsrc(mySpBPtr);
 		if (error==noErr)
 		{
@@ -223,14 +223,14 @@ OSErr GetNameFromGDevice(
 				c2pstr(name);
 			}
 		}
-		
+
 		DisposePtr((Ptr)mySpBPtr);
 	}
 	else
 	{
 		error= MemError();
 	}
-    
+
     return error;
 }
 
@@ -245,13 +245,13 @@ void BuildExplicitGDSpec(
 {
 	assert(!(flags&~deviceIsColor));
 	assert(bit_depth==8||bit_depth==16||bit_depth==32);
-	
+
 	device_spec->slot= device ? GetSlotFromGDevice(device) : NONE;
 	device_spec->flags= flags;
 	device_spec->bit_depth= bit_depth;
 	device_spec->width= width;
 	device_spec->height= height;
-	
+
 	return;
 }
 
@@ -261,13 +261,13 @@ void BuildGDSpec(
 	GDHandle device)
 {
 	assert(device);
-	
+
 	device_spec->slot= GetSlotFromGDevice(device);
 	device_spec->flags= (*device)->gdFlags&deviceIsColor;
 	device_spec->bit_depth= (*(*device)->gdPMap)->pixelSize;
 	device_spec->width= RECTANGLE_WIDTH(&(*device)->gdRect);
 	device_spec->height= RECTANGLE_HEIGHT(&(*device)->gdRect);
-	
+
 	return;
 }
 
@@ -276,17 +276,17 @@ Boolean EqualGDSpec(
 	GDSpecPtr device_spec2)
 {
 	Boolean equal= FALSE;
-	
+
 	if (MatchGDSpec(device_spec1)==MatchGDSpec(device_spec2))
 	{
 		if (device_spec1->flags==device_spec2->flags && device_spec1->bit_depth==device_spec2->bit_depth)
 		{
 			// does not compare screen dimensions
-			
+
 			equal= TRUE;
 		}
 	}
-	
+
 	return equal;
 }
 
@@ -307,7 +307,7 @@ boolean machine_has_display_manager(
 	// Let the speds using pre-7.5.3 install Display Enabler 2.0.2.
 	err= Gestalt(gestaltDisplayMgrVers, (long*)&value);
 	displayMgrPresent= displayMgrPresent && !err && (value >= 0x00020000);
-	
+
 	return displayMgrPresent;
 #else
 	return FALSE;
@@ -322,24 +322,24 @@ void SetResolutionGDSpec(
 	if (machine_has_display_manager())
 	{
 		GDHandle device= MatchGDSpec(device_spec);
-	
+
 		if (device_spec->width && device_spec->height)
 		{
 			// device manager
 			VideoRequestRec record;
 			OSErr error;
-			
+
 			memset(&record, 0, sizeof(VideoRequestRec));
-			
+
 			record.screenDevice= device;
 			record.reqBitDepth= device_spec->bit_depth;
 			record.reqHorizontal= device_spec->width;
 			record.reqVertical= device_spec->height;
-	
+
 //			dprintf("requesting settings for record @%p (device %p)", &record, device);
 //			GetRequestTheDM1Way(&record, device);
 			error= RVRequestVideoSetting(&record);
-	
+
 			if (switchInfo)
 			{
 				record.switchInfo= *switchInfo;	// they want a specific mode
@@ -349,12 +349,12 @@ void SetResolutionGDSpec(
 			if (error==noErr)
 			{
 			}
-			
+
 			if (error!=noErr) dprintf("Eric’s crazy code returned #%d", error);
 		}
 	}
 #endif
-	
+
 	return;
 }
 
@@ -363,17 +363,17 @@ void SetDepthGDSpec(
 	GDSpecPtr device_spec)
 {
 	GDHandle device= MatchGDSpec(device_spec);
-	
+
 	if (device)
 	{
 		short mode= HasDepth(device, device_spec->bit_depth, deviceIsColor, device_spec->flags);
-		
+
 		if (mode)
 		{
 			SetDepth(device, mode, deviceIsColor, device_spec->flags);
 		}
 	}
-	
+
 	return;
 }
 
@@ -382,7 +382,7 @@ boolean HasDepthGDSpec(
 {
 	GDHandle device= MatchGDSpec(device_spec);
 	boolean has_depth= FALSE;
-	
+
 	if (device)
 	{
 		if (HasDepth(device, device_spec->bit_depth, deviceIsColor, device_spec->flags))
@@ -390,7 +390,7 @@ boolean HasDepthGDSpec(
 			has_depth= TRUE;
 		}
 	}
-	
+
 	return has_depth;
 }
 
@@ -399,7 +399,7 @@ GDHandle MatchGDSpec(
 	GDSpecPtr device_spec)
 {
 	GDHandle device, matched_device= (GDHandle) NULL;
-	
+
 	for (device= GetDeviceList(); device; device= GetNextDevice(device))
 	{
 		if (TestDeviceAttribute(device, screenDevice) && TestDeviceAttribute(device, screenActive))
@@ -411,7 +411,7 @@ GDHandle MatchGDSpec(
 			}
 		}
 	}
-	
+
 	return matched_device;
 }
 
@@ -425,11 +425,11 @@ CTabHandle build_macintosh_color_table(
 		struct rgb_color *color;
 		ColorSpec *spec;
 		short i;
-		
+
 		(*macintosh_color_table)->ctFlags= 0;
 		(*macintosh_color_table)->ctSeed= GetCTSeed();
 		(*macintosh_color_table)->ctSize= color_table->color_count-1;
-		
+
 		color= color_table->colors;
 		spec= (*macintosh_color_table)->ctTable;
 		for (i= 0; i<color_table->color_count; ++i, ++spec, ++color)
@@ -437,7 +437,7 @@ CTabHandle build_macintosh_color_table(
 			spec->value= i;
 			spec->rgb= *((RGBColor *) color);
 		}
-		
+
 		CTabChanged(macintosh_color_table);
 	}
 
@@ -451,15 +451,15 @@ struct color_table *build_color_table(
 	struct rgb_color *color;
 	ColorSpec *spec;
 	short i;
-	
+
 	color_table->color_count= (*macintosh_color_table)->ctSize+1;
-	
+
 	color= color_table->colors;
 	spec= (*macintosh_color_table)->ctTable;
 	for (i= 0; i<color_table->color_count; ++i, ++spec, ++color)
 	{
 		*color= *((struct rgb_color *)&spec->rgb);
 	}
-	
+
 	return color_table;
 }

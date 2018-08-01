@@ -62,21 +62,21 @@ struct door_data
 {
 	short type;
 	word flags;
-	
+
 	short owner_index;
 	short shadow_index;
-	
+
 	short shadow_closed_lightsource;
 	short shadow_opened_lightsource;
-	
+
 	short complex_door_index; /* May be NONE */
-	
+
 	struct null_polygon_data shadow_null_data;
 	struct null_polygon_data door_null_data;
 
 	short opened_floor_height;
 	short closed_floor_height;
-	
+
 	short opened_ceiling_height;
 	short closed_ceiling_height;
 

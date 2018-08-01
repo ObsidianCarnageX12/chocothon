@@ -61,37 +61,37 @@ struct sound_file_header
 {
 	long version;
 	long tag;
-	
+
 	short source_count; // usually 2 (8-bit, 16-bit)
 	short sound_count;
-	
+
 	short unused[124];
-	
+
 	// immediately followed by permutation_count*sound_count sound_definition structures
 };
 
 struct sound_definition /* 64 bytes */
 {
 	short sound_code;
-	
+
 	short behavior_index;
 	word flags;
 
 	word chance; // play sound if AbsRandom()>=chance
-	
+
 	/* if low_pitch==0, use FIXED_ONE; if high_pitch==0 use low pitch; else choose in [low_pitch,high_pitch] */
 	fixed low_pitch, high_pitch;
-	
+
 	/* filled in later */
 	short permutations;
 	word permutations_played;
 	long group_offset, single_length, total_length; // magic numbers necessary to load sounds
 	long sound_offsets[MAXIMUM_PERMUTATIONS_PER_SOUND]; // zero-based from group offset
-	
+
 	unsigned long last_played; // machine ticks
-	
+
 	long handle; // (machine-specific pointer type) zero if not loaded
-	
+
 	short unused[2];
 };
 
@@ -128,7 +128,7 @@ struct collection_header /* 32 bytes */
 
 	struct collection_definition **collection;
 	void **shading_tables;
-	
+
 	short unused[2];
 };
 
@@ -153,10 +153,10 @@ enum /* collection types */
 struct collection_definition
 {
 	short version;
-	
+
 	short type; /* used for get_shape_descriptors() */
 	word flags; /* [unused.16] */
-	
+
 	short color_count, clut_count;
 	long color_table_offset; /* an array of clut_count arrays of color_count ColorSpec structures */
 
@@ -170,9 +170,9 @@ struct collection_definition
 	long bitmap_offset_table_offset;
 
 	short pixels_to_world; /* used to shift pixel values into world coordinates */
-	
+
 	long size; /* used to assert offsets */
-	
+
 	short unused[253];
 };
 
@@ -184,17 +184,17 @@ struct high_level_shape_definition
 {
 	short type; /* ==0 */
 	word flags; /* [unused.16] */
-	
+
 	char name[HIGH_LEVEL_SHAPE_NAME_LENGTH+1];
-	
+
 	short number_of_views;
-	
+
 	short frames_per_view, ticks_per_frame;
 	short key_frame;
-	
+
 	short transfer_mode;
 	short transfer_mode_period; /* in ticks */
-	
+
 	short first_frame_sound, key_frame_sound, last_frame_sound;
 
 	short pixels_to_world;
@@ -220,16 +220,16 @@ struct low_level_shape_definition
 	fixed minimum_light_intensity; /* in [0,FIXED_ONE] */
 
 	short bitmap_index;
-	
+
 	/* (x,y) in pixel coordinates of origin */
 	short origin_x, origin_y;
-	
+
 	/* (x,y) in pixel coordinates of key point */
 	short key_x, key_y;
 
 	short world_left, world_right, world_top, world_bottom;
 	short world_x0, world_y0;
-	
+
 	short unused[4];
 };
 
@@ -244,6 +244,6 @@ struct rgb_color_value
 {
 	byte flags;
 	byte value;
-	
+
 	word red, green, blue;
 };

@@ -33,12 +33,12 @@ struct replay_private_data {
 	boolean game_is_being_recorded;
 	boolean have_read_last_chunk;
 	ActionQueue *recording_queues;
-	
+
 	fileref recording_file_refnum;
 	char *fsread_buffer;
 	char *location_in_cache;
 	long bytes_in_cache;
-	
+
 	long film_resource_offset;
 	char *resource_data;
 	long resource_data_size;

@@ -39,7 +39,7 @@ myTMTaskPtr myTMSetup(
 		myTask->period= period;
 		myTask->procedure= procedure;
 		myTask->tmTask.tmAddr= (TimerUPP) myTMTaskUPP;
-		
+
 		InsTime((QElemPtr)myTask);
 		PrimeTime((QElemPtr)myTask, period);
 	}
@@ -51,11 +51,11 @@ void myTMReset(
 	myTMTaskPtr myTask)
 {
 	assert(myTask);
-	
+
 	RmvTime((QElemPtr)myTask);
 	InsTime((QElemPtr)myTask);
 	PrimeTime((QElemPtr)myTask, myTask->period);
-	
+
 	return;
 }
 
@@ -67,7 +67,7 @@ myTMTaskPtr myTMRemove(
 		RmvTime((QElemPtr) &myTask->tmTask);
 		DisposePtr((Ptr)myTask);
 	}
-	
+
 	return (myTMTaskPtr) NULL;
 }
 
@@ -86,13 +86,13 @@ static void myTMTaskProc(
 {
 	myTMTaskPtr myTask= (myTMTaskPtr) tmTask;
 #endif
-	
+
 	/* give time to caller; if he returns TRUE, reset the task to fire again */
 	if (myTask->procedure())
 	{
 		PrimeTime((QElemPtr)myTask, myTask->period);
 	}
-	
+
 #ifdef env68k
 	set_a5(old_a5); /* restore whatever a5 was on enter */
 #endif

@@ -1,4 +1,4 @@
-/* 
+/*
 checksum.c
 Thursday, March 10, 1994 8:21:23 PM
 	written by ajr
@@ -22,7 +22,7 @@ void update_add_checksum(Checksum *check, word *src, long length);
  **********************************************************************************/
 void new_checksum(Checksum *check, word type)
 {
-	// set up bogus stuff in the checksum, so when it's saved, it's a 
+	// set up bogus stuff in the checksum, so when it's saved, it's a
 	// bit obfuscated.
 	srand(clock());
 	check->bogus1 = rand();
@@ -31,7 +31,7 @@ void new_checksum(Checksum *check, word type)
 	assert(type == ADD_CHECKSUM);
 
 	check->checksum_type = type;
-	
+
 	switch (check->checksum_type)
 	{
 		case ADD_CHECKSUM:
@@ -80,7 +80,7 @@ void update_add_checksum(Checksum *check, word *src, long length)
 
 	if (length % 2) // is it odd?
 		length--;   // make it even. ignore last byte.
-	
+
 	real_length = length / sizeof(word); // duh
 
 	for (i = 0; i < real_length; i++)

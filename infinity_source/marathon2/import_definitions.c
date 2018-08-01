@@ -52,7 +52,7 @@ void set_physics_file(
 	FileDesc *file)
 {
 	memcpy(&physics_file, file, sizeof(FileDesc));
-	
+
 	return;
 }
 
@@ -82,10 +82,10 @@ void import_definition_structures(
 			alert_user(infoError, strERRORS, warningExternalPhysicsModel, 0);
 			warned_about_physics= TRUE;
 		}
-		
-		/* Actually load it in.. */		
+
+		/* Actually load it in.. */
 		import_physics_wad_data(wad);
-		
+
 		free_wad(wad);
 	}
 
@@ -96,14 +96,14 @@ void *get_network_physics_buffer(
 	long *physics_length)
 {
 	void *data= get_flat_data((FileDesc *) &physics_file, FALSE, 0);
-	
+
 	if(data)
 	{
 		*physics_length= get_flat_data_length(data);
 	} else {
 		*physics_length= 0;
 	}
-	
+
 	return data;
 }
 
@@ -115,7 +115,7 @@ void process_network_physics_model(
 		struct wad_header header;
 		struct wad_data *wad;
 		boolean success= FALSE;
-	
+
 		wad= inflate_flat_data(data, &header);
 		if(wad)
 		{
@@ -123,7 +123,7 @@ void process_network_physics_model(
 			free_wad(wad); /* Note that the flat data points into the wad. */
 		}
 	}
-	
+
 	return;
 }
 
@@ -131,12 +131,12 @@ void import_physics_wad_data(
 	struct wad_data *wad)
 {
 	short index;
-	
+
 	for(index= 0; index<NUMBER_OF_DEFINITIONS; ++index)
 	{
 		long length;
 		struct definition_data *definition= definitions+index;
-		void *data;			
+		void *data;
 
 		/* Given a wad, extract the given tag from it */
 		data= extract_type_from_wad(wad, definition->tag, &length);
@@ -146,18 +146,18 @@ void import_physics_wad_data(
 			memcpy(definition->data, data, length);
 		}
 	}
-	
+
 	return;
 }
 
 void *get_physics_array_and_size(
-	long tag, 
+	long tag,
 	long *size)
 {
 	short index;
 	void *array;
 
-	*size= 0;	
+	*size= 0;
 	for(index= 0; index<NUMBER_OF_DEFINITIONS; ++index)
 	{
 		struct definition_data *definition= definitions+index;
@@ -168,7 +168,7 @@ void *get_physics_array_and_size(
 		}
 	}
 	assert(array);
-	
+
 	return array;
 }
 
@@ -178,7 +178,7 @@ static struct wad_data *get_physics_wad_data(
 {
 	struct wad_data *wad= NULL;
 	fileref file_id;
-	
+
 //	dprintf("Open is: %d %d %P", physics_file.vRefNum, physics_file.parID, physics_file.name);
 
 	file_id= open_wad_file_for_reading(&physics_file);
@@ -201,8 +201,8 @@ static struct wad_data *get_physics_wad_data(
 		}
 
 		close_wad_file(file_id);
-	} 
-	
+	}
+
 	/* Reset any errors that might have occurred.. */
 	set_game_error(systemError, errNone
 	);

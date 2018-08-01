@@ -53,7 +53,7 @@ void set_dialog_header_proc(
 	dialog_header_proc_ptr proc)
 {
 	dialog_header_proc= proc;
-	
+
 	return;
 }
 
@@ -61,7 +61,7 @@ void set_update_any_window_proc(
 	update_any_window_proc_ptr proc)
 {
 	update_any_window_proc= proc;
-	
+
 	return;
 }
 
@@ -69,7 +69,7 @@ void set_suspend_resume_proc(
 	suspend_resume_proc_ptr proc)
 {
 	suspend_resume_proc= proc;
-	
+
 	return;
 }
 
@@ -77,7 +77,7 @@ void set_dialog_cursor_tracking(
 	boolean status)
 {
 	cursor_tracking= status;
-	
+
 	return;
 }
 
@@ -88,7 +88,7 @@ ModalFilterUPP get_general_filter_upp(
 	{
 		general_filter_upp= NewModalFilterProc(general_filter_proc);
 	}
-	
+
 	return general_filter_upp;
 }
 
@@ -105,7 +105,7 @@ pascal Boolean general_filter_proc(
 	short part;
 
 	if (cursor_tracking) track_dialog_cursor(dialog);
-	
+
 	switch (event->what)
 	{
 		case keyDown:
@@ -126,7 +126,7 @@ pascal Boolean general_filter_proc(
 						return TRUE;
 					}
 				}
-				
+
 				/* eat it, this dialog can’t be cancelled */
 			}
 			else
@@ -140,13 +140,13 @@ pascal Boolean general_filter_proc(
 							if (dialog_has_edit_items(dialog))
 							{
 								handle_shift_tab(dialog);
-								
+
 								*item_hit= ((DialogPeek)dialog)->editField+1;
 								return TRUE;
 							}
 						}
 						break;
-					
+
 					case 0x0D:
 					case 0x03:
 						if (hit_dialog_button(dialog, iOK))
@@ -172,7 +172,7 @@ pascal Boolean general_filter_proc(
 						break;
 
 #if 0
-					/* this seems like a sketchy bit of code to be running on a non-US system */						
+					/* this seems like a sketchy bit of code to be running on a non-US system */
 					case 'C':
 					case 'V':
 					case 'X':
@@ -199,7 +199,7 @@ pascal Boolean general_filter_proc(
 						break;
 #endif
 				}
-				
+
 				if (!(event->modifiers&(optionKey|controlKey)))
 				{
 					if (!dialog_has_edit_items(dialog)||(event->modifiers&cmdKey))
@@ -231,7 +231,7 @@ pascal Boolean general_filter_proc(
 			{
 				GetPort(&old_port);
 				SetPort(dialog);
-				
+
 				/* outline default button */
 				GetDItem(dialog, iOK, &item_type, (Handle *) &item_handle, &item_rectangle);
 				if (item_type==ctrlItem+btnCtrl)
@@ -241,15 +241,15 @@ pascal Boolean general_filter_proc(
 					FrameRoundRect(&item_rectangle, 16, 16);
 					PenSize(1, 1);
 				}
-				
+
 				if (dialog_header_proc) draw_dialog_header(dialog);
 				draw_dialog_frames(dialog);
-				
+
 				SetPort(old_port);
 			}
 			break;
 	}
-	
+
 	return FALSE;
 }
 
@@ -260,7 +260,7 @@ boolean hit_dialog_button(
 	short item_type;
 	Handle item_handle;
 	Rect item_rectangle;
-	
+
 	GetDItem(dialog, item, &item_type, &item_handle, &item_rectangle);
 	if (item_type==ctrlItem+btnCtrl)
 	{
@@ -272,7 +272,7 @@ boolean hit_dialog_button(
 			return TRUE;
 		}
 	}
-	
+
 	return FALSE;
 }
 
@@ -286,20 +286,20 @@ void modify_radio_button_family(
 	short type;
 	ControlHandle handle;
 	short i, item_count;
-	
+
 	item_count= GET_DIALOG_ITEM_COUNT(dialog);
 	assert(end>start);
 	assert(start>0&&start<=item_count);
 	assert(end>0&&end<=item_count);
 	assert(current>=start&&current<=end);
-	
+
 	for (i=start;i<=end;++i)
 	{
 		GetDItem(dialog, i, &type, (Handle *) &handle, &rectangle);
 		assert(type==ctrlItem+radCtrl);
 		SetCtlValue(handle, i==current);
 	}
-	
+
 	return;
 }
 
@@ -314,7 +314,7 @@ void modify_control(
 	Rect item_rectangle;
 	short item_type, item_count;
 	ControlHandle item_handle;
-	
+
 	item_count= GET_DIALOG_ITEM_COUNT(dialog);
 	assert(control>0&&control<=item_count);
 
@@ -322,7 +322,7 @@ void modify_control(
 	assert(item_type>=ctrlItem&&item_type<=ctrlItem+resCtrl);
 	if (status!=NONE) HiliteControl(item_handle, status);
 	if (value!=NONE) SetCtlValue(item_handle, value);
-	
+
 	return;
 }
 
@@ -331,15 +331,15 @@ short myAlert(
 	ModalFilterUPP filterProc)
 {
 	Handle template;
-	
+
 	template= GetResource('ALRT', alertID);
 	assert(template);
-	
+
 	if (GetHandleSize(template)==14)
 	{
 		position_window((Rect*)*template, *((word*)*template+6));
 	}
-	
+
 	return Alert(alertID, filterProc);
 }
 
@@ -351,18 +351,18 @@ DialogPtr myGetNewDialog(
 {
 	DialogPtr dialog;
 	Handle template;
-	
+
 	template= GetResource('DLOG', dialogID);
 	assert(template);
-	
+
 	if (GetHandleSize(template)==24)
 	{
 		position_window((Rect*)*template, *((word*)*template+11));
 	}
-	
+
 	dialog= GetNewDialog(dialogID, dStorage, behind);
 	if (dialog) SetWRefCon(dialog, refCon);
-	
+
 	return dialog;
 }
 
@@ -379,16 +379,16 @@ void standard_dialog_header_proc(
 
 	header= (PicHandle) GetResource('PICT', 256);
 	assert(header);
-	
+
 	SetRect(&background, frame->left, frame->top, frame->right, frame->top+
 		RECTANGLE_HEIGHT(&(*header)->picFrame)+2*DIALOG_HEADER_SPACING);
 	PaintRect(&background);
-	
+
 	destination= (*header)->picFrame;
 	OffsetRect(&destination, frame->left+2*DIALOG_HEADER_SPACING-destination.left,
 		frame->top+DIALOG_HEADER_SPACING-destination.top);
 	DrawPicture(header, &destination);
-	
+
 	return;
 }
 
@@ -462,7 +462,7 @@ long extract_number_from_text_item(
 	GetDItem(dialog, item_number, &item_type, &item_handle, &item_box);
 	GetIText(item_handle, temporary);
 	StringToNum(temporary, &num);
-	
+
 	return num;
 }
 
@@ -479,7 +479,7 @@ static void position_window(
 	Rect bounds, window_frame;
 	SysEnvRec environment;
 	GDHandle device;
-	WindowPtr window;	
+	WindowPtr window;
 
 	if (SysEnvirons(curSysEnvVers, &environment)==noErr)
 	{
@@ -491,13 +491,13 @@ static void position_window(
 				bounds= (*GetMainDevice())->gdRect;
 				bounds.top+= GetMBarHeight();
 				window= FrontWindow();
-				
+
 				switch (code&0xc000)
 				{
 					/* main screen */
 					case 0x0000:
 						break;
-					
+
 					/* parent window, defaults to main screen if no window */
 					case 0x8000:
 						if (window)
@@ -505,7 +505,7 @@ static void position_window(
 							get_window_frame(window, &bounds);
 						}
 						break;
-					
+
 					/* parent window’s screen, defaults to main screen if no window */
 					case 0x4000:
 						if (window)
@@ -518,23 +518,23 @@ static void position_window(
 							}
 						}
 						break;
-					
+
 					default:
 						halt();
 				}
-		
+
 				switch (code&0x3800)
 				{
 					/* center */
 					case 0x2800:
 						AdjustRect(&bounds, frame, frame, centerRect);
 						break;
-					
+
 					/* alert */
 					case 0x3000:
 						AdjustRect(&bounds, frame, frame, alertRect);
 						break;
-					
+
 					/* stagger (not supported) */
 					case 0x3800:
 					default:
@@ -543,7 +543,7 @@ static void position_window(
 			}
 		}
 	}
-	
+
 	return;
 }
 
@@ -555,7 +555,7 @@ static void draw_dialog_frames(
 	Handle item_handle;
 	short item_type;
 	boolean color;
-	
+
 	color= ((dialog->portBits.rowBytes&0xc000)==0xc000) ? TRUE : FALSE;
 	if (color)
 	{
@@ -565,12 +565,12 @@ static void draw_dialog_frames(
 	{
 		PenPat(&qd.gray);
 	}
-	
+
 	item_count= GET_DIALOG_ITEM_COUNT(dialog);
 	for (item=1;item<=item_count;++item)
 	{
 		boolean drew_frame = FALSE;
-		
+
 		GetDItem(dialog, item, &item_type, &item_handle, &frame);
 		if ((item_type&~itemDisable)==userItem)
 		{
@@ -596,7 +596,7 @@ static void draw_dialog_frames(
 					item+= 1;
 					drew_frame = TRUE;
 				}
-			}			
+			}
 			if (!drew_frame && item > 1)
 			{
 				GetDItem(dialog, item-1, &item_type, &item_handle, &text);
@@ -606,7 +606,7 @@ static void draw_dialog_frames(
 					{
 						draw_broken_frame(&frame, &text);
 					}
-				}			
+				}
 			}
 		}
 	}
@@ -619,7 +619,7 @@ static void draw_dialog_frames(
 	{
 		PenPat(&qd.black);
 	}
-	
+
 	return;
 }
 
@@ -631,7 +631,7 @@ static void draw_broken_frame(Rect *outline_rect, Rect *stop_rect)
 	LineTo(outline_rect->right, outline_rect->bottom);
 	LineTo(outline_rect->right, outline_rect->top);
 	LineTo(stop_rect->right+2, outline_rect->top);
-	
+
 	return;
 }
 
@@ -644,21 +644,21 @@ static void draw_dialog_header(
 {
 	RgnHandle old_visRgn, old_clipRgn, new_region;
 	Rect frame;
-	
+
 	old_visRgn= dialog->visRgn;
 	old_clipRgn= dialog->clipRgn;
-	
+
 	new_region= NewRgn();
 	frame= dialog->portRect;
 	InsetRect(&frame, -DIALOG_INSET, -DIALOG_INSET);
 	RectRgn(new_region, &frame);
-	
+
 	dialog->visRgn= new_region;
 	dialog->clipRgn= new_region;
 	dialog_header_proc(dialog, &frame);
 	dialog->visRgn= old_visRgn;
 	dialog->clipRgn= old_clipRgn;
-	
+
 	DisposeRgn(new_region);
 
 	return;
@@ -675,7 +675,7 @@ static short dialog_keyboard_equivilents(
 
 	key= tolower(key);
 	item_count= GET_DIALOG_ITEM_COUNT(dialog);
-	
+
 	for (item=1;item<=item_count;++item)
 	{
 		GetDItem(dialog, item, &item_type, &item_handle, &item_rectangle);
@@ -691,14 +691,14 @@ static short dialog_keyboard_equivilents(
 						HiliteControl((ControlHandle)item_handle, CONTROL_HIGHLIGHTED);
 						hold_for_visible_delay();
 						HiliteControl((ControlHandle)item_handle, CONTROL_ACTIVE);
-						
+
 						return item;
 					}
 				}
 			}
 		}
 	}
-	
+
 	return NONE;
 }
 
@@ -709,7 +709,7 @@ static boolean dialog_has_edit_items(
 	short item_type;
 	Handle item_handle;
 	Rect item_rectangle;
-	
+
 	item_count= GET_DIALOG_ITEM_COUNT(dialog);
 	for (item=1;item<=item_count;++item)
 	{
@@ -719,7 +719,7 @@ static boolean dialog_has_edit_items(
 			return TRUE;
 		}
 	}
-	
+
 	return FALSE;
 }
 
@@ -730,7 +730,7 @@ static void handle_shift_tab(
 	short item_type;
 	Handle item_handle;
 	Rect item_rectangle;
-	
+
 	item_count= GET_DIALOG_ITEM_COUNT(dialog);
 	old_field= ((DialogPeek)dialog)->editField+1;
 	item= old_field-1;
@@ -744,11 +744,11 @@ static void handle_shift_tab(
 			SelIText(dialog, item, 0, 32767);
 			return;
 		}
-		
+
 		item-= 1;
 		if (item<1) item= item_count;
 	}
-	
+
 	return;
 }
 
@@ -761,12 +761,12 @@ static void track_dialog_cursor(
 	Handle item_handle;
 	Rect item_rectangle;
 	short edit_item;
-	
+
 	if (dialog_has_edit_items(dialog))
 	{
 		edit_item= GET_DIALOG_EDIT_ITEM(dialog);
 		GetDItem(dialog, edit_item, &item_type, &item_handle, &item_rectangle);
-		
+
 		GetPort(&old_port);
 		SetPort(dialog);
 		GetMouse(&mouse);
@@ -781,6 +781,6 @@ static void track_dialog_cursor(
 			InitCursor(); /* excessive, perhaps */
 		}
 	}
-	
+
 	return;
 }

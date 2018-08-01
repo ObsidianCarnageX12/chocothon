@@ -16,7 +16,7 @@ static short last_type= systemError;
 static short last_error= 0;
 
 void set_game_error(
-	short type, 
+	short type,
 	short error_code)
 {
 	assert(type>=0 && type<NUMBER_OF_TYPES);
@@ -34,7 +34,7 @@ short get_game_error(
 	{
 		*type= last_type;
 	}
-	
+
 	return last_error;
 }
 

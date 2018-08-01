@@ -86,11 +86,11 @@ PPCCOptions= -i "{CSeriesInterfaces}" {VersionPPCCOptions} -align mac68k -applee
 
 # default dependency rule for .ppc.o files
 .ppc.o ƒ .c
-	PPCC {Default}.c {PPCCOptions} -o "{ObjPPC}"{Default}.ppc.o 
+	PPCC {Default}.c {PPCCOptions} -o "{ObjPPC}"{Default}.ppc.o
 
 # default dependency rule for .s.o files
 .s.o ƒ .s
-	PPCAsm {Default}.s -o "{ObjPPC}"{Default}.s.o 
+	PPCAsm {Default}.s -o "{ObjPPC}"{Default}.s.o
 
 # default dependency rule for .xcoff (ppc library) files (doesn't work)
 #.xcoff ƒ .o

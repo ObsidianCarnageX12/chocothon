@@ -117,7 +117,7 @@ void main(
 	short error= 0;
 
 	initialize_debugger(TRUE);
-	
+
 	if (argc!=5)
 	{
 		fprintf(stderr, "Usage: %s <group#> <start#> <end#> <destination>\n", argv[0]);
@@ -128,7 +128,7 @@ void main(
 		long group= atoi(argv[1]);
 		long start= atoi(argv[2]), end= atoi(argv[3]);
 		FILE *stream= fopen(argv[4], "w");
-		
+
 		if (stream)
 		{
 			if (group>=1 && group<=127)
@@ -157,7 +157,7 @@ void main(
 			error= -1;
 		}
 	}
-	
+
 	exit(error);
 }
 
@@ -173,13 +173,13 @@ static void write_serial_numbers(
 	long count= end-start;
 
 	verify_static_data();
-	
+
 	while ((count-= 1)>=0)
 	{
 		byte short_serial_number[BYTES_PER_SHORT_SERIAL_NUMBER];
 		char tokenized_solo_serial_number[TOKENS_PER_SERIAL_NUMBER];
 		char tokenized_network_serial_number[TOKENS_PER_SERIAL_NUMBER];
-		
+
 		/* build the short solo serial number, tokenize and print it */
 		*((short*)short_serial_number)= start;
 		short_serial_number[2]= group;
@@ -205,7 +205,7 @@ static void write_serial_numbers(
 		{
 			fprintf(stderr, "discarding %16.16s/%16.16s\n", tokenized_solo_serial_number, tokenized_network_serial_number);
 		}
-		
+
 		start+= 1;
 	}
 
@@ -218,16 +218,16 @@ static boolean serial_number_contains_blacklisted_words(
 	char string[TOKENS_PER_SERIAL_NUMBER+1];
 	boolean found_blacklisted_word= FALSE;
 	short i;
-	
+
 	memcpy(string, tokens, TOKENS_PER_SERIAL_NUMBER);
 	string[TOKENS_PER_SERIAL_NUMBER]= 0;
 	strlwr(string);
-	
+
 	for (i= 0; i<NUMBER_OF_BLACKLISTED_WORDS; ++i)
 	{
 		if (strstr(string, blacklisted_words[i])) found_blacklisted_word= TRUE;
 	}
-	
+
 	return found_blacklisted_word;
 }
 #endif
@@ -238,7 +238,7 @@ static void valid_serial_number(
 	byte short_serial_number[BYTES_PER_SHORT_SERIAL_NUMBER];
 	byte inferred_pad[BYTES_PER_SHORT_SERIAL_NUMBER];
 	boolean valid= FALSE;
-	
+
 	tokens_to_short_serial_number_and_pad(tokens, short_serial_number, inferred_pad);
 
 	// also allow marathon2 network-only numbers
@@ -248,7 +248,7 @@ static void valid_serial_number(
 	{
 		dprintf("serial number %16.16s is invalid, in retrospect", tokens);
 	}
-	
+
 	return;
 }
 
@@ -261,7 +261,7 @@ static void tokens_to_short_serial_number_and_pad(
 
 	generate_long_serial_number_from_tokens(tokens, long_serial_number);
 	long_serial_number_to_short_serial_number_and_pad(long_serial_number, short_serial_number, inferred_pad);
-	
+
 	return;
 }
 
@@ -277,12 +277,12 @@ static void short_serial_number_and_pad_to_tokens(
 	/* generate long form */
 	generate_long_serial_number_from_short_serial_number(short_serial_number, actual_pad, &long_serial_number);
 
-	/* break out the tokens, one at a time */	
+	/* break out the tokens, one at a time */
 	for (token_offset= 0; token_offset<TOKENS_PER_SERIAL_NUMBER; ++token_offset)
 	{
 		tokens[token_offset]= extract_token_from_long_serial_number(long_serial_number, &bit_offset);
 	}
-	
+
 	return;
 }
 
@@ -292,16 +292,16 @@ static void generate_long_serial_number_from_short_serial_number(
 	byte *long_serial_number)
 {
 	short bit_offset;
-	
+
 	for (bit_offset= 0; bit_offset<BITS_PER_SHORT_SERIAL_NUMBER; ++bit_offset)
 	{
 		boolean previous_bit= bit_offset ? EXTRACT_BIT(long_serial_number, 2*bit_offset-1) : FALSE;
 		boolean data_bit= EXTRACT_BIT(short_serial_number, bit_offset); //^previous_bit;
-		
+
 		INSERT_BIT(long_serial_number, 2*bit_offset, data_bit);
 		INSERT_BIT(long_serial_number, 2*bit_offset+1, EXTRACT_BIT(actual_pad, bit_offset)^data_bit);
 	}
-	
+
 //	dprintf("short/pad==>long == %08x%08x%04x", *((long*)long_serial_number), *((long*)(long_serial_number+4)), *((short*)(long_serial_number+8)));
 
 	return;
@@ -313,7 +313,7 @@ static char extract_token_from_long_serial_number(
 {
 	short bit;
 	byte raw_token[1];
-	
+
 	raw_token[0]= 0;
 	for (bit= 0; bit<BITS_PER_TOKEN; ++bit)
 	{
@@ -323,15 +323,15 @@ static char extract_token_from_long_serial_number(
 	}
 
 	assert(raw_token[0]>=0 && raw_token[0]<NUMBER_OF_TOKENS);
-	
+
 	return raw_token_to_ascii_token[raw_token[0]];
 }
-	
+
 static void verify_static_data(
 	void)
 {
 	short i, j;
-	
+
 	/* no duplicate tokens */
 	for (i= 0; i<NUMBER_OF_TOKENS; ++i)
 	{
@@ -341,7 +341,7 @@ static void verify_static_data(
 				csprintf(temporary, "token[#%d]==token[#%d]", i, j));
 		}
 	}
-	
+
 	/* no duplicate bit assignments */
 	for (i= 0; i<BITS_PER_LONG_SERIAL_NUMBER; ++i)
 	{
@@ -360,7 +360,7 @@ static void verify_static_data(
 		}
 		assert(j!=BITS_PER_LONG_SERIAL_NUMBER);
 	}
-	
+
 	return;
 }
 
@@ -372,7 +372,7 @@ static word calculate_complement(
 	long iterations)
 {
 	word seed= 0xfded;
-	
+
 	while ((iterations-= 1)>=0) seed= (seed&1) ? ((seed>>1)^0xb400) : (seed>>1);
 
 	return seed;
@@ -398,7 +398,7 @@ static void long_serial_number_to_short_serial_number_and_pad(
 		INSERT_BIT(short_serial_number, bit_offset, EXTRACT_BIT(long_serial_number, 2*bit_offset));
 		INSERT_BIT(inferred_pad, bit_offset, EXTRACT_BIT(long_serial_number, 2*bit_offset+1));
 	}
-	
+
 	return;
 }
 
@@ -413,14 +413,14 @@ static void generate_long_serial_number_from_tokens(
 	{
 		insert_token_into_long_serial_number(toupper(tokens[token_offset]), long_serial_number, &bit_offset);
 	}
-	
+
 //	dprintf("tokens==>long == %08x%08x%04x", *((long*)long_serial_number), *((long*)(long_serial_number+4)), *((short*)(long_serial_number+8)));
 
 	for (bit_offset= 0; bit_offset<BITS_PER_LONG_SERIAL_NUMBER; bit_offset+= 2)
 	{
 		INSERT_BIT(long_serial_number, bit_offset+1, EXTRACT_BIT(long_serial_number, bit_offset)^EXTRACT_BIT(long_serial_number, bit_offset+1));
 	}
-	
+
 //	dprintf("  (postprocessed into %08x%08x%04x)", *((long*)long_serial_number), *((long*)(long_serial_number+4)), *((short*)(long_serial_number+8)));
 
 	return;
@@ -433,17 +433,17 @@ static void insert_token_into_long_serial_number(
 {
 	byte raw_token[1];
 	short bit;
-	
+
 	for (raw_token[0]= 0;
 		raw_token[0]<NUMBER_OF_TOKENS && raw_token_to_ascii_token[raw_token[0]]!=token;
 		++raw_token[0]);
-	
+
 	for (bit= 0; bit<BITS_PER_TOKEN; ++bit)
 	{
 		INSERT_BIT(long_serial_number, long_serial_number_bit_offsets[*bit_offset],
 			EXTRACT_BIT(&raw_token, bit));
 		*bit_offset+= 1;
 	}
-	
+
 	return;
 }

@@ -8,7 +8,7 @@ Friday, August 19, 1994 8:47:32 PM
 enum
 {
 	NUMBER_OF_SOUND_VOLUME_LEVELS= 8,
-	
+
 	MAXIMUM_SOUND_VOLUME_BITS= 8,
 	MAXIMUM_SOUND_VOLUME= 1<<MAXIMUM_SOUND_VOLUME_BITS
 };
@@ -17,7 +17,7 @@ enum // sound sources
 {
 	_8bit_22k_source,
 	_16bit_22k_source,
-	
+
 	NUMBER_OF_SOUND_SOURCES
 };
 
@@ -78,7 +78,7 @@ enum /* ambient sound codes */
 	_ambient_snd_alien_noise1,
 	_ambient_snd_alien_noise2,
 	_ambient_snd_jjaro_noise,
-	
+
 	NUMBER_OF_AMBIENT_SOUND_DEFINITIONS
 };
 
@@ -115,7 +115,7 @@ enum /* sound codes */
 	_snd_chip_insertion,
 	_snd_pattern_buffer,
 	_snd_destroy_control_panel,
-	
+
 	_snd_adjust_volume,
 	_snd_got_powerup,
 	_snd_got_item,
@@ -127,19 +127,19 @@ enum /* sound codes */
 	_snd_spht_door_opening,
 	_snd_spht_door_closing,
 	_snd_spht_door_obstructed,
-	
+
 	_snd_spht_platform_starting,
 	_snd_spht_platform_stopping,
 
 	_snd_owl,
 	_snd_smg_firing,
 	_snd_smg_reloading,
-	
+
 	_snd_heavy_spht_platform_starting,
 	_snd_heavy_spht_platform_stopping,
 
 	_snd_fist_hitting,
-	
+
 	_snd_magnum_firing,
 	_snd_magnum_reloading,
 
@@ -147,7 +147,7 @@ enum /* sound codes */
 	_snd_grenade_launcher_firing,
 	_snd_grenade_exploding,
 	_snd_grenade_flyby,
-	
+
 	_snd_fusion_firing,
 	_snd_fusion_exploding,
 	_snd_fusion_flyby,
@@ -156,7 +156,7 @@ enum /* sound codes */
 	_snd_rocket_exploding,
 	_snd_rocket_flyby,
 	_snd_rocket_firing,
-	
+
 	_snd_flamethrower,
 
 	_snd_body_falling,
@@ -176,7 +176,7 @@ enum /* sound codes */
 	_snd_compiler_hit,
 	_snd_compiler_projectile_flyby,
 	_snd_compiler_projectile_hit,
-	
+
 	_snd_cyborg_moving,
 	_snd_cyborg_attack,
 	_snd_cyborg_hit,
@@ -205,7 +205,7 @@ enum /* sound codes */
 	_snd_human_stop_shooting_me_you_bastard,
 	_snd_human_area_secure,
 	_snd_kill_the_player,
-	
+
 	_snd_water,
 	_snd_sewage,
 	_snd_lava,
@@ -225,7 +225,7 @@ enum /* sound codes */
 	_snd_sparking_transformer,
 
 	_snd_water_drip,
-	
+
 	_snd_walking_in_water,
 	_snd_exit_water,
 	_snd_enter_water,
@@ -259,14 +259,14 @@ enum /* sound codes */
 
 	_snd_assault_rifle_reloading,
 	_snd_assault_rifle_shell_casings,
-	
+
 	_snd_shotgun_firing,
 	_snd_shotgun_reloading,
-	
+
 	_snd_ball_bounce,
 	_snd_you_are_it,
 	_snd_got_ball,
-	
+
 	_snd_computer_interface_logon,
 	_snd_computer_interface_logout,
 	_snd_computer_interface_page,
@@ -306,7 +306,7 @@ enum /* sound codes */
 	_snd_electric,
 	_snd_alarm,
 	_snd_night_wind,
-	
+
 	_snd_surface_explosion,
 	_snd_underground_explosion,
 
@@ -377,7 +377,7 @@ struct sound_manager_parameters
 
 	long unused_long;
 	fixed pitch;
-	
+
 	short unused[9];
 };
 
@@ -388,7 +388,7 @@ struct dynamic_sound_data
 
 	/* can be NULL; only for doppler effects */
 	world_vector3d *velocity;
-	
+
 	word flags;
 };
 

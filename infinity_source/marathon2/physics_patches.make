@@ -8,7 +8,7 @@ COptions= -i {CSeriesInterfaces} -opt full -b2 -r -mbg on -d DEBUG -d PREPROCESS
 
 OBJECTS = ∂
 		physics_patches.c.o
-		
+
 physics_patches ƒƒ physics_patches.make  {OBJECTS}
 	Link ∂
 		-t 'MPST' ∂
@@ -20,5 +20,5 @@ physics_patches ƒƒ physics_patches.make  {OBJECTS}
 		":Objects:Game:68k:Beta:wad.lib" ∂
 		{CSeriesLibraries}cseries.debug.lib ∂
 		-o physics_patches
-		
+
 physics_patches.c.o ƒ export_definitions.make extensions.h

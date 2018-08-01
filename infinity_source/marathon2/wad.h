@@ -64,7 +64,7 @@ struct old_entry_header { /* 12 bytes */
 	long length; /* Of entry */
 
 	/* Element size? */
-	
+
 	/* Data follows */
 };
 
@@ -75,7 +75,7 @@ struct entry_header { /* 16 bytes */
 	long offset; /* Offset for inplace expansion of data */
 
 	/* Element size? */
-	
+
 	/* Data follows */
 };
 
@@ -121,7 +121,7 @@ FileError find_other_entries_that_reference_checksum(unsigned long checksum,
 boolean read_wad_header(fileref file_id, struct wad_header *header);
 
 /* Read the indexed wad from the file */
-struct wad_data *read_indexed_wad_from_file(fileref file_id, 
+struct wad_data *read_indexed_wad_from_file(fileref file_id,
 	struct wad_header *header, short index, boolean read_only);
 
 /* Properly deal with the memory.. */
@@ -132,7 +132,7 @@ long get_size_of_directory_data(struct wad_header *header);
 /* -----  Read Wad functions */
 
 /* Given a wad, extract the given tag from it */
-void *extract_type_from_wad(struct wad_data *wad, WadDataType type, 
+void *extract_type_from_wad(struct wad_data *wad, WadDataType type,
 	long *length);
 
 /* Calculate the length of the wad */
@@ -183,21 +183,21 @@ boolean write_wad_header(fileref file_id, struct wad_header *header);
 boolean write_directorys(fileref file_id,  struct wad_header *header,
 	void *entries);
 void calculate_and_store_wadfile_checksum(fileref file_id);
-boolean write_wad(fileref file_id, struct wad_header *file_header, 
+boolean write_wad(fileref file_id, struct wad_header *file_header,
 	struct wad_data *wad, long offset);
 
-void set_indexed_directory_offset_and_length(struct wad_header *header, 
+void set_indexed_directory_offset_and_length(struct wad_header *header,
 	void *entries, short index, long offset, long length, short wad_index);
 
 /* ------ Write Wad Functions */
 struct wad_data *append_data_to_wad(
-	struct wad_data *wad, 
-	WadDataType type, 
-	void *data, 
-	long size, 
+	struct wad_data *wad,
+	WadDataType type,
+	void *data,
+	long size,
 	long offset);
 
 void remove_tag_from_wad(struct wad_data *wad, WadDataType type);
-	
+
 /* ------- debug function */
 void dump_wad(struct wad_data *wad);

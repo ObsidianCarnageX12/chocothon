@@ -75,7 +75,7 @@ enum /* action flag bit offsets */
 	_looking_right_bit,
 	_absolute_yaw_bit0,
 	_absolute_yaw_bit1,
- 
+
 	_absolute_pitch_mode_bit,
 	_looking_up_bit,
 	_looking_down_bit,
@@ -102,7 +102,7 @@ enum /* action flag bit offsets */
 	_toggle_map_bit,
 	_microphone_button_bit,
 	_swim_bit,
-	
+
 	NUMBER_OF_ACTION_FLAG_BITS /* should be <=32 */
 };
 
@@ -171,14 +171,14 @@ struct physics_variables
 	/* used by mask_in_absolute_positioning_information (because it is not really absolute) to
 		keep track of where we’re going */
 	fixed adjusted_pitch, adjusted_yaw;
-	
+
 	fixed_vector3d external_velocity; /* from impacts; slowly absorbed */
 	fixed external_angular_velocity; /* from impacts; slowly absorbed */
-	
+
 	fixed step_phase; /* step_phase is in [0,1) and is some function of the distance travelled
 		(for bobbing the gun and the viewpoint) */
 	fixed step_amplitude; /* step amplitude is in [0,1) and is some function of velocity */
-	
+
 	fixed floor_height; /* the height of the floor on the polygon where we ended up last time */
 	fixed ceiling_height; /* same as above, but ceiling height */
 	fixed media_height; /* media height */
@@ -190,8 +190,8 @@ struct physics_variables
 enum { /* Player flags */
 	_player_is_interlevel_teleporting_flag= 0x0100,
 	_player_has_cheated_flag= 0x0200,
-	_player_is_teleporting_flag= 0x0400,	
-	_player_has_map_open_flag= 0x0800,	
+	_player_is_teleporting_flag= 0x0400,
+	_player_has_map_open_flag= 0x0800,
 	_player_is_totally_dead_flag= 0x1000,
 	_player_is_zombie_flag= 0x2000, // IS THIS USED??
 	_player_is_dead_flag= 0x4000
@@ -241,7 +241,7 @@ struct player_data
 	short color;
 	short team;
 	char name[MAXIMUM_PLAYER_NAME_LENGTH+1];
-	
+
 	/* shadowed from physics_variables structure below and the player’s object (read-only) */
 	world_point3d location;
 	world_point3d camera_location; // beginning of fake world_location3d structure
@@ -252,10 +252,10 @@ struct player_data
 
 	/* suit energy shadows vitality in the player’s monster slot */
 	short suit_energy, suit_oxygen;
-	
+
 	short monster_index; /* this player’s entry in the monster list */
 	short object_index; /* monster->object_index */
-	
+
 	/* Reset by initialize_player_weapons */
 	short weapon_intensity_decay; /* zero is idle intensity */
 	fixed weapon_intensity;
@@ -288,11 +288,11 @@ struct player_data
 	short reincarnation_delay;
 
 	short control_panel_side_index; // NONE, or the side index of a control panel the user is using that requires passage of time
-	
+
 	long ticks_at_last_successful_save;
 
 	long netgame_parameters[2];
-	
+
 	short unused[256];
 };
 

@@ -33,7 +33,7 @@ OSErr OpenTemporaryFile(
 	short tempVRefNum;
 	long tempDirID;
 	OSErr error;
-	
+
 	/* check for the temporary folder using FindFolder, creating it if necessary */
 	FindFolder(kOnSystemDisk, kTemporaryFolderType, kCreateFolder, &tempVRefNum, &tempDirID);
 
@@ -42,7 +42,7 @@ OSErr OpenTemporaryFile(
 	{
 		error= HOpen(tempVRefNum, tempDirID, TEMPORARY_FILENAME, fsRdWrPerm, tempRefNum);
 	}
-	
+
 	return error;
 }
 
@@ -52,15 +52,15 @@ OSErr CloseTemporaryFile(
 	short tempVRefNum;
 	long tempDirID;
 	OSErr error;
-	
+
 	error= FSClose(tempRefNum);
 	if (error==noErr)
 	{
 		/* check for the temporary folder using FindFolder, creating it if necessary */
 		FindFolder(kOnSystemDisk, kTemporaryFolderType, kCreateFolder, &tempVRefNum, &tempDirID);
-	
+
 		error= HDelete(tempVRefNum, tempDirID, TEMPORARY_FILENAME);
 	}
-	
+
 	return error;
 }

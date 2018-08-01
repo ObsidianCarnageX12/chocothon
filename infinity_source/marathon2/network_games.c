@@ -21,7 +21,7 @@
 
 /* Net game parameters */
 enum { // for king of the hill
-	_king_of_hill_time= 0 
+	_king_of_hill_time= 0
 };
 
 enum { // for kill the man with the ball
@@ -67,7 +67,7 @@ long get_player_net_ranking(
 	*kills= 0;
 	*deaths = player->monster_damage_taken.kills;
 	monster_damage= player->monster_damage_given.damage;
-	
+
 	total_monster_damage= monster_damage;
 	for (index= 0; index<dynamic_world->player_count; ++index)
 	{
@@ -78,7 +78,7 @@ long get_player_net_ranking(
 			(*kills)+= other_player->damage_taken[player_index].kills;
 			total_monster_damage+= other_player->monster_damage_given.damage;
 		}
-		
+
 		(*deaths)+= player->damage_taken[index].kills;
 	}
 
@@ -87,7 +87,7 @@ long get_player_net_ranking(
 		case _game_of_kill_monsters:
 			ranking= (*kills)-(*deaths);
 			break;
-				
+
 		case _game_of_cooperative_play:
 			ranking= total_monster_damage ? (100*monster_damage)/total_monster_damage : 0;
 			break;
@@ -95,15 +95,15 @@ long get_player_net_ranking(
 		case _game_of_capture_the_flag:
 			ranking= player->netgame_parameters[_flag_pulls];
 			break;
-			
+
 		case _game_of_king_of_the_hill:
 			ranking= player->netgame_parameters[_king_of_hill_time];
 			break;
-			
+
 		case _game_of_kill_man_with_ball:
 			ranking= player->netgame_parameters[_ball_carrier_time];
 			break;
-			
+
 		case _game_of_tag:
 			ranking= -player->netgame_parameters[_time_spent_it];
 			break;
@@ -117,16 +117,16 @@ long get_player_net_ranking(
 				ranking += 50;
 			}
 			break;
-			
+
 		case _game_of_rugby:
 			ranking= (*kills)-(*deaths);
 			break;
-			
+
 		default:
 			vhalt(csprintf(temporary, "What is game type %d?", GET_GAME_TYPE()));
 			break;
 	}
-	
+
 	return ranking;
 }
 
@@ -142,7 +142,7 @@ void initialize_net_game(
 				short count;
 				struct polygon_data *polygon;
 				short polygon_index;
-				
+
 				count= x= y= 0;
 				for (polygon_index= 0, polygon= map_polygons; polygon_index<dynamic_world->polygon_count; ++polygon_index, ++polygon)
 				{
@@ -152,7 +152,7 @@ void initialize_net_game(
 						x+= polygon->center.x, y+= polygon->center.y;
 					}
 				}
-				
+
 				dynamic_world->game_beacon.x= x/count;
 				dynamic_world->game_beacon.y= y/count;
 			}
@@ -162,7 +162,7 @@ void initialize_net_game(
 			dynamic_world->game_player_index= NONE;
 //			play_local_sound(_snd_got_ball);
 			break;
-			
+
 		case _game_of_tag:
 			dynamic_world->game_player_index= NONE; // nobody is it, yet
 			break;
@@ -178,10 +178,10 @@ short get_network_compass_state(
 {
 	short state= _network_compass_all_off;
 	world_point2d *beacon= (world_point2d *) NULL;
-	
+
 	switch (GET_GAME_TYPE())
 	{
-		case _game_of_king_of_the_hill: // whereÕs the hill
+		case _game_of_king_of_the_hill: // whereâ€™s the hill
 			if (get_polygon_data(get_player_data(player_index)->supporting_polygon_index)->type==_polygon_is_hill)
 			{
 				state= _network_compass_all_on;
@@ -191,8 +191,8 @@ short get_network_compass_state(
 				beacon= &dynamic_world->game_beacon;
 			}
 			break;
-			
-		case _game_of_tag: // whereÕs it
+
+		case _game_of_tag: // whereâ€™s it
 			if (dynamic_world->game_player_index==player_index)
 			{
 				state= _network_compass_all_on;
@@ -205,8 +205,8 @@ short get_network_compass_state(
 				}
 			}
 			break;
-		
-		case _game_of_kill_man_with_ball: // whereÕs the ball
+
+		case _game_of_kill_man_with_ball: // whereâ€™s the ball
 			if (player_has_ball(player_index, SINGLE_BALL_COLOR))
 			{
 				state= _network_compass_all_on;
@@ -226,7 +226,7 @@ short get_network_compass_state(
 		struct player_data *player= get_player_data(player_index);
 		struct world_point2d *origin= (world_point2d *) &player->location;
 		angle theta= NORMALIZE_ANGLE(get_object_data(player->object_index)->facing-arctangent(origin->x-beacon->x, origin->y-beacon->y));
-		
+
 		if (theta>FULL_CIRCLE-NETWORK_COMPASS_SLOP || theta<QUARTER_CIRCLE+NETWORK_COMPASS_SLOP) state|= _network_compass_se;
 		if (theta>QUARTER_CIRCLE-NETWORK_COMPASS_SLOP && theta<HALF_CIRCLE+NETWORK_COMPASS_SLOP) state|= _network_compass_ne;
 		if (theta>HALF_CIRCLE-NETWORK_COMPASS_SLOP && theta<HALF_CIRCLE+QUARTER_CIRCLE+NETWORK_COMPASS_SLOP) state|= _network_compass_nw;
@@ -236,13 +236,13 @@ short get_network_compass_state(
 	return state;
 }
 
-// if FALSE is returned, donÕt attribute kill
+// if FALSE is returned, donâ€™t attribute kill
 boolean player_killed_player(
 	short dead_player_index,
 	short aggressor_player_index)
 {
 	boolean attribute_kill= TRUE;
-	
+
 	if (dynamic_world->player_count>1)
 	{
 		switch (GET_GAME_TYPE())
@@ -254,10 +254,10 @@ boolean player_killed_player(
 				{
 					if (dynamic_world->game_player_index!=dead_player_index)
 					{
-						// change of ÔitÕ
+						// change of â€˜itâ€™
 #if 1
 						struct player_data *player= get_player_data(dead_player_index);
-						
+
 						play_object_sound(player->object_index, _snd_you_are_it);
 #endif
 						dynamic_world->game_player_index= dead_player_index;
@@ -265,7 +265,7 @@ boolean player_killed_player(
 				}
 				break;
 		}
-		
+
 		if (attribute_kill)
 		{
 			switch (GET_GAME_TYPE())
@@ -294,18 +294,18 @@ boolean update_net_game(
 			case _game_of_cooperative_play:
 				/* These games have no housekeeping associated with them. */
 				break;
-				
+
 #if 0
 			case _game_of_capture_the_flag:
 				for(player_index= 0; player_index<dynamic_world->player_count; ++player_index)
 				{
 					struct player_data *player= get_player_data(player_index);
 					struct polygon_data *polygon= get_polygon_data(player->camera_polygon_index);
-					
+
 					if(polygon->type==_polygon_is_base && polygon->permutation==player->team)
 					{
 						short ball_color= find_player_ball_color(player_index);
-						
+
 						if(ball_color != NONE && ball_color != player->team)
 						{
 							player->netgame_parameters[_flag_pulls]++;
@@ -320,11 +320,11 @@ boolean update_net_game(
 				for(player_index= 0; player_index<dynamic_world->player_count; ++player_index)
 				{
 					struct player_data *player= get_player_data(player_index);
-					
+
 					if(!PLAYER_IS_DEAD(player))
 					{
 						struct polygon_data *polygon= get_polygon_data(player->supporting_polygon_index);
-					
+
 						if(polygon->type==_polygon_is_hill)
 						{
 							player->netgame_parameters[_king_of_hill_time]++;
@@ -332,7 +332,7 @@ boolean update_net_game(
 					}
 				}
 				break;
-				
+
 			case _game_of_kill_man_with_ball:
 				dynamic_world->game_player_index= NONE;
 				for(player_index= 0; player_index<dynamic_world->player_count; ++player_index)
@@ -340,20 +340,20 @@ boolean update_net_game(
 					if (player_has_ball(player_index, SINGLE_BALL_COLOR))
 					{
 						struct player_data *player= get_player_data(player_index);
-						
+
 						player->netgame_parameters[_ball_carrier_time]++;
 						dynamic_world->game_player_index= player_index;
-						
+
 						break;
 					}
 				}
 				break;
-				
+
 			case _game_of_tag:
 				if (dynamic_world->game_player_index!=NONE)
 				{
 					struct player_data *player= get_player_data(dynamic_world->game_player_index);
-					
+
 					if (!PLAYER_IS_DEAD(player) || PLAYER_IS_TOTALLY_DEAD(player))
 					{
 						player->netgame_parameters[_time_spent_it]+= 1;
@@ -366,7 +366,7 @@ boolean update_net_game(
 				{
 					struct player_data *player= get_player_data(player_index);
 					short defending_team= GET_GAME_PARAMETER(_defending_team);
-					
+
 					if(player->team != defending_team)
 					{
 						struct polygon_data *polygon= get_polygon_data(player->supporting_polygon_index);
@@ -378,7 +378,7 @@ boolean update_net_game(
 							if(player->netgame_parameters[_offender_time_in_base]>GET_GAME_PARAMETER(_maximum_offender_time_in_base))
 							{
 dprintf("Game is over. Offender won.");
-//¥¥
+//â€¢â€¢
 								dynamic_world->game_information.parameters[_winning_team]= player->team;
 								net_game_over= TRUE;
 							}
@@ -387,7 +387,7 @@ dprintf("Game is over. Offender won.");
 					}
 				}
 				break;
-				
+
 			case _game_of_rugby:
 				for(player_index= 0; player_index<dynamic_world->player_count; ++player_index)
 				{
@@ -400,14 +400,14 @@ dprintf("Game is over. Offender won.");
 						{
 							/* Goal! */
 							player->netgame_parameters[_points_scored]++;
-							
+
 							/* Ditch the ball.. (it will be recreated by the timer..) */
 							destroy_players_ball(player_index);
 						}
 					}
 				}
 				break;
-				
+
 			default:
 				vhalt(csprintf(temporary, "What is game type: %d?", GET_GAME_TYPE()));
 				break;
@@ -418,7 +418,7 @@ dprintf("Game is over. Offender won.");
 			mark_player_network_stats_as_dirty(current_player_index);
 		}
 	}
-	
+
 	return net_game_over;
 }
 
@@ -427,7 +427,7 @@ void calculate_player_rankings(
 {
 	struct player_ranking_data temporary_copy[MAXIMUM_NUMBER_OF_PLAYERS];
 	short player_index, count;
-	
+
 	/* First get the stats. */
 	for(player_index= 0; player_index<dynamic_world->player_count; ++player_index)
 	{
@@ -453,7 +453,7 @@ void calculate_player_rankings(
 				highest_ranking= temporary_copy[player_index].ranking;
 			}
 		}
-	
+
 		assert(highest_index != NONE);
 		rankings[count++]= temporary_copy[highest_index];
 		temporary_copy[highest_index].ranking= LONG_MIN;
@@ -462,11 +462,11 @@ void calculate_player_rankings(
 
 /* These aren't in resources for speed.... */
 void calculate_ranking_text(
-	char *buffer, 
+	char *buffer,
 	long ranking)
 {
 	long seconds;
-	
+
 	switch(GET_GAME_TYPE())
 	{
 		case _game_of_kill_monsters:
@@ -474,7 +474,7 @@ void calculate_ranking_text(
 		case _game_of_rugby:
 			sprintf(buffer, "%d", ranking);
 			break;
-			
+
 		case _game_of_cooperative_play:
 			sprintf(buffer, "%d%%", ranking);
 			break;
@@ -485,10 +485,10 @@ void calculate_ranking_text(
 			seconds= ABS(ranking)/TICKS_PER_SECOND;
 			sprintf(buffer, "%d:%02d", seconds/60, seconds%60);
 			break;
-			
+
 		case _game_of_defense:
 			break;
-			
+
 		default:
 			vhalt(csprintf(temporary, "What is game type %d?", GET_GAME_TYPE()));
 			break;
@@ -520,7 +520,7 @@ void calculate_ranking_text_for_post_game(
 		case _game_of_kill_monsters:
 		case _game_of_cooperative_play:
 			break;
-			
+
 		case _game_of_capture_the_flag:
 			getcstr(format, strNETWORK_GAME_STRINGS, flagPullsFormatString);
 			sprintf(buffer, format, ranking);
@@ -530,7 +530,7 @@ void calculate_ranking_text_for_post_game(
 			getcstr(format, strNETWORK_GAME_STRINGS, pointsFormatString);
 			sprintf(buffer, format, ranking);
 			break;
-			
+
 		case _game_of_king_of_the_hill:
 		case _game_of_kill_man_with_ball:
 		case _game_of_tag:
@@ -538,10 +538,10 @@ void calculate_ranking_text_for_post_game(
 			getcstr(format, strNETWORK_GAME_STRINGS, minutesPossessedFormatString);
 			sprintf(buffer, format, seconds/60, seconds%60);
 			break;
-			
+
 		case _game_of_defense:
 			break;
-			
+
 		default:
 			vhalt(csprintf(temporary, "What is game type %d?", GET_GAME_TYPE()));
 			break;
@@ -549,7 +549,7 @@ void calculate_ranking_text_for_post_game(
 }
 
 boolean get_network_score_text_for_postgame(
-	char *buffer, 
+	char *buffer,
 	boolean team_mode)
 {
 	short string_id= NONE;
@@ -560,19 +560,19 @@ boolean get_network_score_text_for_postgame(
 		case _game_of_cooperative_play:
 			string_id= NONE;
 			break;
-			
+
 		case _game_of_capture_the_flag:
 			string_id= flagsCapturedString;
 			break;
-			
+
 		case _game_of_king_of_the_hill:
 			string_id= reignString;
 			break;
-			
+
 		case _game_of_kill_man_with_ball:
 			string_id= timeWithBallString;
 			break;
-			
+
 		case _game_of_defense:
 dprintf("Not supported!");
 			string_id= timeWithBallString;
@@ -581,7 +581,7 @@ dprintf("Not supported!");
 		case _game_of_tag:
 			string_id= timeItString;
 			break;
-			
+
 		default:
 			vhalt(csprintf(temporary, "What is game type %d?", GET_GAME_TYPE()));
 			break;
@@ -601,7 +601,7 @@ dprintf("Not supported!");
 			getcstr(text, strNETWORK_GAME_STRINGS, string_id);
 			sprintf(buffer, "%s", text);
 		}
-	}			
+	}
 
 	return (string_id!=NONE);
 }
@@ -610,14 +610,14 @@ boolean current_net_game_has_scores(
 	void)
 {
 	boolean has_scores;
-	
+
 	switch(GET_GAME_TYPE())
 	{
 		case _game_of_kill_monsters:
 		case _game_of_cooperative_play:
 			has_scores= FALSE;
 			break;
-			
+
 		case _game_of_capture_the_flag:
 		case _game_of_rugby:
 		case _game_of_king_of_the_hill:
@@ -626,7 +626,7 @@ boolean current_net_game_has_scores(
 		case _game_of_tag:
 			has_scores= TRUE;
 			break;
-			
+
 		default:
 			has_scores= FALSE;
 			vhalt(csprintf(temporary, "What is game type %d?", GET_GAME_TYPE()));
@@ -640,7 +640,7 @@ boolean current_game_has_balls(
 	void)
 {
 	boolean has_ball;
-	
+
 	switch(GET_GAME_TYPE())
 	{
 		case _game_of_kill_monsters:
@@ -650,13 +650,13 @@ boolean current_game_has_balls(
 		case _game_of_tag:
 			has_ball= FALSE;
 			break;
-			
+
 		case _game_of_capture_the_flag:
 		case _game_of_rugby:
 		case _game_of_kill_man_with_ball:
 			has_ball= TRUE;
 			break;
-			
+
 		default:
 			has_ball= FALSE;
 			vhalt(csprintf(temporary, "What is game type %d?", GET_GAME_TYPE()));
@@ -676,8 +676,8 @@ boolean game_is_over(
 	if (dynamic_world->game_information.game_time_remaining<=0)
 	{
 		game_over= TRUE;
-	} 
-	else if(GET_GAME_OPTIONS() & _game_has_kill_limit) 
+	}
+	else if(GET_GAME_OPTIONS() & _game_has_kill_limit)
 	{
 		short player_index;
 		short count;
@@ -693,7 +693,7 @@ boolean game_is_over(
 				for(player_index= 0; player_index<dynamic_world->player_count; ++player_index)
 				{
 					struct player_data *player= get_player_data(player_index);
-					
+
 					// make sure we subtract our suicides.
 					if (player->total_damage_given.kills-player->damage_taken[player_index].kills >= dynamic_world->game_information.kill_limit)
 					{
@@ -705,34 +705,34 @@ boolean game_is_over(
 					}
 				}
 				break;
-				
+
 #if 0
 			case _game_of_capture_the_flag:
 				/* Kill limit is the number of flag pulls */
 				for(player_index= 0; player_index<dynamic_world->player_count; ++player_index)
 				{
 					struct player_data *player= get_player_data(player_index);
-					
+
 					// make sure we subtract our suicides.
 					count+= player->netgame_parameters[_flag_pulls];
 				}
-				
+
 				if(count>=dynamic_world->game_information.kill_limit)
 				{
 					game_over= TRUE;
 				}
 				break;
-				
+
 			case _game_of_rugby:
 				/* Kill limit is the number of flag pulls */
 				for(player_index= 0; player_index<dynamic_world->player_count; ++player_index)
 				{
 					struct player_data *player= get_player_data(player_index);
-					
+
 					// make sure we subtract our suicides.
 					count+= player->netgame_parameters[_points_scored];
 				}
-				
+
 				if(count>=dynamic_world->game_information.kill_limit)
 				{
 					game_over= TRUE;
@@ -741,15 +741,15 @@ boolean game_is_over(
 #endif
 
 			case _game_of_defense:
-//¥¥
+//â€¢â€¢
 				break;
-				
+
 			default:
 				vhalt(csprintf(temporary, "What is game type %d?", GET_GAME_TYPE()));
 				break;
 		}
 	}
-	
+
 	return game_over;
 }
 
@@ -771,7 +771,7 @@ void get_network_joined_message(
 	short game_type)
 {
 	short format_word= NONE; /* means cooperative */
-	
+
 	switch(game_type)
 	{
 		case _game_of_kill_monsters: format_word= _carnage_word; break;
@@ -806,18 +806,18 @@ long get_entry_point_flags_for_game_type(
 	short game_type)
 {
 	long entry_flags;
-	
+
 	switch(game_type)
 	{
 		case _game_of_kill_man_with_ball:
 			entry_flags= _capture_the_flag_entry_point;
 			break;
-			
+
 		case _game_of_kill_monsters:
 		case _game_of_tag:
 			entry_flags= _multiplayer_carnage_entry_point;
 			break;
-			
+
 		case _game_of_cooperative_play:
 			entry_flags= _multiplayer_cooperative_entry_point;
 			break;
@@ -830,7 +830,7 @@ long get_entry_point_flags_for_game_type(
 			vhalt(csprintf(temporary, "What is game type %d?", game_type));
 			break;
 	}
-		
+
 	return entry_flags;
 }
 
@@ -841,12 +841,12 @@ static boolean player_has_ball(
 {
 	struct player_data *player= get_player_data(player_index);
 	boolean has_ball= FALSE;
-	
+
 	if(player->items[BALL_ITEM_BASE+color]>0)
 	{
 		has_ball= TRUE;
 	}
-	
+
 	return has_ball;
 }
 
@@ -855,17 +855,17 @@ static void destroy_players_ball(
 {
 	short color, item_type;
 	struct player_data *player= get_player_data(player_index);
-	
+
 	color= find_player_ball_color(player_index);
 	assert(color != NONE);
 
 	/* Get rid of it. */
 	item_type= BALL_ITEM_BASE+color;
 	player->items[item_type]= NONE;
-	
+
 	/* Destroy the object (placement will recreate it..) */
 	object_was_just_destroyed(_object_is_item, item_type);
-	
+
 	/* Mark the player inventory as dirty.. */
 	mark_player_inventory_as_dirty(player_index, _i_knife);
 }

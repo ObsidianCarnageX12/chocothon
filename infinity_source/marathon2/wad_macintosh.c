@@ -48,22 +48,22 @@ boolean find_wad_file_that_has_checksum(
 	FSSpec app_spec;
 	boolean file_matched= FALSE;
 
-	/* Look for the files in the same directory that we are in.. */	
+	/* Look for the files in the same directory that we are in.. */
 	err= get_my_fsspec(&app_spec);
 	if(!err)
 	{
 		file_matched= find_wad_file_with_checksum_in_directory((FSSpec *) matching_file,
 			app_spec.vRefNum, app_spec.parID, file_type, checksum);
-			
+
 		if(!file_matched)
 		{
 			short path_count= countstr(path_resource_id);
 			short index;
-			
+
 			for(index= 0; !file_matched && index<path_count; ++index)
 			{
 				FSSpec test_directory_spec;
-			
+
 				getpstr(temporary, path_resource_id, index);
 				err= FSMakeFSSpec(app_spec.vRefNum, app_spec.parID, (StringPtr)temporary, &test_directory_spec);
 
@@ -71,7 +71,7 @@ boolean find_wad_file_that_has_checksum(
 				{
 					long parID;
 					OSErr error;
-					
+
 					/* The referenced thing is a directory, and we want to search inside it. */
 					/*  therefore we want to get it's parent id.. */
 					error= get_directories_parID(&test_directory_spec, &parID);
@@ -108,10 +108,10 @@ FileError find_other_entries_that_reference_checksum(
 	/* Setup the private data for the callback */
 	private_data.base_file= &files_array[0];
 	private_data.base_checksum= checksum;
-	
+
 	/* Clear out the find_file pb */
 	memset(&pb, 0, sizeof(struct find_file_pb));
-	
+
 	/* Set the information */
 	pb.version= 0;
 	pb.flags= _ff_recurse;
@@ -125,8 +125,8 @@ FileError find_other_entries_that_reference_checksum(
 
 	/* Find them! */
 	error= find_files(&pb);
-	
-	if(!error) 
+
+	if(!error)
 	{
 		*count= pb.count+1; /* +1 because base is already added. */
 	} else {
@@ -146,22 +146,22 @@ boolean find_file_with_modification_date(
 	FSSpec app_spec;
 	boolean file_matched= FALSE;
 
-	/* Look for the files in the same directory that we are in.. */	
+	/* Look for the files in the same directory that we are in.. */
 	err= get_my_fsspec(&app_spec);
 	if(!err)
 	{
 		file_matched= find_file_with_modification_date_in_directory((FSSpec *) matching_file,
 			app_spec.vRefNum, app_spec.parID, file_type, modification_date);
-			
+
 		if(!file_matched)
 		{
 			short path_count= countstr(path_resource_id);
 			short index;
-			
+
 			for(index= 0; !file_matched && index<path_count; ++index)
 			{
 				FSSpec test_directory_spec;
-			
+
 				getpstr(temporary, path_resource_id, index);
 				err= FSMakeFSSpec(app_spec.vRefNum, app_spec.parID, (StringPtr)temporary, &test_directory_spec);
 
@@ -169,7 +169,7 @@ boolean find_file_with_modification_date(
 				{
 					long parID;
 					OSErr error;
-					
+
 					/* The referenced thing is a directory, and we want to search inside it. */
 					/*  therefore we want to get it's parent id.. */
 					error= get_directories_parID(&test_directory_spec, &parID);
@@ -188,7 +188,7 @@ boolean find_file_with_modification_date(
 
 /* Return this directorie's parent id.. (the parID field of things inside it..) */
 OSErr get_directories_parID(
-	FSSpec *directory, 
+	FSSpec *directory,
 	long *parID)
 {
 	CInfoPBRec pb;
@@ -201,7 +201,7 @@ OSErr get_directories_parID(
 	pb.dirInfo.ioDrDirID= directory->parID;
 	pb.dirInfo.ioFDirIndex= 0; /* use ioNamePtr and ioDirID */
 	error= PBGetCatInfoSync(&pb);
-	
+
 	*parID = pb.dirInfo.ioDrDirID;
 	assert(!error && (pb.hFileInfo.ioFlAttrib & 0x10));
 
@@ -210,12 +210,12 @@ OSErr get_directories_parID(
 
 /* -------------- local code */
 static Boolean checksum_and_not_base_callback(
-	FSSpec *file, 
+	FSSpec *file,
 	void *data)
 {
 	Boolean add_this_file= FALSE;
 	struct find_files_private_data *private_data= (struct find_files_private_data *) data;
-	
+
 	/* Don't readd the base file.. */
 	if(!equal_fsspecs(file, (FSSpec *) private_data->base_file))
 	{
@@ -225,26 +225,26 @@ static Boolean checksum_and_not_base_callback(
 			add_this_file= TRUE;
 		}
 	}
-	
+
 	return add_this_file;
 }
 
 static Boolean match_wad_checksum_callback(
-	FSSpec *file, 
+	FSSpec *file,
 	void *data)
 {
 	Boolean add_this_file= FALSE;
 	struct find_checksum_private_data *private_data= (struct find_checksum_private_data *) data;
-	
+
 	/* Do the checksums match? */
 	if(wad_file_has_checksum((FileDesc *) file, private_data->checksum_to_match))
 	{
 		add_this_file= TRUE;
 	}
-	
+
 	return add_this_file;
 }
-	
+
 static boolean find_wad_file_with_checksum_in_directory(
 	FSSpec *matching_file,
 	short vRefNum,
@@ -259,10 +259,10 @@ static boolean find_wad_file_with_checksum_in_directory(
 
 	/* Setup the private data for the callback */
 	private_data.checksum_to_match= checksum;
-	
+
 	/* Clear out the find_file pb */
 	memset(&pb, 0, sizeof(struct find_file_pb));
-	
+
 	/* Set the information */
 	pb.version= 0;
 #ifdef FINAL
@@ -280,8 +280,8 @@ static boolean find_wad_file_with_checksum_in_directory(
 
 	/* Find them! */
 	error= find_files(&pb);
-	
-	if(!error) 
+
+	if(!error)
 	{
 		if(pb.count) success= TRUE;
 	} else {
@@ -306,10 +306,10 @@ static boolean find_file_with_modification_date_in_directory(
 
 	/* Setup the private data for the callback */
 	target_modification_date= modification_date;
-	
+
 	/* Clear out the find_file pb */
 	memset(&pb, 0, sizeof(struct find_file_pb));
-	
+
 	/* Set the information */
 	pb.version= 0;
 #ifdef FINAL
@@ -327,8 +327,8 @@ static boolean find_file_with_modification_date_in_directory(
 
 	/* Find them! */
 	error= find_files(&pb);
-	
-	if(!error) 
+
+	if(!error)
 	{
 		if(pb.count) success= TRUE;
 	} else {
@@ -339,7 +339,7 @@ static boolean find_file_with_modification_date_in_directory(
 }
 
 static Boolean match_modification_date_callback(
-	FSSpec *file, 
+	FSSpec *file,
 	void *data)
 {
 	Boolean add_this_file= FALSE;
@@ -349,6 +349,6 @@ static Boolean match_modification_date_callback(
 	{
 		add_this_file= TRUE;
 	}
-	
+
 	return add_this_file;
 }

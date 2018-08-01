@@ -3,7 +3,7 @@ RENDER.H
 Thursday, September 8, 1994 5:40:59 PM  (Jason)
 */
 
-#include "world.h"	
+#include "world.h"
 #include "textures.h"
 
 /* ---------- constants */
@@ -52,7 +52,7 @@ struct view_data
 	short standard_screen_width; /* this is *not* the width of the projected image (see initialize_view_data() in RENDER.C */
 	short screen_width, screen_height; /* dimensions of the projected image */
 	short horizontal_scale, vertical_scale;
-	
+
 	short half_screen_width, half_screen_height;
 	short world_to_screen_x, world_to_screen_y;
 	short dtanpitch; /* world_to_screen*tan(pitch) */
@@ -73,13 +73,13 @@ struct view_data
 
 	short effect, effect_phase;
 	short real_world_to_screen_x, real_world_to_screen_y;
-	
+
 	boolean overhead_map_active;
 	short overhead_map_scale;
 
 	boolean under_media_boundary;
 	short under_media_index;
-	
+
 	boolean terminal_mode_active;
 };
 

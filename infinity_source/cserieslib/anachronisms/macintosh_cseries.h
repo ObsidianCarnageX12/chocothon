@@ -141,7 +141,7 @@ enum
 	inactiveAppleRed,
 	inactiveApplePurple,
 	inactiveAppleBlue,
-	
+
 	stupidColor1
 };
 
@@ -213,7 +213,7 @@ void update_any_window(WindowPtr window, EventRecord *event);
 void activate_any_window(WindowPtr window, EventRecord *event, boolean activate);
 
 /* ---------- prototypes: MACINTOSH_UTILITIES.C */
-	
+
 long whats_on_top(void);
 boolean is_application_window(WindowPtr window);
 

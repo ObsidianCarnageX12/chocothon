@@ -18,7 +18,7 @@ enum { /* Weapons */
 	_weapon_ball, // or something
 	_weapon_smg,
 	MAXIMUM_NUMBER_OF_WEAPONS,
-	
+
 	_weapon_doublefisted_pistols= MAXIMUM_NUMBER_OF_WEAPONS, /* This is a pseudo-weapon */
 	_weapon_doublefisted_shotguns,
 	PLAYER_TORSO_SHAPE_COUNT
@@ -49,12 +49,12 @@ enum /* weapon display positioning modes */
 struct weapon_display_information
 {
 	short collection, low_level_shape_index;
-	
+
 	fixed vertical_position, horizontal_position;
 	short vertical_positioning_mode, horizontal_positioning_mode;
 	short transfer_mode;
 	fixed transfer_phase;
-	
+
 	boolean flip_horizontal, flip_vertical;
 };
 
@@ -72,7 +72,7 @@ void *get_weapon_array(void);
 long calculate_weapon_array_length(void);
 
 /* while this returns true, keep calling.. */
-boolean get_weapon_display_information(short *count, 
+boolean get_weapon_display_information(short *count,
 	struct weapon_display_information *data);
 
 /* When the player runs over an item, check for reloads, etc. */

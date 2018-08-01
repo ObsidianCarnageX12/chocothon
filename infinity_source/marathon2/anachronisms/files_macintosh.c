@@ -45,10 +45,10 @@ fileref open_file_for_reading(
 
 	ResolveAliasFile((FSSpec *)file, TRUE, &is_folder, &was_aliased);
 	error= FSpOpenDF((FSSpec *)file, fsRdPerm, &file_id);
-	if (error) 
+	if (error)
 	{
 #ifdef DEBUG
-		dprintf("HOpen('%P', #%d, #%d)==#%d", file->name, file->vRefNum, file->parID, 
+		dprintf("HOpen('%P', #%d, #%d)==#%d", file->name, file->vRefNum, file->parID,
 			error);
 #endif
 		file_id= NONE;
@@ -67,10 +67,10 @@ fileref open_file_for_writing(
 
 	ResolveAliasFile((FSSpec *)file, TRUE, &is_folder, &was_aliased);
 	error= FSpOpenDF((FSSpec *)file, fsWrPerm, &file_id);
-	if (error) 
+	if (error)
 	{
 #ifdef DEBUG
-		dprintf("HOpen('%P', #%d, #%d)==#%d", file->name, file->vRefNum, file->parID, 
+		dprintf("HOpen('%P', #%d, #%d)==#%d", file->name, file->vRefNum, file->parID,
 			error);
 #endif
 		file_id= NONE;
@@ -84,11 +84,11 @@ void close_file(
 	fileref refnum)
 {
 	OSErr error;
-	
-	error= FSFlush(refnum, 0);	
+
+	error= FSFlush(refnum, 0);
 	error= FSClose(refnum);
 	assert(!error);
-	
+
 	return;
 }
 
@@ -98,9 +98,9 @@ unsigned long get_fpos(
 	unsigned long position;
 	OSErr err;
 
-	err= GetFPos(refnum, (long *) &position);	
+	err= GetFPos(refnum, (long *) &position);
 	assert(!err);
-	
+
 	return position;
 }
 
@@ -111,7 +111,7 @@ FileError set_fpos(
 	OSErr err;
 
 	err= SetFPos(refnum, fsFromStart, offset);
-	
+
 	return err;
 }
 
@@ -121,24 +121,24 @@ unsigned long get_file_length(
 	unsigned long file_length;
 	unsigned long initial_position;
 
-	GetFPos(refnum, (long *) &initial_position);	
+	GetFPos(refnum, (long *) &initial_position);
 	SetFPos(refnum, fsFromLEOF, 0l);
 	GetFPos(refnum, (long *) &file_length);
 	SetFPos(refnum, fsFromStart, initial_position);
-	
+
 	return file_length;
 }
 
 FileError read_file(
 	fileref refnum,
-	unsigned long count, 
+	unsigned long count,
 	void *buffer)
 {
 	OSErr err;
-	
+
 	assert(refnum>=0);
 	err= FSRead(refnum, (long *) &count, buffer);
-	
+
 	return err;
 }
 
@@ -158,9 +158,9 @@ FileError delete_file(
 	FileDesc *file)
 {
 	FileError error;
-	
+
 	error= FSpDelete((FSSpec *) file);
-	
+
 	return error;
 }
 
@@ -171,19 +171,19 @@ FileError find_preferences_location(
 
 	err= FindFolder(kOnSystemDisk, kPreferencesFolderType, kCreateFolder,
 		&file->vRefNum, &file->parID);
-		
+
 	return err;
 }
 
 /* ------- miscellaneous routines */
 FileError add_application_name_to_fsspec(
-	FileDesc *file, 
+	FileDesc *file,
 	char *pascal_name)
 {
 	FileError err;
 	FInfo finder_info;
 	short refnum;
-	
+
 	err = FSpGetFInfo((FSSpec *) file, &finder_info);
 	if(!err)
 	{
@@ -194,10 +194,10 @@ FileError add_application_name_to_fsspec(
 			/* This file doesn't have a res fork.. */
 			if(err==fnfErr)
 			{
-				FSpCreateResFile((FSSpec *) file, finder_info.fdCreator, 
+				FSpCreateResFile((FSSpec *) file, finder_info.fdCreator,
 					finder_info.fdType, smSystemScript);
 				err= ResError();
-				
+
 				if(!err)
 				{
 					refnum= FSpOpenResFile((FSSpec *) file, fsWrPerm);
@@ -206,20 +206,20 @@ FileError add_application_name_to_fsspec(
 			}
 		}
 	}
-	
+
 	if(!err)
 	{
 		Handle resource;
-		
+
 		assert(refnum>=0);
-								
+
 		/* Add in the application name */
 		err= PtrToHand(pascal_name, &resource, pascal_name[0]+1);
 		assert(!err && resource);
-								
+
 		AddResource(resource, 'STR ', -16396, "");
 		ReleaseResource(resource);
-					
+
 		CloseResFile(refnum);
 	}
 

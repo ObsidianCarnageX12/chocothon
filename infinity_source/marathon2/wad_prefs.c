@@ -32,7 +32,7 @@ static void load_preferences(void);
 /* Open the file, and allocate whatever internal structures are necessary in the */
 /*  preferences pointer.. */
 boolean w_open_preferences_file(
-	char *prefName, 
+	char *prefName,
 	unsigned long preferences_file_type) // ostype for mac, extension for dos
 {
 	FileError error;
@@ -55,7 +55,7 @@ boolean w_open_preferences_file(
 		if(error_pending())
 		{
 			short type;
-		
+
 			error= get_game_error(&type);
 			if(type==systemError)
 			{
@@ -70,13 +70,13 @@ boolean w_open_preferences_file(
 							w_write_preferences_file();
 						}
 						break;
-						
+
 					case errNone:
 					default:
 						/* Errors besides fnfErr and noErr get returned. */
 						break;
 				}
-				
+
 				set_game_error(systemError, error);
 			} else {
 				/* Something was invalid.. */
@@ -95,7 +95,7 @@ boolean w_open_preferences_file(
 	{
 		set_game_error(systemError, memory_error());
 	}
-	
+
 	if (error)
 	{
 		/* if something is broken, make sure we at least return valid prefs */
@@ -107,9 +107,9 @@ boolean w_open_preferences_file(
 	{
 		success= FALSE;
 	}
-	
+
 // dump_wad(prefInfo->wad);
-	
+
 	return success;
 }
 
@@ -122,9 +122,9 @@ void *w_get_data_from_preferences(
 {
 	void *data;
 	long length;
-	
+
 	assert(prefInfo->wad);
-	
+
 	data= extract_type_from_wad(prefInfo->wad, tag, &length);
 	/* If we got the data, but it was the wrong size, or we didn't get the data... */
 	if((data && length != expected_size) || (!data))
@@ -135,45 +135,45 @@ void *w_get_data_from_preferences(
 		{
 			/* Initialize it */
 			initialize(data);
-			
+
 			/* Append it to the file, for writing out.. */
 			append_data_to_wad(prefInfo->wad, tag, data, expected_size, 0);
-			
+
 			/* Free our private pointer */
 			free(data);
-			
+
 			/* Return the real one. */
 			data= extract_type_from_wad(prefInfo->wad, tag, &length);
 		}
 	}
-	
+
 	if(data)
 	{
 		/* Only call the validation function if it is present. */
 		if(validate && validate(data))
 		{
 			char *new_data;
-			
+
 			/* We can't hand append_data_to_wad a copy of the data pointer it */
 			/* contains */
 			new_data= (char *)malloc(expected_size);
 			assert(new_data);
-			
+
 			memcpy(new_data, data, expected_size);
-			
+
 			/* Changed in the validation. Save to our wad. */
 			append_data_to_wad(prefInfo->wad, tag, new_data, expected_size, 0);
-	
+
 			/* Free the new copy */
 			free(new_data);
-	
+
 			/* And reextract the pointer.... */
 			data= extract_type_from_wad(prefInfo->wad, tag, &length);
 		}
 	}
-	
+
 	return data;
-}	
+}
 
 void w_write_preferences_file(
 	void)
@@ -186,7 +186,7 @@ void w_write_preferences_file(
 	{
 		set_game_error(systemError, errNone);
 	}
-	
+
 	assert(!error_pending());
 	refNum= open_wad_file_for_writing(&prefInfo->pref_file);
 	if(!error_pending())
@@ -195,10 +195,10 @@ void w_write_preferences_file(
 
 		assert(refNum!=NONE);
 
-		fill_default_wad_header(&prefInfo->pref_file, 
-			CURRENT_WADFILE_VERSION, CURRENT_PREF_WADFILE_VERSION, 
+		fill_default_wad_header(&prefInfo->pref_file,
+			CURRENT_WADFILE_VERSION, CURRENT_PREF_WADFILE_VERSION,
 			1, 0l, &header);
-			
+
 		if (write_wad_header(refNum, &header))
 		{
 			long wad_length;
@@ -208,9 +208,9 @@ void w_write_preferences_file(
 			wad_length= calculate_wad_length(&header, prefInfo->wad);
 
 			/* Set the entry data..... */
-			set_indexed_directory_offset_and_length(&header, 
+			set_indexed_directory_offset_and_length(&header,
 				&entry, 0, offset, wad_length, 0);
-			
+
 			/* Now write it.. */
 			if (write_wad(refNum, &header, prefInfo->wad, offset))
 			{
@@ -223,7 +223,7 @@ void w_write_preferences_file(
 				} else {
 					assert(error_pending());
 				}
-			} 
+			}
 			else {
 				assert(error_pending());
 			}
@@ -233,8 +233,8 @@ void w_write_preferences_file(
 			assert(error_pending());
 		}
 		close_wad_file(refNum);
-	} 
-	
+	}
+
 	return;
 }
 
@@ -242,21 +242,21 @@ static void load_preferences(
 	void)
 {
 	fileref refNum;
-	
+
 	/* If it was already allocated, we are reloading, so free the old one.. */
 	if(prefInfo->wad)
-	{	
+	{
 		free_wad(prefInfo->wad);
 		prefInfo->wad= NULL;
 	}
-	
+
 	refNum= open_wad_file_for_reading(&prefInfo->pref_file);
 	if(!error_pending())
 	{
 		struct wad_header header;
-	
+
 		assert(refNum != NONE);
-	
+
 		/* Read the header from the wad file */
 		if(read_wad_header(refNum, &header))
 		{
@@ -264,10 +264,10 @@ static void load_preferences(
 			prefInfo->wad= read_indexed_wad_from_file(refNum, &header, 0, FALSE);
 			assert(prefInfo->wad);
 		}
-				
+
 		/* Close the file.. */
 		close_wad_file(refNum);
 	}
-	
+
 	return;
 }
