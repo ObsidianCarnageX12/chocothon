@@ -2,7 +2,7 @@
  * Thursday, August 18, 1994 6:45:16 PM (ajr)
  *
  */
- 
+
 /* marathon includes */
 #include "macintosh_cseries.h"
 #include "world.h"
@@ -51,10 +51,10 @@ void enter_mouse(
 #ifndef env68k
 	assert(mouse_device); /* must use cursor device manager on non-68k */
 #endif
-	
+
 	delta_yaw= delta_pitch= delta_velocity= FALSE;
 	button_state= FALSE;
-	
+
 	return;
 }
 
@@ -66,11 +66,11 @@ void test_mouse(
 	fixed *delta_velocity)
 {
 	if (snapshot_button_state) *action_flags|= _left_trigger_state;
-	
+
 	*delta_yaw= snapshot_delta_yaw;
 	*delta_pitch= snapshot_delta_pitch;
 	*delta_velocity= snapshot_delta_velocity;
-	
+
 	return;
 }
 
@@ -102,24 +102,24 @@ void mouse_idle(
 
 	center.h= CENTER_MOUSE_X, center.v= CENTER_MOUSE_Y;
 	SetMouseLocation(&center);
-	
+
 	ticks_elapsed= TickCount()-last_tick_count;
 	if (ticks_elapsed)
 	{
 		/* calculate axis deltas */
 		fixed vx= INTEGER_TO_FIXED(location.h-center.h)/ticks_elapsed;
 		fixed vy= INTEGER_TO_FIXED(location.v-center.v)/ticks_elapsed;
-		
+
 		/* pin to maximum velocity (pixels/second) */
 		vx= PIN(-MAXIMUM_MOUSE_VELOCITY, MAXIMUM_MOUSE_VELOCITY);
 		vy= PIN(-MAXIMUM_MOUSE_VELOCITY, MAXIMUM_MOUSE_VELOCITY);
-		
+
 		/* scale to [-FIXED_ONE,FIXED_ONE] */
 		vx/= FIXED_INTEGERAL_PART(MAXIMUM_MOUSE_VELOCITY);
 		vy/= FIXED_INTEGERAL_PART(MAXIMUM_MOUSE_VELOCITY);
 
 		snapshot_delta_yaw= vx;
-		
+
 		switch (type)
 		{
 			case _mouse_yaw_pitch:
@@ -128,11 +128,11 @@ void mouse_idle(
 			case _mouse_yaw_velocity:
 				snapshot_delta_velocity= vy, snapshot_delta_pitch= 0;
 				break;
-			
+
 			default:
 				halt();
 		}
-		
+
 		snapshot_button_state= Button();
 	}
 
@@ -141,7 +141,7 @@ void mouse_idle(
 
 /* ---------- private code */
 
-// unused 
+// unused
 static void get_mouse_location(
 	Point *where)
 {
@@ -155,7 +155,7 @@ static void get_mouse_location(
 		GetMouse(where);
 		LocalToGlobal(where);
 	}
-	
+
 	return;
 }
 
@@ -174,7 +174,7 @@ static void set_mouse_location(
 		CrsrNewCouple= 0xffff;
 	}
 #endif
-	
+
 	return;
 }
 
@@ -182,7 +182,7 @@ static CrsrDevicePtr find_mouse_device(
 	void)
 {
 	CrsrDevicePtr device= (CrsrDevicePtr) NULL;
-	
+
 	if (trap_available(_CursorADBDispatch))
 	{
 		do
@@ -191,7 +191,7 @@ static CrsrDevicePtr find_mouse_device(
 		}
 		while (device && device->devClass!=kDeviceClassMouse && device->devClass!=kDeviceClassTrackball);
 	}
-		
+
 	return device;
 }
 
@@ -200,13 +200,13 @@ static CrsrDevicePtr find_mouse_device(
 static boolean trap_available(short trap_num)
 {
 	TrapType type;
-	
+
 	type = get_trap_type(trap_num);
 	if (type == ToolTrap)
 		trap_num &= 0x07ff;
 	if (trap_num > num_toolbox_traps())
 		trap_num = _Unimplemented;
-	
+
 	return NGetTrapAddress(trap_num, type) != NGetTrapAddress(_Unimplemented, ToolTrap);
 }
 

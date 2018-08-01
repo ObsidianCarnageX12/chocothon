@@ -1,7 +1,7 @@
 #ifndef __CHECKSUM_H
 #define __CHECKSUM_H
 
-/* 
+/*
 checksum.h
 Thursday, March 10, 1994 8:06:07 PM
 	written by ajr
@@ -10,8 +10,8 @@ Thursday, March 10, 1994 8:06:07 PM
 // To add extra checksum types, the following enum and struct need to be expanded.
 enum
 {
-	ADD_CHECKSUM, 
-	FLETCHER_CHECKSUM, 
+	ADD_CHECKSUM,
+	FLETCHER_CHECKSUM,
 	CRC32_CHECKSUM
 };
 

@@ -42,10 +42,10 @@ FileError find_other_entries_that_reference_checksum(
 	/* Setup the private data for the callback */
 	private_data.base_file= &files_array[0];
 	private_data.base_checksum= checksum;
-	
+
 	/* Clear out the find_file pb */
 	memset(&pb, 0, sizeof(struct find_file_pb));
-	
+
 	/* Set the information */
 	pb.version= 0;
 	pb.flags= _ff_recurse;
@@ -59,8 +59,8 @@ FileError find_other_entries_that_reference_checksum(
 
 	/* Find them! */
 	error= find_files(&pb);
-	
-	if(!error) 
+
+	if(!error)
 	{
 		*count= pb.count+1; /* +1 because base is already added. */
 	} else {
@@ -71,12 +71,12 @@ FileError find_other_entries_that_reference_checksum(
 }
 
 static Boolean checksum_and_not_base_callback(
-	FSSpec *file, 
+	FSSpec *file,
 	void *data)
 {
 	Boolean add_this_file= FALSE;
 	struct find_files_private_data *private= (struct find_files_private_data *) data;
-	
+
 	/* Don't readd the base file.. */
 	if(!equal_fsspecs(file, (FSSpec *) private->base_file))
 	{
@@ -86,6 +86,6 @@ static Boolean checksum_and_not_base_callback(
 			add_this_file= TRUE;
 		}
 	}
-	
+
 	return add_this_file;
 }

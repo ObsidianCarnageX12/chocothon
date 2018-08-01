@@ -26,7 +26,7 @@ boolean process_map_wad(struct wad_data *wad, boolean restoring_game, short vers
 
 /* Final three calls, must be in this order! */
 void recalculate_redundant_map(void);
-void complete_loading_level(short *map_indexes, short map_index_count, 
+void complete_loading_level(short *map_indexes, short map_index_count,
 	struct static_platform_data *platform_data, short platform_data_count,
 	struct platform_data *actual_platform_data, short actual_platform_data_count, short version);
 
@@ -37,7 +37,7 @@ void pause_game(void);
 void resume_game(void);
 void get_current_saved_game_name(char *file_name);
 
-boolean match_checksum_with_map(short vRefNum, long dirID, unsigned long checksum, 
+boolean match_checksum_with_map(short vRefNum, long dirID, unsigned long checksum,
 	FileDesc *file);
 void set_map_file(FileDesc *file);
 

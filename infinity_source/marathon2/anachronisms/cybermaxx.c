@@ -97,17 +97,17 @@ OSErr initialize_cybermaxx(void)
 	char   initialize_string[5];
 	short  i;
 	OSErr  error;
-	
+
 	current_cybermaxx_mode = _cybermaxx_uninitialized;
 	error = allocate_serial_port();
 	if (error == noErr)
 	{
 		Handle resource= GetResource('sprt', 128);
 		short port= sPortA; /* default is modem port */
-		
+
 		if (resource && GetHandleSize(resource) == 1 && (**resource == 0 || **resource == 1))
 			port= **resource;
-		
+
 		error = configure_serial_port(port, SERIAL_DEFAULTS);
 		if (error == noErr)
 		{
@@ -117,22 +117,22 @@ OSErr initialize_cybermaxx(void)
 			initialize_string[2] = GO_HIGH_ACCURACY_MODE;
 			initialize_string[3] = GO_BINARY_MODE;
 			initialize_string[4] = GO_STREAMING_MODE;
-			
+
 			error = send_serial_bytes(initialize_string, 4);
 			if (error == noErr)
 				current_cybermaxx_mode = _cybermaxx_binary_mode;
 		}
 	}
-	
+
 	// put error reporting in here.
-	
+
 	for (i = 0; i < CYBERMAXX_QUEUE_SIZE; i++)
 	{
 		(cybermaxx_queue+i)->yaw= (cybermaxx_queue+i)->pitch = (cybermaxx_queue+i)->roll = 0;
 	}
-	
+
 	atexit(remove_cybermaxx_connection);
-	
+
 	return error;
 }
 
@@ -140,7 +140,7 @@ OSErr initialize_cybermaxx(void)
  *
  * Function: get_cybermaxx_coordinates
  * Purpose:  gets some coordinates from the cybermaxx that can be plugged into the
- *           game. it's up to the caller to do the right thing with the yaw and 
+ *           game. it's up to the caller to do the right thing with the yaw and
  *           pitch. (probably call instantiate_absolute_positioning_information)
  *
  ************************************************************************************/
@@ -167,7 +167,7 @@ OSErr get_cybermaxx_coordinates(fixed *yaw, fixed *pitch)
 				count = ASCII_BUFFER_SIZE;
 				get_cybermaxx_data((byte *) buffer, &count);
 				buffer[18] = 0; // ignore the <cr><lf>
-				sscanf(buffer, "Y%fP%fR%f", &ascii_yaw, &ascii_pitch, &ascii_roll);				
+				sscanf(buffer, "Y%fP%fR%f", &ascii_yaw, &ascii_pitch, &ascii_roll);
 				convert_ascii_cybermaxx_data(ascii_yaw, ascii_pitch, yaw, pitch);
 			case _cybermaxx_binary_mode:
 
@@ -198,7 +198,7 @@ OSErr get_cybermaxx_coordinates(fixed *yaw, fixed *pitch)
 				halt();
 		}
 	}
-	
+
 	return noErr;
 }
 
@@ -220,33 +220,33 @@ static OSErr get_cybermaxx_data(byte *buffer, short *count)
 	short    i;
 	OSErr    error;
 	boolean  received;
-	
+
 	for (i = 0, error = noErr; i < *count && error == noErr; )
 	{
 		error = receive_serial_byte(&received, buffer + i);
 		if (error == noErr && received)
 			i++;
 	}
-	
+
 	*count = i;
-	
+
 	return error;
 }
 
 /************************************************************************************
  *
  * Function: convert_ascii_cybermaxx_data
- * Purpose:  we have some floats from the cybermaxx and need to convert them 
+ * Purpose:  we have some floats from the cybermaxx and need to convert them
  *           to fixed numbers in jason’s system.
  *
  ************************************************************************************/
 static void convert_ascii_cybermaxx_data(float yaw, float pitch, fixed *new_yaw, fixed *new_pitch)
 {
 	float converted_yaw, converted_pitch;
-	
+
 	converted_yaw = yaw * NUMBER_OF_ANGLES / 360;
 	converted_pitch = pitch * NUMBER_OF_ANGLES / 360;
-	
+
 	*new_yaw = INTEGER_TO_FIXED((short) converted_yaw);
 	*new_pitch = INTEGER_TO_FIXED((short) converted_pitch);
 }
@@ -315,7 +315,7 @@ static void parse_cybermaxx_buffer(short *buffer, long size)
 	FILE *fp;
 	fp = fopen("cybermaxx recording", "a");
 #endif
-	
+
 	// find first separator (0xffff)
 	start = (byte *)buffer;
 	while (*start != 0xff && size > 0)
@@ -349,7 +349,7 @@ static void parse_cybermaxx_buffer(short *buffer, long size)
 		size -= sizeof(short);
 	}
 
-#ifdef DO_REPORTING	
+#ifdef DO_REPORTING
 	fclose(fp);
 #endif
 }
@@ -364,7 +364,7 @@ static void average_cybermaxx_queue(word *avg_yaw, word *avg_pitch, word *avg_ro
 {
 	       long    yaw, pitch, roll, total_yaw, total_pitch, total_roll;
 	       long    first_yaw, first_pitch;
-	static long    last_yaw = NONE, last_pitch = NONE;	
+	static long    last_yaw = NONE, last_pitch = NONE;
    	       short   i, count;
 
 #ifdef DO_REPORTING
@@ -373,15 +373,15 @@ static void average_cybermaxx_queue(word *avg_yaw, word *avg_pitch, word *avg_ro
 	fp = fopen("spike data", "a");
 #endif
 
-	total_yaw = total_pitch = total_roll = 0;	
+	total_yaw = total_pitch = total_roll = 0;
 	for (i = 0, count = 0; i < CYBERMAXX_QUEUE_SIZE; i++)
 	{
 		yaw   = (cybermaxx_queue+i)->yaw;
 		pitch = (cybermaxx_queue+i)->pitch;
 		roll  = (cybermaxx_queue+i)->roll;
-		
+
 		last_yaw = yaw; last_pitch = pitch;
-		
+
 		if (i == 0)
 		{
 			first_yaw = yaw; first_pitch = pitch;
@@ -389,7 +389,7 @@ static void average_cybermaxx_queue(word *avg_yaw, word *avg_pitch, word *avg_ro
 		else
 		{
 			long d0, d1, d2, t1, t2;
-			
+
 			t1 = yaw - 0x8000; t2 = yaw + 0x8000;
 			d0 = abs(yaw - first_yaw); d1 = abs(t1 - first_yaw); d2 = abs(t2 - first_yaw);
 			if (d1 <= d0 && d1 <= d2)
@@ -404,7 +404,7 @@ static void average_cybermaxx_queue(word *avg_yaw, word *avg_pitch, word *avg_ro
 			if (d2 <= d0 && d2 <= d0)
 				pitch = t2;
 		}
-		
+
 		// attempt spike removal.
 		if (last_yaw != NONE && last_pitch != NONE)
 		{
@@ -421,10 +421,10 @@ static void average_cybermaxx_queue(word *avg_yaw, word *avg_pitch, word *avg_ro
 		}
 		else
 			count++;
-			
+
 		total_yaw += yaw; total_pitch += pitch; total_roll += roll;
 	}
-	
+
 	if (count)
 	{
 		*avg_yaw   = total_yaw   / count;
@@ -437,11 +437,11 @@ static void average_cybermaxx_queue(word *avg_yaw, word *avg_pitch, word *avg_ro
 		*avg_pitch = last_pitch;
 		*avg_roll  = roll;
 	}
-	
+
 	// get it into the correct range
 	*avg_yaw   &= 0x7fff;
 	*avg_pitch &= 0x7fff;
-	
+
 #ifdef DO_REPORTING
 	fclose(fp);
 #endif
@@ -473,12 +473,12 @@ static void remove_cybermaxx_connection(void)
 static word cybermaxx_angle_distance(word theta1, word theta2)
 {
 	word d1, d2, d3, d;
-	
+
 	d1 = abs(theta1 - theta2);
 	d2 = abs(theta1 - (theta2 + 0x8000));
 	d3 = abs(theta1 - (theta2 - 0x8000));
-	
+
 	d = MIN(MIN(d1, d2), d3);
-	
+
 	return d;
 }

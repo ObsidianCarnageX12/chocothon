@@ -9,13 +9,13 @@
 
 	First is shown the
 	#LOGON XXXXX
-	
+
 	Then there are any number of groups with:
 	#INFORMATION, #CHECKPOINT, #SOUND, #MOVIE, #TRACK
-	
+
 	And a final:
-	#INTERLEVEL TELEPORT, #INTRALEVEL TELEPORT		
-	
+	#INTERLEVEL TELEPORT, #INTRALEVEL TELEPORT
+
 	Each group ends with:
 	#END
 
@@ -26,7 +26,7 @@
 	#failure- failure message
 	#information- information
 	#briefing XX- briefing, then load XX
-	#checkpoint XX- Checkpoint xx (associated with goal) 
+	#checkpoint XX- Checkpoint xx (associated with goal)
 	#sound XXXX- play sound XXXX
 	#movie XXXX- play movie XXXX (from Movie file)
 	#track XXXX- play soundtrack XXXX (from Music file)
@@ -34,7 +34,7 @@
 	#intralevel teleport XXX- go to polygon XXX
 	#pict XXXX- diplay the pict resource XXXX
 
-	Special embedded keys:   
+	Special embedded keys:
 	$B- Bold on
 	$b- bold off
 	$I- Italic on
@@ -99,7 +99,7 @@ void encode_text(struct static_preprocessed_terminal_data *terminal_text);
 void decode_text(struct static_preprocessed_terminal_data *terminal_text);
 void find_all_picts_references_by_terminals(byte *compiled_text, short terminal_count,
 	short *picts, short *picture_count);
-void find_all_checkpoints_references_by_terminals(byte *compiled_text, 
+void find_all_checkpoints_references_by_terminals(byte *compiled_text,
 	short terminal_count, short *checkpoints, short *checkpoint_count);
 boolean terminal_has_finished_text_type(short terminal_id, short finished_type);
 #endif

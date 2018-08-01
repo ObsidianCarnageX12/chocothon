@@ -60,17 +60,17 @@ _COUNT	equ	d7
 
 	move.l	4(a7),_DATA
 	movem.l	QUADRUPLE_SCREEN_REGS,-(a7)
-	
+
 	;initialize source and both destination pointers
 	movea.l	source(_DATA),_SOURCE
 	movea.l	destination(_DATA),_DESTINATION1
 	movea.l	destination(_DATA),_DESTINATION2
 	adda.w	bytes_per_row(_DATA),_DESTINATION2
-	
+
 	;initialize slops
 	move.w	destination_slop(_DATA),_DESTINATION_SLOP
 	move.w	source_slop(_DATA),_SOURCE_SLOP
-	
+
 	;initialize height
 	move.w	height(_DATA),_ROWS_LEFT
 	subq.w	#1,_ROWS_LEFT
@@ -78,7 +78,7 @@ _COUNT	equ	d7
 copy_row
 	move.w	width(_DATA),_COUNT
 	subq.w	#1,_COUNT
-	
+
 	btst.b	#SIXTEEN_BIT_BIT,flags(_DATA)
 	bne.s	expand4pixels16bit
 	btst.b	#THIRTYTWO_BIT_BIT,flags(_DATA)
@@ -108,7 +108,7 @@ expand4pixels
 	move.l	d1,(_DESTINATION1)+
 	move.l	d1,(_DESTINATION2)+
 	dbf	_COUNT,expand4pixels
-	
+
 	;add slops and repeat if necessary
 	adda.w	_SOURCE_SLOP,_SOURCE
 	adda.w	_DESTINATION_SLOP,_DESTINATION1
@@ -130,7 +130,7 @@ expand4pixels_skip
 	ror.l	#8,d1
 	move.l	d1,(_DESTINATION1)+
 	dbf	_COUNT,expand4pixels_skip
-	
+
 	;add slops and repeat if necessary
 	adda.w	_SOURCE_SLOP,_SOURCE
 	adda.w	_DESTINATION_SLOP,_DESTINATION1
@@ -156,7 +156,7 @@ expand4pixels16bit
 	move.l	d1,(_DESTINATION1)+
 	move.l	d1,(_DESTINATION2)+
 	dbf	_COUNT,expand4pixels16bit
-	
+
 	;add slops and repeat if necessary
 	adda.w	_SOURCE_SLOP,_SOURCE
 	adda.w	_DESTINATION_SLOP,_DESTINATION1
@@ -171,7 +171,7 @@ expand4pixels32bit
 	move.l	d0,(_DESTINATION1)+
 	move.l	d0,(_DESTINATION2)+
 	dbf	_COUNT,expand4pixels32bit
-	
+
 	;add slops and repeat if necessary
 	adda.w	_SOURCE_SLOP,_SOURCE
 	adda.w	_DESTINATION_SLOP,_DESTINATION1
@@ -183,7 +183,7 @@ quadruple_done
 	rts
 
 	symbol	quadruple_screen
-	
+
 	endwith
 	endproc
 
@@ -222,15 +222,15 @@ _WIDTH	equ	d4
 	;initialize count4 and count16
 	move.w	width(_DATA),_WIDTH
 	subq.w	#1,_WIDTH
-	
+
 	;initialize height
 	move.w	height(_DATA),_ROWS_LEFT
 	subq.w	#1,_ROWS_LEFT
-	
+
 	;initialize slops
 	move.w	source_slop(_DATA),_SOURCE_SLOP
 	move.w	destination_slop(_DATA),_DESTINATION_SLOP
-	
+
 copy_row
 	move.w	_WIDTH,_COUNT
 copy16
@@ -245,23 +245,23 @@ copy16
 	adda.w	_DESTINATION_SLOP,_DESTINATION
 	adda.w	_SOURCE_SLOP,_SOURCE
 	dbf	_ROWS_LEFT,copy_row
-	
+
 	;bail
 	movem.l	(a7)+,COPY_SCREEN_REGS
 	rts
 
 	symbol	copy_screen
-	
+
 	endwith
 	endproc
-	
+
 	end
 
 expand4pixels_start
 	addq.w	#1, _COUNT
 	lsr.w	#1, _COUNT
 	subq.w	#1, _COUNT
-	
+
 	move.l	(_SOURCE)+, d0
 	move.l	d0, d3
 	move.l	d0, d2
@@ -307,7 +307,7 @@ expand4pixels
 	move.l	d2, (_DESTINATION2)+
 
 	dbf	_COUNT, expand4pixels
-	
+
 	;clean up
 	move.l	d3, (_DESTINATION1)+
 	move.l	d3, (_DESTINATION2)+

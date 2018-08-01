@@ -54,7 +54,7 @@ struct map_data
 	short version; /* currently zero */
 	short environment;
 	struct monster_specifier monsters[MONSTER_TYPES_PER_MAP];
-	
+
 	/* pad out the header to 256 bytes (should be initialized to zero) */
 	short unused[120];
 

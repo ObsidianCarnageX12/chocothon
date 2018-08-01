@@ -2,11 +2,11 @@
 	TAGS.H
 	Sunday, July 3, 1994 5:33:15 PM
 
-	This is a list of all of the tags used by code that uses the wad file format. 
-	One tag, KEY_TAG, has special meaning, and KEY_TAG_SIZE must be set to the 
+	This is a list of all of the tags used by code that uses the wad file format.
+	One tag, KEY_TAG, has special meaning, and KEY_TAG_SIZE must be set to the
 	size of an index entry.  Each wad can only have one index entry.  You can get the
 	index entry from a wad, or from all of the wads in the file easily.
-	
+
 	Marathon uses the KEY_TAG as the name of the level.
 */
 

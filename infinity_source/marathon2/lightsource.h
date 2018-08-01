@@ -41,7 +41,7 @@ enum /* lighting functions */
 struct lighting_function_specification /* 7*2 == 14 bytes */
 {
 	short function;
-	
+
 	short period, delta_period;
 	fixed intensity, delta_intensity;
 };
@@ -66,12 +66,12 @@ struct static_light_data /* 8*2 + 6*14 == 100 bytes */
 	word flags;
 
 	short phase; // initializer, so lights may start out-of-phase with each other
-	
+
 	struct lighting_function_specification primary_active, secondary_active, becoming_active;
 	struct lighting_function_specification primary_inactive, secondary_inactive, becoming_inactive;
-	
+
 	short tag;
-	
+
 	short unused[4];
 };
 
@@ -81,10 +81,10 @@ struct light_data /* 14*2 + 100 == 128 bytes */
 {
 	word flags;
 	short state;
-	
+
 	// result of lighting function
 	fixed intensity;
-	
+
 	// data recalculated each function changed; passed to lighting_function each update
 	short phase, period;
 	fixed initial_intensity, final_intensity;

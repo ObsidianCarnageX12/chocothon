@@ -70,37 +70,37 @@ struct sound_file_header
 {
 	long version;
 	long tag;
-	
+
 	short source_count; // usually 2 (8-bit, 16-bit)
 	short sound_count;
-	
+
 	short unused[124];
-	
+
 	// immediately followed by permutation_count*sound_count sound_definition structures
 };
 
 struct sound_definition /* 64 bytes */
 {
 	short sound_code;
-	
+
 	short behavior_index;
 	word flags;
 
 	word chance; // play sound if AbsRandom()>=chance
-	
+
 	/* if low_pitch==0, use FIXED_ONE; if high_pitch==0 use low pitch; else choose in [low_pitch,high_pitch] */
 	fixed low_pitch, high_pitch;
-	
+
 	/* filled in later */
 	short permutations;
 	word permutations_played;
 	long group_offset, single_length, total_length; // magic numbers necessary to load sounds
 	long sound_offsets[MAXIMUM_PERMUTATIONS_PER_SOUND]; // zero-based from group offset
-	
+
 	unsigned long last_played; // machine ticks
-	
+
 	long hndl; // (machine-specific pointer type) zero if not loaded
-	
+
 	short unused[2];
 };
 
@@ -130,7 +130,7 @@ static struct sound_behavior_definition sound_behavior_definitions[NUMBER_OF_SOU
 		{MAXIMUM_SOUND_VOLUME/2, 0, 0, 7*WORLD_ONE},
 		{MAXIMUM_SOUND_VOLUME, WORLD_ONE, 0, 10*WORLD_ONE},
 	},
-	
+
 	/* _sound_is_loud */
 	{
 		{(3*MAXIMUM_SOUND_VOLUME)/4, 0, 0, 10*WORLD_ONE},
@@ -238,16 +238,16 @@ static struct sound_definition sound_definitions[NUMBER_OF_SOUND_DEFINITIONS]=
 	{14540, _sound_is_normal}, // _snd_owl
 	{18000, _sound_is_normal}, // _snd_smg_firing
 	{18010, _sound_is_normal}, // _snd_smg_reloading
-	
+
 	{12080, _sound_is_normal}, // _snd_pfhor_platform_starting,
 	{12090, _sound_is_normal}, // _snd_pfhor_platform_stopping,
 
 	{11030, _sound_is_quiet}, // _snd_fist_hitting
-	
+
 	// magnum
 	{11040, _sound_is_normal}, // _snd_magnum_firing
 	{11050, _sound_is_quiet}, // _snd_magnum_reloading
-	
+
 	// assault rifle
 	{11060, _sound_is_normal}, // _snd_assault_rifle_firing
 	{11070, _sound_is_normal}, // _snd_grenade_launcher_firing
@@ -264,7 +264,7 @@ static struct sound_definition sound_definitions[NUMBER_OF_SOUND_DEFINITIONS]=
 	{11140, _sound_is_loud}, // _snd_rocket_exploding
 	{11150, _sound_is_normal}, // _snd_rocket_flyby
 	{11160, _sound_is_normal}, // _snd_rocket_firing
-	
+
 	// flamethrower
 	{11170, _sound_is_normal}, // _snd_flamethrower
 
@@ -281,7 +281,7 @@ static struct sound_definition sound_definitions[NUMBER_OF_SOUND_DEFINITIONS]=
 	{15350, _sound_is_normal}, // _snd_fighter_hit
 	{15360, _sound_is_normal}, // _snd_fighter_flyby
 
-	// 21200 compiler	
+	// 21200 compiler
 	{15200, _sound_is_normal}, // _snd_compiler_attack
 	{15210, _sound_is_normal}, // _snd_compiler_death
 	{15220, _sound_is_normal}, // _snd_compiler_being_hit
@@ -341,7 +341,7 @@ static struct sound_definition sound_definitions[NUMBER_OF_SOUND_DEFINITIONS]=
 
 	// random ambient
 	{14500, _sound_is_normal}, // _snd_water_drip
-	
+
 	// water
 	{19000, _sound_is_quiet, _sound_cannot_be_media_obstructed}, // _snd_walking_in_water
 	{19010, _sound_is_normal, _sound_cannot_be_media_obstructed}, // _snd_exit_water
@@ -379,10 +379,10 @@ static struct sound_definition sound_definitions[NUMBER_OF_SOUND_DEFINITIONS]=
 
 	{11210, _sound_is_quiet}, // _snd_assault_rifle_reloading
 	{11270, _sound_is_quiet}, // _snd_assault_rifle_shell_casings
-	
+
 	{11220, _sound_is_loud}, // _snd_shotgun_firing
 	{11230, _sound_is_quiet}, // _snd_shotgun_reloading
-	
+
 	{11300, _sound_is_normal}, // _snd_ball_bounce
 	{11310, _sound_is_normal}, // _snd_you_are_it
 	{11320, _sound_is_normal}, // _snd_got_ball
@@ -419,14 +419,14 @@ static struct sound_definition sound_definitions[NUMBER_OF_SOUND_DEFINITIONS]=
 	{15830, _sound_is_normal}, // _snd_yeti_projectile_lava_attack_hit
 	{15840, _sound_is_normal}, // _snd_yeti_projectile_lava_flyby
 	{15850, _sound_is_normal}, // _snd_yeti_dying
-	
+
 	{14180, _sound_is_normal, _sound_is_ambient}, // _snd_machine_binder
 	{14190, _sound_is_normal, _sound_is_ambient}, // _snd_machine_bookpress
 	{14200, _sound_is_normal, _sound_is_ambient}, // _snd_machine_puncher
 	{14210, _sound_is_normal, _sound_is_ambient}, // _snd_electric
 	{14220, _sound_is_normal, _sound_is_ambient}, // _snd_alarm
 	{14230, _sound_is_normal, _sound_is_ambient}, // _snd_night_wind
-	
+
 	{14510, _sound_is_quiet}, // _snd_surface_explosion
 	{14520, _sound_is_quiet}, // _snd_underground_explosion
 
@@ -459,7 +459,7 @@ static struct sound_definition sound_definitions[NUMBER_OF_SOUND_DEFINITIONS]=
 	{14640, _sound_is_loud}, // _snd_juggernaut_warning
 	{14650, _sound_is_loud}, // _snd_juggernaut_exploding
 	{14660, _sound_is_loud}, // _snd_juggernaut_preparing_to_fire
-	
+
 	{14670, _sound_is_loud}, // _snd_enforcer_exploding
 
 	{14240, _sound_is_normal, _sound_is_ambient}, // _snd_alien_noise1

@@ -35,22 +35,22 @@ void HideMenuBar(
 	GDHandle device)
 {
 	RgnHandle new_gray_region;
-	
+
 	assert(!menu_bar_hidden);
-	
+
 	if (device==GetMainDevice())
 	{
 		old_menu_bar_height= LMGetMBarHeight();
 		LMSetMBarHeight(0);
-		
+
 		old_gray_region= LMGetGrayRgn();
 		new_gray_region= NewRgn();
 		RectRgn(new_gray_region, &(*device)->gdRect);
 		LMSetGrayRgn(new_gray_region);
-		
+
 		menu_bar_hidden= TRUE;
 	}
-	
+
 	return;
 }
 
@@ -66,7 +66,7 @@ void ShowMenuBar(
 
 		menu_bar_hidden= FALSE;
 	}
-	
+
 	return;
 }
 
@@ -76,7 +76,7 @@ GDHandle MostDevice(
 	GDHandle device, largest_device;
 	long largest_area, area;
 	Rect intersection;
-	
+
 	largest_area= 0;
 	largest_device= (GDHandle) NULL;
 	for (device=GetDeviceList();device;device=GetNextDevice(device))
@@ -94,7 +94,7 @@ GDHandle MostDevice(
 			}
 		}
 	}
-	
+
 	return largest_device;
 }
 
@@ -132,12 +132,12 @@ GDHandle BestDevice(
 				{
 					return changeable_device;
 				}
-				
+
 			case iCANCEL: /* quit */
 				exit(0);
 		}
 	}
-	
+
 	return (GDHandle) NULL;
 }
 
@@ -161,10 +161,10 @@ void LowLevelSetEntries(
 	pb.ioCRefNum= (*device)->gdRefNum;
 	pb.csCode= (*device)->gdType==directType ? cscDirectSetEntries : cscSetEntries;
 	*((Ptr*)&pb.csParam)= (Ptr) &parameters;
-	
+
 	error= PBControl((ParmBlkPtr)&pb, FALSE);
 	vassert(error==noErr, csprintf(temporary, "Control(cscXSetEntries, ...) returned #%d", error));
-	
+
 	return;
 }
 
@@ -179,7 +179,7 @@ static boolean parse_device(
 {
 	PixMapHandle pixmap;
 	short mode;
-	
+
 	if (TestDeviceAttribute(device, screenDevice)&&TestDeviceAttribute(device, screenActive))
 	{
 		pixmap= (*device)->gdPMap;
@@ -212,7 +212,7 @@ static boolean parse_device(
 					}
 				}
 			}
-			
+
 			return FALSE;
 		}
 	}

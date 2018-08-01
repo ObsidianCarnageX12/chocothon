@@ -35,7 +35,7 @@ void allocate_spherical_decision_table(
 {
 	spherical_decision_table= malloc(MAXIMUM_BUFFER_SIZE*sizeof(short));
 	assert(spherical_decision_table);
-	
+
 	return;
 }
 
@@ -52,7 +52,7 @@ void precalculate_spherical_decision_table(
 
 	/* size keeps track of how much room is left in our buffer so we can not overflow it */
 	size= 0;
-	
+
 	/* incident light vector */
 	lx= 1.0, ly= 0.5, lz= -0.5, l= sqrt(lx*lx+ly*ly+lz*lz);
 
@@ -63,15 +63,15 @@ void precalculate_spherical_decision_table(
 	*decision_table++= r;
 	*decision_table++= texture_width;
 	*decision_table++= texture_height;
-	
+
 	for (y=-r+1;y<=r-1;++y)
 	{
 		short x0, x1;
-		
+
 		x1= sqrt(r*r-y*y);
 		if (x1>=r) x1= r-1;
 		x0= -x1;
-		
+
 		assert((size+=2)<MAXIMUM_BUFFER_SIZE);
 		*decision_table++= x0+r-1;
 		*decision_table++= x1-x0+1;
@@ -83,7 +83,7 @@ void precalculate_spherical_decision_table(
 			double theta, phi; /* spherical coordinates of this point */
 			double intensity; /* light intensity [0,1] at this point */
 			double z; /* depth of this point */
-			
+
 			/* do some math */
 			assert(r*r>=x*x+y*y);
 			z= sqrt(r*r-x*x-y*y);
@@ -92,7 +92,7 @@ void precalculate_spherical_decision_table(
 			intensity= AMBIENT_COEFFICIENT+DIFFUSE_COEFFICIENT*(1-cos_alpha)/2;
 			dx= texture_width*(theta+pi/2)/(2*pi);
 			dy= texture_height*(phi+pi/2)/pi;
-			
+
 			/* save the x,y texture offsets and the intensity at this point; the PIN() is a
 				gesture toward inaccuracies somewhere in the math above, where we might get
 				weird dx,dy values */
@@ -120,7 +120,7 @@ void texture_sphere(
 	pixel8 *write, **read_row_addresses;
 	short y;
 	short dx;
-	
+
 	dx= (phase*texture->width)>>FIXED_FRACTIONAL_BITS;
 
 	decision_table= spherical_decision_table;
@@ -135,7 +135,7 @@ void texture_sphere(
 	{
 		pixel8 pixel;
 		short offset, count;
-		
+
 		write= destination->row_addresses[y] + *decision_table++;
 		count= *decision_table++;
 		while ((count-=1)>=0)
@@ -145,7 +145,7 @@ void texture_sphere(
 			*write++= shading_tables[PIXEL8_MAXIMUM_COLORS*(*decision_table++)+pixel];
 		}
 	}
-	
+
 	return;
 }
 #endif

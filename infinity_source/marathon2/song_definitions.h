@@ -28,8 +28,8 @@ struct song_definition {
 };
 
 struct song_definition songs[]= {
-	{ _song_automatically_loops, 
-		0l, 
+	{ _song_automatically_loops,
+		0l,
 		{ 0, 0}, // intro
 		{ 0, 0},	// chorus
 		RANDOM_COUNT(3), // chorus count

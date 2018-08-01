@@ -49,11 +49,11 @@ long compress_bytes(
 	long size;
 	short count;
 	register byte value;
-	
+
 	*((long*)compressed)= raw_size;
 	read= raw, write= compressed+4;
 	count= 0, size= 4, last_raw_count= (byte *) NULL;
-	
+
 	while (raw_size>0&&size<maximum_compressed_size)
 	{
 		value= *read;
@@ -63,7 +63,7 @@ long compress_bytes(
 			{
 				*last_raw_count= count+127;
 			}
-			
+
 			count= 3;
 			read+= 3;
 			raw_size-= 3;
@@ -73,11 +73,11 @@ long compress_bytes(
 				raw_size-= 1;
 				count+= 1;
 			}
-			
+
 			*write++= count-3;
 			*write++= value;
 			size+= 2;
-			
+
 			last_raw_count= (byte *) NULL;
 			count= 0;
 		}
@@ -88,24 +88,24 @@ long compress_bytes(
 				last_raw_count= write++;
 				size+= 1;
 			}
-			
+
 			*write++= value;
 			raw_size-= 1;
 			count+= 1;
 			size+= 1;
-			
+
 			if (count==255-127||!raw_size)
 			{
 				*last_raw_count= count+127;
-				
+
 				last_raw_count= (byte *) NULL;
 				count= 0;
 			}
-			
+
 			read+= 1;
 		}
 	}
-	
+
 	if (size>=maximum_compressed_size)
 	{
 		return -1;
@@ -132,11 +132,11 @@ void uncompress_bytes(
 	long current_size, raw_size;
 	short count;
 	byte value;
-	
+
 	current_size= 0;
 	raw_size= *((long*)compressed);
 	read= compressed+sizeof(long), write= raw;
-	
+
 	while (current_size<raw_size)
 	{
 		count= *read++;
@@ -146,7 +146,7 @@ void uncompress_bytes(
 			value= *read++;
 			current_size+= count;
 			assert(current_size<=raw_size);
-			
+
 			while (count)
 			{
 				*write++= value;
@@ -158,7 +158,7 @@ void uncompress_bytes(
 			count-= 127;
 			current_size+= count;
 			assert(current_size<=raw_size);
-			
+
 			while (count)
 			{
 				*write++= *read++;
@@ -167,6 +167,6 @@ void uncompress_bytes(
 		}
 	}
 	assert(current_size==raw_size);
-	
+
 	return;
 }

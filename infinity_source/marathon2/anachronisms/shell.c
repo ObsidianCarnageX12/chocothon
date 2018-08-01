@@ -217,16 +217,16 @@ static void script_demo(void);
 
 void main(
 	void)
-{	
+{
 
 	set_game_status(no_game_in_progress);
-	
+
 	initialize_application_heap();
 
 	initialize_core_events();
 
 	do_top_level_interface();
-	
+
 	exit(0);
 }
 
@@ -240,7 +240,7 @@ void game_main_event_loop(void)
 	while (!done)
 	{
 		short ticks_elapsed;
-		
+
 		/* get and handle events; GetOSEvent() is much less friendly to background processes than
 			WaitNextEvent() */
 		if (TickCount()-last_xnextevent_call>=TICKS_BETWEEN_XNEXTEVENT_CALLS)
@@ -258,7 +258,7 @@ void game_main_event_loop(void)
 //				consecutive_getosevent_calls= 0;
 			}
 			FlushEvents(keyDownMask|keyUpMask|autoKeyMask, 0);
-			
+
 			last_xnextevent_call= TickCount();
 		}
 
@@ -293,7 +293,7 @@ void game_main_event_loop(void)
 				halt();
 				break;
 		}
-		
+
 		/* if we’re not paused and there’s something to draw (i.e., anything different from
 			last time), render a frame */
 		if (!done && get_keyboard_controller_status() && (ticks_elapsed= update_world()))
@@ -303,14 +303,14 @@ void game_main_event_loop(void)
 				case _mouse_yaw_pitch:
 				case _mouse_yaw_velocity:
 // now called from parse_keymap() (so calling it here would eat data)
-//					mouse_idle(preferences->input_device); 
+//					mouse_idle(preferences->input_device);
 					break;
 			}
 
 			render_screen(ticks_elapsed);
 		}
 	}
-	
+
 	return;
 }
 
@@ -320,7 +320,7 @@ void free_and_unlock_memory(
 	void)
 {
 	stop_all_sounds();
-	
+
 	return;
 }
 
@@ -349,7 +349,7 @@ static void initialize_application_heap(
 
 //	{
 //		OSErr error;
-//		
+//
 //		error= InitTSMAwareApplication();
 //		vassert(error==noErr, csprintf(temporary, "InitTSMAwareApplication() == #%d", error));
 //	}
@@ -361,7 +361,7 @@ static void initialize_application_heap(
 #ifdef PERFORMANCE
 	{
 		Boolean succeeded;
-		
+
 		succeeded = InitPerf(&perf_globals, 4, 8, TRUE, TRUE, "\pCODE", 0, "", 0, 0, 0, 0);
 		assert(succeeded);
 	}
@@ -386,7 +386,7 @@ static void initialize_application_heap(
 	{
 		Handle         some_resource;
 		unsigned long  current_time;
-		
+
 		// we’re assuming that beta copies are all fat versions
 		some_resource = GetResource('SOCK', 128); // the socket listener
 		if (!some_resource)
@@ -428,7 +428,7 @@ static void initialize_application_heap(
 	set_dialog_header_proc(marathon_dialog_header_proc);
 
 	setup_command_keys();
-	
+
 	SetCursor(&qd.arrow);
 
 	return;
@@ -440,7 +440,7 @@ void verify_preferences(
 {
 	short    i;
 	boolean  need_to_reinitialize = FALSE;
-	
+
 	if (preferences->name[0] > PREFERENCES_NAME_LENGTH || preferences->name[0] < 0)
 		need_to_reinitialize = TRUE;
 	else if (preferences->screen_mode.size != _100_percent
@@ -448,7 +448,7 @@ void verify_preferences(
 		&&   preferences->screen_mode.size != _50_percent
 		&&   preferences->screen_mode.size != _full_screen)
 		need_to_reinitialize = TRUE;
-	else if (preferences->input_device != _keyboard_or_game_pad 
+	else if (preferences->input_device != _keyboard_or_game_pad
 		&&   preferences->input_device != _mouse_yaw_pitch
 		&&   preferences->input_device != _mouse_yaw_velocity
 		&&   preferences->input_device != _cybermaxx_input)
@@ -468,7 +468,7 @@ void verify_preferences(
 			}
 		}
 	}
-	
+
 	if (need_to_reinitialize)
 	{
 		initialize_preferences(preferences);
@@ -489,13 +489,13 @@ void initialize_preferences(
 #if !defined(DEMO) && defined(FINAL)
 	ask_for_serial_number();
 #endif
-	
+
 	get_machine_type(&machine_is_68k, &machine_is_68040, &machine_is_ppc);
 
 	preferences->device_spec.slot= NONE;
 	preferences->device_spec.flags= deviceIsColor;
 	preferences->device_spec.bit_depth= 8;
-		
+
 	preferences->screen_mode.gamma_level= DEFAULT_GAMMA_LEVEL;
 	if (hardware_acceleration_code() == _valkyrie_acceleration)
 	{
@@ -524,31 +524,31 @@ void initialize_preferences(
 		preferences->screen_mode.acceleration = _no_acceleration;
 		preferences->screen_mode.bit_depth = 8;
 	}
-	
+
 	preferences->screen_mode.draw_every_other_line= FALSE;
-	
+
 	/* new with version 2 of the preferences */
 	preferences->name[0] = 0;
 	preferences->team = 0;
-	
+
 	/* new with version 4 of the prefs */
 	set_default_keys(preferences, _standard_keyboard_setup);
 	for (i = 0; i < NUMBER_UNUSED_KEYS; i++)
 	{
 		preferences->unused_keycodes[i] = 0;
 	}
-	
+
 	/* new with version 5 of the prefs */
 	preferences->render_compass= TRUE;
-	
+
 	/* new with version 7 of the prefs */
 	GetDateTime(&preferences->last_time_ran);
-	
+
 	/* version 8 eliminated the preferences version—now in preferences.c */
-	
+
 	/* new with version 9 */
 	preferences->input_device = _keyboard_or_game_pad;
-	
+
 	/* new with version 10 */
 	preferences->record_every_game = TRUE;
 
@@ -566,7 +566,7 @@ void initialize_preferences(
 	preferences->allow_microphone = TRUE;
 	preferences->network_difficulty_level = 0;
 	preferences->network_game_options =	_multiplayer_game | _ammo_replenishes | _weapons_replenish
-		| _specials_replenish |	_monsters_replenish | _burn_items_on_death | _suicide_is_penalized 
+		| _specials_replenish |	_monsters_replenish | _burn_items_on_death | _suicide_is_penalized
 		| _force_unique_teams;
 #ifdef DEMO
 	preferences->network_time_limit = 5 * TICKS_PER_SECOND * 60;
@@ -576,7 +576,7 @@ void initialize_preferences(
 #endif
 	preferences->network_kill_limit = 10;
 	preferences->network_entry_point= 0;
-	
+
 	/* new with version 15 */
 	preferences->network_game_is_untimed = FALSE;
 
@@ -601,7 +601,7 @@ static void process_event(
 				case inSysWindow: /* DAs and the menu bar can blow me */
 				case inMenuBar:
 					halt();
-					
+
 				case inContent:
 					// process_screen_click(event); // no longer does anything.
 					if (get_game_status() == demo_in_progress)
@@ -611,16 +611,16 @@ static void process_event(
 					break;
 			}
 			break;
-		
+
 		case keyDown:
 		case autoKey:
 			process_key(event, toupper(event->message&charCodeMask));
 			break;
-			
+
 		case updateEvt:
 			update_any_window((WindowPtr)(event->message), event);
 			break;
-			
+
 		case activateEvt:
 			activate_any_window((WindowPtr)(event->message), event, event->modifiers&activeFlag);
 			break;
@@ -642,7 +642,7 @@ static void process_event(
 			}
 			break;
 	}
-		
+
 	return;
 }
 
@@ -650,7 +650,7 @@ void global_idle_proc(
 	void)
 {
 	background_music_idle_proc();
-	
+
 	return;
 }
 
@@ -667,13 +667,13 @@ static void process_key(
 		return;
 
 	virtual = (event->message >> 8) & charCodeMask;
-	
+
 	if (!game_is_networked && get_game_status() == game_in_progress)
 	{
 		type_of_cheat = process_keyword_key(key);
 		if (type_of_cheat != NONE) handle_keyword(type_of_cheat);
 	}
-	
+
 	if (event->modifiers&cmdKey)
 	{
 		process_command_key(key);
@@ -732,11 +732,11 @@ static void process_key(
 			case '?':
 				{
 					extern boolean displaying_fps;
-					
+
 					displaying_fps= !displaying_fps;
 				}
 				break;
-			
+
 			default: // well, let's check the function keys then, using the keycodes.
 				switch(virtual)
 				{
@@ -830,7 +830,7 @@ static void process_key(
 		render_screen(0);
 	}
 	if (changed_prefs) write_preferences_file(preferences);
-	
+
 	return;
 }
 
@@ -838,7 +838,7 @@ static process_command_key(short key)
 {
 	short i;
 	short command_key_tag = NONE;
-	
+
 	for (i = 0; i < NUMBER_OF_COMMAND_KEYS; i++)
 	{
 		if (key == command_keys[i].command_key)
@@ -847,11 +847,11 @@ static process_command_key(short key)
 			break;
 		}
 	}
-	
+
 	switch (command_key_tag)
 	{
 		boolean really_wants_to_quit = FALSE;
-		
+
 		case _command_key_close: /* CMD-Q; quit */
 		case _command_key_quit: /* CMD-W; close current game */
 			if (get_game_status() != demo_in_progress && get_game_status() != replay_in_progress)
@@ -887,7 +887,7 @@ static process_command_key(short key)
 						break;
 					case demo_in_progress:
 						set_game_status(user_wants_quit_from_demo);
-						break;					
+						break;
 				}
 			}
 			break;
@@ -951,7 +951,7 @@ static short process_keyword_key(
 		}
 		keyword_buffer[MAXIMUM_KEYWORD_LENGTH-1]= key+'A'-1;
 		keyword_buffer[MAXIMUM_KEYWORD_LENGTH]= 0;
-		
+
 		/* any matches? */
 		for (i=0;i<NUMBER_OF_KEYWORDS;++i)
 		{
@@ -959,13 +959,13 @@ static short process_keyword_key(
 			{
 				/* wipe the buffer if we have a match */
 				memset(keyword_buffer, 0, MAXIMUM_KEYWORD_LENGTH);
-				
+
 				/* and return the tag */
 				tag = keywords[i].tag;
 			}
 		}
 	}
-	
+
 	return tag;
 }
 
@@ -981,22 +981,22 @@ static void verify_environment(
 	{
 		alert_user(fatalError, strERRORS, badSystem, environment.systemVersion);
 	}
-	
+
 	if (!environment.hasColorQD)
 	{
 		alert_user(fatalError, strERRORS, badQuickDraw, 0);
 	}
-	
+
 	if (!environment.processor&&environment.processor<env68020)
 	{
 		alert_user(fatalError, strERRORS, badProcessor, environment.processor);
 	}
-	
+
 	if (FreeMem()<1900000)
 	{
 		alert_user(fatalError, strERRORS, badMemory, FreeMem());
 	}
-	
+
 	return;
 }
 
@@ -1020,8 +1020,8 @@ void handle_high_level_event(EventRecord *event)
 
 static void initialize_core_events(void)
 {
-	/* Allocate the system information structure.. */	
-	system_information= (struct system_information_data *) 
+	/* Allocate the system information structure.. */
+	system_information= (struct system_information_data *)
 		NewPtr(sizeof(struct system_information_data));
 	assert(system_information);
 
@@ -1041,21 +1041,21 @@ static void initialize_core_events(void)
 			quit_application_proc= NewAEEventHandlerProc(handle_quit_application);
 			print_document_proc= NewAEEventHandlerProc(handle_print_document);
 			open_application_proc= NewAEEventHandlerProc(handle_open_application);
-			assert(open_document_proc && quit_application_proc 
+			assert(open_document_proc && quit_application_proc
 				&& print_document_proc && open_application_proc);
-		
+
 			err= AEInstallEventHandler(kCoreEventClass, kAEOpenDocuments, open_document_proc, 0,
 				FALSE);
 			assert(!err);
-			
+
 			err= AEInstallEventHandler(kCoreEventClass, kAEQuitApplication, quit_application_proc, 0,
 				FALSE);
 			assert(!err);
-		
+
 			err= AEInstallEventHandler(kCoreEventClass, kAEPrintDocuments, print_document_proc, 0,
 				FALSE);
 			assert(!err);
-		
+
 			err= AEInstallEventHandler(kCoreEventClass, kAEOpenApplication, open_application_proc, 0,
 				FALSE);
 			assert(!err);
@@ -1088,23 +1088,23 @@ static pascal OSErr handle_open_document(AppleEvent *event, AppleEvent *reply, l
 	char name[65];
 	boolean map_set= FALSE;
 
-#pragma unused (reply, myRefCon)	
+#pragma unused (reply, myRefCon)
 	err=AEGetParamDesc(event, keyDirectObject, typeAEList, &docList);
 	if(err) return err;
-	
+
 	err=required_appleevent_check(event);
 	if(err) return err;
 
-#ifndef FINAL	
+#ifndef FINAL
 	err=AECountItems(&docList, &itemsInList);
 	if(err) return err;
-	
-	for(i=1; i<=itemsInList; i++) 
+
+	for(i=1; i<=itemsInList; i++)
 	{
-		err=AEGetNthPtr(&docList, i, typeFSS, &theKeyword, &typeCode, 
+		err=AEGetNthPtr(&docList, i, typeFSS, &theKeyword, &typeCode,
 			(Ptr) &myFSS, sizeof(FSSpec), &actualSize);
 		if(err) return err;
-		
+
 		FSpGetFInfo(&myFSS, &theFInfo);
 		if(theFInfo.fdType==SCENARIO_FILE_TYPE)
 		{
@@ -1115,10 +1115,10 @@ static pascal OSErr handle_open_document(AppleEvent *event, AppleEvent *reply, l
 		}
 	}
 
-	/* Default to the proper map. */	
+	/* Default to the proper map. */
 	if(!map_set) set_to_default_map();
 #endif
-	
+
 	return noErr;
 }
 
@@ -1126,10 +1126,10 @@ static pascal OSErr handle_quit_application(AppleEvent *event, AppleEvent *reply
 {
 #pragma unused(reply, myRefCon)
 	OSErr err;
-	
+
 	err= required_appleevent_check(event);
 	if(err) return err;
-	
+
 	exit(0);
 }
 
@@ -1137,9 +1137,9 @@ static pascal OSErr handle_print_document(AppleEvent *event, AppleEvent *reply, 
 {
 	#pragma unused(event, reply, myRefCon)
 
-	/* Default to the proper map. */	
+	/* Default to the proper map. */
 	set_to_default_map();
-	
+
 	return (errAEEventNotHandled);
 }
 
@@ -1161,10 +1161,10 @@ static OSErr required_appleevent_check(AppleEvent *event)
 	OSErr err;
 	DescType typeCode;
 	Size actualSize;
-	
+
 	err=AEGetAttributePtr(event, keyMissedKeywordAttr, typeWildCard, &typeCode,
 		0l, 0, &actualSize);
-		
+
 	if(err==errAEDescNotFound) return noErr;
 	if(err==noErr) return (errAEEventNotHandled);
 
@@ -1182,7 +1182,7 @@ static boolean has_system_seven(
 	{
 		if(sysVersion>=0x0700) return TRUE;
 	}
-	
+
 	return FALSE;
 }
 
@@ -1193,7 +1193,7 @@ static void get_machine_type(
 {
 	long processor_type;
 	OSErr error;
-	
+
 	error = Gestalt(gestaltNativeCPUtype, &processor_type);
 
 	if (error == noErr)
@@ -1231,7 +1231,7 @@ static void get_machine_type(
 		else
 			*machine_is_68040 = FALSE;
 	}
-	
+
 	return;
 
 }
@@ -1249,7 +1249,7 @@ void handle_keyword(
 	boolean cheated= TRUE;
 
 #if 0
-#ifndef FINAL	
+#ifndef FINAL
 	switch (tag)
 	{
 		case _tag_health:
@@ -1372,7 +1372,7 @@ void handle_keyword(
 	if (cheated)
 	{
 		long final_ticks;
-		
+
 		SetSoundVol(7);
 		play_local_sound(20110);
 		Delay(45, &final_ticks);
@@ -1383,7 +1383,7 @@ void handle_keyword(
 #endif
 #endif
 #endif
-	
+
 	return;
 }
 
@@ -1399,7 +1399,7 @@ static void setup_command_keys(
 	short       i;
 	short       command_key;
 	MenuHandle  game_menu;
-	
+
 	game_menu = GetMenu(menuGAME);
 	assert(game_menu);
 
@@ -1409,10 +1409,10 @@ static void setup_command_keys(
 		GetItemCmd(game_menu, i+1, &command_key);
 		command_keys[i].command_key = toupper(command_key);
 	}
-	
+
 	DeleteMenu(menuGAME);
 	ReleaseResource((Handle) game_menu);
-	
+
 	return;
 }
 
@@ -1423,7 +1423,7 @@ void pause_game(
 	stop_fade();
 	darken_world_window();
 	pause_keyboard_controller(FALSE);
-	
+
 	return;
 }
 
@@ -1432,7 +1432,7 @@ void resume_game(
 	void)
 {
 //	GrafPtr old_port;
-	
+
 //	GetPort(&old_port);
 //	SetPort(screen_window);
 //	ValidRect(&screen_window->portRect);
@@ -1440,7 +1440,7 @@ void resume_game(
 
 	validate_world_window();
 	pause_keyboard_controller(TRUE);
-	
+
 	return;
 }
 
@@ -1450,7 +1450,7 @@ static void script_demo(
 	DialogPtr dialog= myGetNewDialog(132, NULL, (WindowPtr) -1, 0);
 	short item_hit, number= NONE;
 	short state= 0;
-	
+
 	assert(dialog);
 	modify_control(dialog, 4+state, CONTROL_ACTIVE, TRUE);
 	do
@@ -1465,7 +1465,7 @@ static void script_demo(
 		}
 	}
 	while (item_hit!=iOK && item_hit!=iCANCEL);
-	
+
 	if (item_hit==iOK)
 	{
 		number= extract_number_from_text_item(dialog, 3);
@@ -1473,7 +1473,7 @@ static void script_demo(
 	}
 	DisposeDialog(dialog);
 	present_computer_interface(number, state);
-	
+
 	return;
 }
 
@@ -1489,13 +1489,13 @@ static void marathon_dialog_header_proc(
 	Rect *frame)
 {
 	long refCon= GetWRefCon(dialog);
-	
+
 	if (refCon>=FIRST_DIALOG_REFCON&&refCon<=LAST_DIALOG_REFCON)
 	{
 		PixMapHandle pixmap= get_shape_pixmap(BUILD_DESCRIPTOR(_collection_splash_graphics, FIRST_HEADER_SHAPE+refCon-FIRST_DIALOG_REFCON), FALSE);
 		Rect destination= (*pixmap)->bounds;
 		RGBColor old_forecolor, old_backcolor;
-		
+
 		OffsetRect(&destination, frame->left-destination.left+DIALOG_HEADER_HORIZONTAL_INSET,
 			frame->top-destination.top+DIALOG_HEADER_VERTICAL_INSET);
 		GetForeColor(&old_forecolor);
@@ -1507,6 +1507,6 @@ static void marathon_dialog_header_proc(
 		RGBForeColor(&old_forecolor);
 		RGBBackColor(&old_backcolor);
 	}
-		
+
 	return;
 }

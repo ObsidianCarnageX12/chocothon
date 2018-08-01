@@ -63,14 +63,14 @@ void main(
 			{
 				fprintf(stderr, "Unable to create the physics file!\n");
 			}
-		} 
+		}
 		else
 		{
 			fprintf(stderr, "%s: Error opening '%s' (Err: %d)", argv[0], argv[1], error);
 			exit(1);
 		}
 	}
-	
+
 	exit(0);
 }
 
@@ -85,17 +85,17 @@ static boolean create_physics_file(
 	if(!error)
 	{
 		fileref file_ref;
-		
+
 		file_ref= open_wad_file_for_writing(file);
 		if(file_ref != NONE)
 		{
 			struct wad_header header;
 			struct directory_entry entries[MAXIMUM_DIRECTORY_ENTRIES_PER_FILE];
 
-			/* Create the header.. */		
+			/* Create the header.. */
 			fill_default_wad_header(file, CURRENT_WADFILE_VERSION,
 				BUNGIE_PHYSICS_DATA_VERSION, 1, 0, &header);
-			
+
 			if(write_wad_header(file_ref, &header))
 			{
 				struct wad_data *wad= create_empty_wad();
@@ -103,15 +103,15 @@ static boolean create_physics_file(
 				if(wad)
 				{
 					short index;
-					
+
 					for (index= 0; index<NUMBER_OF_DEFINITIONS; ++index)
 					{
 						struct definition_data *definition= definitions+index;
-						
+
 						wad= append_data_to_wad(wad, definition->tag, definition->data,
 							definition->size*definition->count, 0l);
 					}
-				
+
 					if(write_wad(file_ref, &header, wad, sizeof(struct wad_header)))
 					{
 						/* Update the header.. */
@@ -125,7 +125,7 @@ static boolean create_physics_file(
 						write_wad_header(file_ref, &header);
 
 						write_directorys(file_ref, &header, entries);
-					
+
 						/* We win.. */
 						success= TRUE;
 					}
@@ -139,10 +139,10 @@ static boolean create_physics_file(
 
 			close_wad_file(file_ref);
 
-			fprintf(stderr, "Physics File: %P Checksum: 0x%x\n", file->name, 
+			fprintf(stderr, "Physics File: %P Checksum: 0x%x\n", file->name,
 				read_wad_file_checksum(file));
 		}
 	}
-	
+
 	return success;
 }

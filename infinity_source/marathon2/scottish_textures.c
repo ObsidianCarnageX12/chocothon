@@ -41,7 +41,7 @@ Thursday, June 16, 1994 9:56:14 PM
 	modified _render_textured_polygon_line to handle elevation.
 Thursday, July 7, 1994 1:23:09 PM
 	changed MAXIMUM_SCRATCH_TABLE_ENTRIES from 4k to 1200.  Modified render code to work as well,
-	now the problem is floor/ceiling matching with trapezoids, which should fall out with the 
+	now the problem is floor/ceiling matching with trapezoids, which should fall out with the
 	rewrite...
 Tuesday, July 26, 1994 3:42:16 PM
 	OBSOLETE’ed nearly the entire file (fixed_pixels are no more).  rewriting texture_rectangle.
@@ -108,7 +108,7 @@ struct _horizontal_polygon_line_data
 {
 	unsigned long source_x, source_y;
 	unsigned long source_dx, source_dy;
-	
+
 	void *shading_table;
 };
 
@@ -132,7 +132,7 @@ struct _vertical_polygon_data
 	short downshift;
 	short x0;
 	short width;
-	
+
 	short pad;
 };
 
@@ -295,7 +295,7 @@ void texture_horizontal_polygon(
 			texture_vertical_polygon(polygon, screen, view);
 			return;
 	}
-	
+
 	/* locate the vertically highest (closest to zero) and lowest (farthest from zero) vertices */
 	highest_vertex= lowest_vertex= 0;
 	for (vertex= 1; vertex<polygon->vertex_count; ++vertex)
@@ -327,13 +327,13 @@ void texture_horizontal_polygon(
 		total_line_count= vertices[lowest_vertex].y-vertices[highest_vertex].y; /* calculate vertical line count */
 
 		assert(total_line_count<MAXIMUM_SCRATCH_TABLE_ENTRIES); /* make sure we have enough scratch space */
-		
-		/* precalculate high and low y-coordinates for every x-coordinate */			
+
+		/* precalculate high and low y-coordinates for every x-coordinate */
 		aggregate_total_line_count= total_line_count;
 		while (total_line_count>0)
 		{
 			short delta;
-			
+
 			/* if we’re out of scan lines on the left side, get a new vertex and build a table
 				of x-coordinates so we can walk toward the new vertex */
 			if (left_line_count<=0)
@@ -373,10 +373,10 @@ void texture_horizontal_polygon(
 			total_line_count-= delta;
 			left_line_count-= delta;
 			right_line_count-= delta;
-			
+
 			assert(delta||!total_line_count); /* if our delta is zero, we’d better be out of lines */
 		}
-		
+
 		/* make sure every coordinate is accounted for in our tables */
 		assert(aggregate_right_line_count==aggregate_total_line_count);
 		assert(aggregate_left_line_count==aggregate_total_line_count);
@@ -396,11 +396,11 @@ void texture_horizontal_polygon(
 					vertices[highest_vertex].y, left_table, right_table,
 					aggregate_total_line_count);
 				break;
-			
+
 			default:
 				vhalt(csprintf(temporary, "horizontal_polygons dont support mode #%d", polygon->transfer_mode));
 		}
-		
+
 		/* render all lines */
 		switch (bit_depth)
 		{
@@ -415,7 +415,7 @@ void texture_horizontal_polygon(
 //						break;
 //#endif
 //#endif
-	
+
 					case _textured_transfer:
 						_texture_horizontal_polygon_lines8(polygon->texture, screen, view, (struct _horizontal_polygon_line_data *)precalculation_table,
 							vertices[highest_vertex].y, left_table, right_table, aggregate_total_line_count);
@@ -424,7 +424,7 @@ void texture_horizontal_polygon(
 						_landscape_horizontal_polygon_lines8(polygon->texture, screen, view, (struct _horizontal_polygon_line_data *)precalculation_table,
 							vertices[highest_vertex].y, left_table, right_table, aggregate_total_line_count);
 						break;
-						
+
 					default:
 						halt();
 				}
@@ -441,7 +441,7 @@ void texture_horizontal_polygon(
 						_landscape_horizontal_polygon_lines16(polygon->texture, screen, view, (struct _horizontal_polygon_line_data *)precalculation_table,
 							vertices[highest_vertex].y, left_table, right_table, aggregate_total_line_count);
 						break;
-					
+
 					default:
 						halt();
 				}
@@ -459,7 +459,7 @@ void texture_horizontal_polygon(
 						_landscape_horizontal_polygon_lines32(polygon->texture, screen, view, (struct _horizontal_polygon_line_data *)precalculation_table,
 							vertices[highest_vertex].y, left_table, right_table, aggregate_total_line_count);
 						break;
-					
+
 					default:
 						halt();
 				}
@@ -469,7 +469,7 @@ void texture_horizontal_polygon(
 				halt();
 		}
 	}
-	
+
 	return;
 }
 
@@ -524,13 +524,13 @@ void texture_vertical_polygon(
 		total_line_count= vertices[lowest_vertex].x-vertices[highest_vertex].x; /* calculate vertical line count */
 
 		assert(total_line_count<MAXIMUM_SCRATCH_TABLE_ENTRIES); /* make sure we have enough scratch space */
-		
-		/* precalculate high and low y-coordinates for every x-coordinate */			
+
+		/* precalculate high and low y-coordinates for every x-coordinate */
 		aggregate_total_line_count= total_line_count;
 		while (total_line_count>0)
 		{
 			short delta;
-			
+
 			/* if we’re out of scan lines on the left side, get a new vertex and build a table
 				of y-coordinates so we can walk toward the new vertex */
 			if (left_line_count<=0)
@@ -562,17 +562,17 @@ void texture_vertical_polygon(
 				}
 				while (!right_line_count);
 			}
-			
+
 			/* advance by the minimum of left_line_count and right_line_count */
 			delta= MIN(left_line_count, right_line_count);
 			assert(delta);
 			total_line_count-= delta;
 			left_line_count-= delta;
 			right_line_count-= delta;
-			
+
 			assert(delta||!total_line_count); /* if our delta is zero, we’d better be out of lines */
 		}
-		
+
 		/* make sure every coordinate is accounted for in our tables */
 		assert(aggregate_right_line_count==aggregate_total_line_count);
 		assert(aggregate_left_line_count==aggregate_total_line_count);
@@ -586,11 +586,11 @@ void texture_vertical_polygon(
 				_pretexture_vertical_polygon_lines(polygon, screen, view, (struct _vertical_polygon_data *)precalculation_table,
 					vertices[highest_vertex].x, left_table, right_table, aggregate_total_line_count);
 				break;
-			
+
 			default:
 				vhalt(csprintf(temporary, "vertical_polygons dont support mode #%d", polygon->transfer_mode));
 		}
-		
+
 		/* render all lines */
 		switch (bit_depth)
 		{
@@ -603,17 +603,17 @@ void texture_vertical_polygon(
 							_transparent_texture_vertical_polygon_lines8(screen, view, (struct _vertical_polygon_data *)precalculation_table, left_table, right_table) :
 							_texture_vertical_polygon_lines8(screen, view, (struct _vertical_polygon_data *)precalculation_table, left_table, right_table);
 						break;
-					
+
 					case _static_transfer:
 //						_randomize_vertical_polygon_lines8(screen, view, precalculation_table,
 //							left_table, right_table, polygon->transfer_data);
 						break;
-					
+
 					default:
 						halt();
 				}
 				break;
-				
+
 			case 16:
 				switch (polygon->transfer_mode)
 				{
@@ -623,7 +623,7 @@ void texture_vertical_polygon(
 							_transparent_texture_vertical_polygon_lines16(screen, view, (struct _vertical_polygon_data *)precalculation_table, left_table, right_table) :
 							_texture_vertical_polygon_lines16(screen, view, (struct _vertical_polygon_data *)precalculation_table, left_table, right_table);
 						break;
-					
+
 					case _static_transfer:
 //						_randomize_vertical_polygon_lines16(screen, view, precalculation_table,
 //							left_table, right_table, polygon->transfer_data);
@@ -633,7 +633,7 @@ void texture_vertical_polygon(
 						halt();
 				}
 				break;
-			
+
 			case 32:
 				switch (polygon->transfer_mode)
 				{
@@ -643,7 +643,7 @@ void texture_vertical_polygon(
 							_transparent_texture_vertical_polygon_lines32(screen, view, (struct _vertical_polygon_data *)precalculation_table, left_table, right_table) :
 							_texture_vertical_polygon_lines32(screen, view, (struct _vertical_polygon_data *)precalculation_table, left_table, right_table);
 						break;
-					
+
 					case _static_transfer:
 //						_randomize_vertical_polygon_lines32(screen, view, precalculation_table,
 //							left_table, right_table, polygon->transfer_data);
@@ -653,12 +653,12 @@ void texture_vertical_polygon(
 						halt();
 				}
 				break;
-			
+
 			default:
 				halt();
 		}
 	}
-	
+
 	return;
 }
 
@@ -674,13 +674,13 @@ void texture_rectangle(
 		if (rectangle->clip_right>screen->width) rectangle->clip_right= screen->width;
 		if (rectangle->clip_top<0) rectangle->clip_top= 0;
 		if (rectangle->clip_bottom>screen->height) rectangle->clip_bottom= screen->height;
-	
+
 		/* subsume left and right sides of the rectangle into clipping parameters */
 		if (rectangle->clip_left<rectangle->x0) rectangle->clip_left= rectangle->x0;
 		if (rectangle->clip_right>rectangle->x1) rectangle->clip_right= rectangle->x1;
 		if (rectangle->clip_top<rectangle->y0) rectangle->clip_top= rectangle->y0;
 		if (rectangle->clip_bottom>rectangle->y1) rectangle->clip_bottom= rectangle->y1;
-	
+
 		/* only continue if we have a non-empty rectangle, at least some of which is on the screen */
 		if (rectangle->clip_left<rectangle->clip_right && rectangle->clip_top<rectangle->clip_bottom &&
 			rectangle->clip_right>0 && rectangle->clip_left<screen->width &&
@@ -692,18 +692,18 @@ void texture_rectangle(
 			short screen_x= rectangle->x0, screen_y= rectangle->y0;
 			struct bitmap_definition *texture= rectangle->texture;
 			void *shading_table;
-	
+
 			short *y0_table= scratch_table0, *y1_table= scratch_table1;
 			struct _vertical_polygon_data *header= (struct _vertical_polygon_data *)precalculation_table;
 			struct _vertical_polygon_line_data *data= (struct _vertical_polygon_line_data *) (header+1);
-			
+
 			fixed texture_dx= INTEGER_TO_FIXED(texture->width)/screen_width;
 			fixed texture_x= texture_dx>>1;
-	
+
 			fixed texture_dy= INTEGER_TO_FIXED(texture->height)/screen_height;
 			fixed texture_y0= 0;
 			fixed texture_y1;
-			
+
 			if (texture_dx&&texture_dy)
 			{
 				/* handle horizontal mirroring */
@@ -712,39 +712,39 @@ void texture_rectangle(
 					texture_dx= -texture_dx;
 					texture_x= INTEGER_TO_FIXED(texture->width)+(texture_dx>>1);
 				}
-				
-				/* left clipping */		
+
+				/* left clipping */
 				if ((delta= rectangle->clip_left-rectangle->x0)>0)
 				{
 					texture_x+= delta*texture_dx;
 					screen_width-= delta;
 					screen_x= rectangle->clip_left;
-				}				
+				}
 				/* right clipping */
 				if ((delta= rectangle->x1-rectangle->clip_right)>0)
 				{
 					screen_width-= delta;
 				}
-				
+
 				/* top clipping */
 				if ((delta= rectangle->clip_top-rectangle->y0)>0)
 				{
 					texture_y0+= delta*texture_dy;
 					screen_height-= delta;
 				}
-				
+
 				/* bottom clipping */
 				if ((delta= rectangle->y1-rectangle->clip_bottom)>0)
 				{
 					screen_height-= delta;
 				}
-	
+
 				texture_y1= texture_y0 + screen_height*texture_dy;
-				
+
 				header->downshift= FIXED_FRACTIONAL_BITS;
 				header->width= screen_width;
 				header->x0= screen_x;
-				
+
 				/* calculate shading table, once */
 				switch (rectangle->transfer_mode)
 				{
@@ -759,52 +759,52 @@ void texture_rectangle(
 					case _static_transfer:
 						shading_table= rectangle->shading_tables;
 						break;
-					
+
 					default:
 						vhalt(csprintf(temporary, "rectangles dont support mode #%d", rectangle->transfer_mode));
 				}
-		
+
 				for (; screen_width; --screen_width)
 				{
 					void *read= texture->row_addresses[FIXED_INTEGERAL_PART(texture_x)];
 					short first= *((short*)read)++, last= *((short*)read)++;
 					fixed texture_y= texture_y0;
 					short y0= rectangle->clip_top, y1= rectangle->clip_bottom;
-					
+
 					if (FIXED_INTEGERAL_PART(texture_y0)<first)
 					{
 						delta= (INTEGER_TO_FIXED(first) - texture_y0)/texture_dy + 1;
 						vassert(delta>=0, csprintf(temporary, "[%x,%x] ∂=%x (#%d,#%d)", texture_y0, texture_y1, texture_dy, first, last));
-						
+
 						y0= MIN(y1, y0+delta);
 						texture_y+= delta*texture_dy;
 					}
-					
+
 					if (FIXED_INTEGERAL_PART(texture_y1)>last)
 					{
 						delta= (texture_y1 - INTEGER_TO_FIXED(last))/texture_dy + 1;
 						vassert(delta>=0, csprintf(temporary, "[%x,%x] ∂=%x (#%d,#%d)", texture_y0, texture_y1, texture_dy, first, last));
-						
+
 						y1= MAX(y0, y1-delta);
 					}
-					
+
 					data->texture_y= texture_y - INTEGER_TO_FIXED(first);
 					data->texture_dy= texture_dy;
 					data->shading_table= shading_table;
 					data->texture= (byte *)read;
-					
+
 					texture_x+= texture_dx;
 					data+= 1;
-					
+
 					*y0_table++= y0;
 					*y1_table++= y1;
-					
+
 					assert(y0<=y1);
 					assert(y0>=0 && y1>=0);
 					assert(y0<=screen->height);
 					assert(y1<=screen->height);
 				}
-		
+
 				switch (bit_depth)
 				{
 					case 8:
@@ -814,22 +814,22 @@ void texture_rectangle(
 								_transparent_texture_vertical_polygon_lines8(screen, view, (struct _vertical_polygon_data *)precalculation_table,
 									scratch_table0, scratch_table1);
 								break;
-							
+
 							case _static_transfer:
 								_randomize_vertical_polygon_lines8(screen, view, (struct _vertical_polygon_data *)precalculation_table,
 									scratch_table0, scratch_table1, rectangle->transfer_data);
 								break;
-							
+
 							case _tinted_transfer:
 								_tint_vertical_polygon_lines8(screen, view, (struct _vertical_polygon_data *)precalculation_table,
 									scratch_table0, scratch_table1, rectangle->transfer_data);
 								break;
-							
+
 							default:
 								halt();
 						}
 						break;
-		
+
 					case 16:
 						switch (rectangle->transfer_mode)
 						{
@@ -837,22 +837,22 @@ void texture_rectangle(
 								_transparent_texture_vertical_polygon_lines16(screen, view, (struct _vertical_polygon_data *)precalculation_table,
 									scratch_table0, scratch_table1);
 								break;
-							
+
 							case _static_transfer:
 								_randomize_vertical_polygon_lines16(screen, view, (struct _vertical_polygon_data *)precalculation_table,
 									scratch_table0, scratch_table1, rectangle->transfer_data);
 								break;
-							
+
 							case _tinted_transfer:
 								_tint_vertical_polygon_lines16(screen, view, (struct _vertical_polygon_data *)precalculation_table,
 									scratch_table0, scratch_table1, rectangle->transfer_data);
 								break;
-							
+
 							default:
 								halt();
 						}
 						break;
-		
+
 					case 32:
 						switch (rectangle->transfer_mode)
 						{
@@ -860,22 +860,22 @@ void texture_rectangle(
 								_transparent_texture_vertical_polygon_lines32(screen, view, (struct _vertical_polygon_data *)precalculation_table,
 									scratch_table0, scratch_table1);
 								break;
-							
+
 							case _static_transfer:
 								_randomize_vertical_polygon_lines32(screen, view, (struct _vertical_polygon_data *)precalculation_table,
 									scratch_table0, scratch_table1, rectangle->transfer_data);
 								break;
-							
+
 							case _tinted_transfer:
 								_tint_vertical_polygon_lines32(screen, view, (struct _vertical_polygon_data *)precalculation_table,
 									scratch_table0, scratch_table1, rectangle->transfer_data);
 								break;
-							
+
 							default:
 								halt();
 						}
 						break;
-		
+
 					default:
 						halt();
 				}
@@ -913,13 +913,13 @@ static void preprocess_landscaped_polygon(
 	polygon->origin.x= (world_distance) ((10000*LANDSCAPE_REPEATS*WORLD_ONE)/(2*31415));
 	polygon->origin.y= -(((LANDSCAPE_REPEATS*WORLD_ONE*view->yaw)>>ANGULAR_BITS)&(WORLD_ONE-1));
 	polygon->origin.z= 0;
-	
+
 	polygon->vector.i= 0;
 	polygon->vector.j= WORLD_ONE;
 	polygon->vector.k= -WORLD_ONE;
 
 	polygon->ambient_shade= FIXED_ONE;
-	
+
 	return;
 }
 
@@ -971,7 +971,7 @@ static void _pretexture_vertical_polygon_lines(
 		{
 			long adjusted_tx_denominator= tx_denominator;
 			long adjusted_tx_numerator= tx_numerator;
-			
+
 			while (adjusted_tx_numerator>((1<<(31-VERTICAL_TEXTURE_WIDTH_BITS))-1) ||
 				adjusted_tx_numerator<((-1)<<(31-VERTICAL_TEXTURE_WIDTH_BITS)))
 			{
@@ -987,7 +987,7 @@ static void _pretexture_vertical_polygon_lines(
 			if (!adjusted_tx_denominator) adjusted_tx_denominator= 1; /* -1 will still be -1 */
 			tx= INTEGER_TO_FIXED(adjusted_tx_numerator)/adjusted_tx_denominator;
 		}
-		
+
 		world_x= polygon->origin.x + ((tx*polygon->vector.i)>>FIXED_FRACTIONAL_BITS);
 		if (world_x<0) world_x= -world_x; /* it is mostly unclear what we’re supposed to do with negative x values */
 
@@ -1021,16 +1021,16 @@ static void _pretexture_vertical_polygon_lines(
 			line->texture_y= ty<<VERTICAL_TEXTURE_FREE_BITS;
 			line->texture_dy= ty_delta<<(VERTICAL_TEXTURE_FREE_BITS-8);
 			line->texture= polygon->texture->row_addresses[x0];
-			
+
 			line+= 1;
 		}
-		
+
 		tx_numerator+= tx_numerator_delta;
 		tx_denominator+= tx_denominator_delta;
-		
+
 		screen_x+= 1;
 	}
-	
+
 	return;
 }
 
@@ -1050,7 +1050,7 @@ static void _pretexture_horizontal_polygon_lines(
 	boolean higher_precision= polygon->origin.z>-WORLD_ONE && polygon->origin.z<WORLD_ONE;
 
 	#pragma unused (screen)
-	
+
 	/* precalculate a bunch of multiplies */
 	hcosine= cosine_table[view->yaw];
 	hsine= sine_table[view->yaw];
@@ -1068,19 +1068,19 @@ static void _pretexture_horizontal_polygon_lines(
 		world_distance depth;
 		short screen_x, screen_y;
 		short x0= *x0_table++, x1= *x1_table++;
-		
+
 		/* calculate screen_x,screen_y */
 		screen_x= x0-view->half_screen_width;
 		screen_y= view->half_screen_height-y0+view->dtanpitch;
 		if (!screen_y) screen_y= 1; /* this will avoid division by zero and won't change rendering */
-		
+
 		/* calculate source_x, source_y, source_dx, source_dy */
 //#ifdef env68k
 //		if (polygon->transfer_mode!=_solid_transfer)
 //#endif
 		{
 			long source_x, source_y, source_dx, source_dy;
-			
+
 			/* calculate texture origins and deltas (source_x,source_dx,source_y,source_dy) */
 			if (higher_precision)
 			{
@@ -1096,7 +1096,7 @@ static void _pretexture_horizontal_polygon_lines(
 				source_y= ((screen_x*hcosine + dhsine)/screen_y)*polygon->origin.z + (polygon->origin.y<<TRIG_SHIFT);
 				source_dy= (hcosine*polygon->origin.z)/screen_y;
 			}
-		
+
 			/* voodoo so x,y texture wrapping is handled automatically by downshifting
 				(subtract one from HORIZONTAL_FREE_BITS to double scale) */
 			data->source_x= source_x<<HORIZONTAL_FREE_BITS, data->source_dx= source_dx<<HORIZONTAL_FREE_BITS;
@@ -1113,11 +1113,11 @@ static void _pretexture_horizontal_polygon_lines(
 		{
 			CALCULATE_SHADING_TABLE(data->shading_table, view, polygon->shading_tables, (short)MIN(depth, SHORT_MAX), polygon->ambient_shade);
 		}
-		
+
 		data+= 1;
 		y0+= 1;
 	}
-	
+
 	return;
 }
 
@@ -1140,10 +1140,10 @@ static void _prelandscape_horizontal_polygon_lines(
 	fixed pixel_delta= (view->half_cone<<(1+landscape_width_bits+LANDSCAPE_REPEAT_BITS+FIXED_FRACTIONAL_BITS-ANGULAR_BITS))/view->standard_screen_width;
 	short landscape_free_bits= 32-FIXED_FRACTIONAL_BITS-landscape_width_bits;
 	void *shading_table;
-	
+
 	#pragma unused (screen)
 
-	/* calculate the shading table */	
+	/* calculate the shading table */
 	if (polygon->flags&_SHADELESS_BIT)
 	{
 		shading_table= polygon->shading_tables;
@@ -1157,18 +1157,18 @@ static void _prelandscape_horizontal_polygon_lines(
 	while ((line_count-= 1)>=0)
 	{
 		short x0= *x0_table++, x1= *x1_table++;
-		
+
 		data->shading_table= shading_table;
 		data->source_y= FIXED_INTEGERAL_PART(y0*pixel_delta) + (texture_height>>1);
 		data->source_y= texture_height - PIN(data->source_y, 0, texture_height-1) - 1;
-		
+
 		data->source_x= (first_pixel + x0*pixel_delta)<<landscape_free_bits;
 		data->source_dx= pixel_delta<<landscape_free_bits;
-		
+
 		data+= 1;
 		y0+= 1;
 	}
-	
+
 	return;
 }
 
@@ -1185,7 +1185,7 @@ static short *build_x_table(
 	short d, delta_d, d_max; /* descriminator, delta_descriminator, descriminator_maximum */
 	short *record;
 
-	/* calculate SGN(dx),SGN(dy) and the absolute values of dx,dy */	
+	/* calculate SGN(dx),SGN(dy) and the absolute values of dx,dy */
 	dx= x1-x0, adx= ABS(dx), dx= SGN(dx);
 	dy= y1-y0, ady= ABS(dy), dy= SGN(dy);
 
@@ -1196,11 +1196,11 @@ static short *build_x_table(
 		/* setup initial (x,y) location and initialize a pointer to our table */
 		x= x0, y= y0;
 		record= table;
-	
+
 		if (adx>=ady)
 		{
 			/* x-dominant line (we need to record x every time y changes) */
-	
+
 			d= adx-ady, delta_d= - 2*ady, d_max= 2*adx;
 			while ((adx-=1)>=0)
 			{
@@ -1212,7 +1212,7 @@ static short *build_x_table(
 		else
 		{
 			/* y-dominant line (we need to record x every iteration) */
-	
+
 			d= ady-adx, delta_d= - 2*adx, d_max= 2*ady;
 			while ((ady-=1)>=0)
 			{
@@ -1227,7 +1227,7 @@ static short *build_x_table(
 		/* can’t build a table for negative dy */
 		if (dy<0) table= (short *) NULL;
 	}
-	
+
 	return table;
 }
 
@@ -1244,7 +1244,7 @@ static short *build_y_table(
 	short d, delta_d, d_max; /* descriminator, delta_descriminator, descriminator_maximum */
 	short *record;
 
-	/* calculate SGN(dx),SGN(dy) and the absolute values of dx,dy */	
+	/* calculate SGN(dx),SGN(dy) and the absolute values of dx,dy */
 	dx= x1-x0, adx= ABS(dx), dx= SGN(dx);
 	dy= y1-y0, ady= ABS(dy), dy= SGN(dy);
 
@@ -1263,11 +1263,11 @@ static short *build_y_table(
 			x= x1, y= y1;
 			record= table+adx;
 		}
-	
+
 		if (adx>=ady)
 		{
 			/* x-dominant line (we need to record y every iteration) */
-	
+
 			d= adx-ady, delta_d= - 2*ady, d_max= 2*adx;
 			while ((adx-=1)>=0)
 			{
@@ -1279,7 +1279,7 @@ static short *build_y_table(
 		else
 		{
 			/* y-dominant line (we need to record y every time x changes) */
-	
+
 			d= ady-adx, delta_d= - 2*adx, d_max= 2*ady;
 			while ((ady-=1)>=0)
 			{
@@ -1294,7 +1294,7 @@ static short *build_y_table(
 		/* can’t build a table for a negative dx */
 		table= (short *) NULL;
 	}
-	
+
 	return table;
 }
 
@@ -1314,22 +1314,22 @@ static short *build_distortion_table(
 	short count, source_coordinate;
 	register fixed d, delta_d, d_max;
 	register short *record;
-	
+
 	assert(clip_low<=clip_high);
 	if (clip_low<0) clip_low= 0;
 	if (clip_high>destination) clip_high= destination;
-	
+
 	/* initialize d, delta_d, d_max */
 	d= 2*destination - source;
 	delta_d= 2*source;
 	d_max= 2*destination;
-	
+
 	/* if unclipped, we'll generation translation entries for every destination pixel */
 	count= destination;
-	
+
 	/* if unclipped we'll start at source==0 */
 	source_coordinate= 0;
-	
+
 	/* even marginally clever editing of d_max and delta_d with the addition of a new
 		source_coordinate_delta variable would allow us to change the while (d<=0) loop
 		into an if (d<=0) below */
@@ -1342,7 +1342,7 @@ static short *build_distortion_table(
 
 	/* handle high clipping by adjusting count */
 	if (clip_high<destination) count-= destination-clip_high;
-	
+
 	/* handle low clipping by adjusting d, count, source_coordinate */
 	if (clip_low>0)
 	{
@@ -1350,7 +1350,7 @@ static short *build_distortion_table(
 		if (d<=0)
 		{
 			short n= 1 - d/d_max;
-		
+
 			d+= n*d_max;
 			source_coordinate+= n;
 		}
@@ -1372,9 +1372,9 @@ static short *build_distortion_table(
 			dprintf("%d==>%d [%d/%d==>%d] at %p", source, destination, clip_low, clip_high, count, table);
 		}
 	}
-	
+
 //	if (destination<20) dprintf("table %d-->%d (cliped to %d);dm #%d #%d;", source, destination, fuck, table, fuck*sizeof(short));
-	
+
 	return table;
 }
 #endif
@@ -1390,7 +1390,7 @@ void *calculate_shading_table(
 {
 	short table_index;
 	long shading_table_size;
-	
+
 	switch (bit_depth)
 	{
 		case 8: shading_table_size= PIXEL8_MAXIMUM_COLORS*sizeof(pixel8); break;
@@ -1430,7 +1430,7 @@ void *calculate_shading_table(
 			short i;
 
 			high_point= vertices[highest_vertex].y;
-			
+
 			for (i=0;i<aggregate_total_line_count;++i)
 			{
 				if (left_table[i]<0) left_table[i]= 0;
@@ -1444,10 +1444,10 @@ void *calculate_shading_table(
 				aggregate_total_line_count+= vertices[highest_vertex].y;
 				left_table-= vertices[highest_vertex].y;
 				right_table-= vertices[highest_vertex].y;
-				
+
 				high_point= 0; /* ow */
 			}
-			
+
 			if (vertices[lowest_vertex].y>screen->height)
 			{
 				aggregate_total_line_count-= vertices[lowest_vertex].y-screen->height;

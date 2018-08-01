@@ -39,7 +39,7 @@ void main(
 		if (reference_number!=NONE)
 		{
 			FILE *stream= fopen(argv[2], "wb");
-			
+
 			if (stream)
 			{
 				extract_shape_resources(stream);
@@ -50,7 +50,7 @@ void main(
 				fprintf(stderr, "Error #%d opening %s.\n", -1, argv[2]);
 				exit(1);
 			}
-			
+
 			CloseResFile(reference_number);
 		}
 		else
@@ -59,7 +59,7 @@ void main(
 			exit(1);
 		}
 	}
-	
+
 	exit(0);
 }
 
@@ -71,7 +71,7 @@ static void extract_shape_resources(
 	short i;
 
 	fwrite(collection_headers, sizeof(struct collection_header), MAXIMUM_COLLECTIONS, stream);
-	
+
 	for (i= 0; i<MAXIMUM_COLLECTIONS; ++i)
 	{
 		struct collection_header *header= collection_headers + i;
@@ -82,7 +82,7 @@ static void extract_shape_resources(
 
 	fseek(stream, 0, SEEK_SET);
 	fwrite(collection_headers, sizeof(struct collection_header), MAXIMUM_COLLECTIONS, stream);
-	
+
 	return;
 }
 
@@ -93,7 +93,7 @@ static void add_resource(
 	FILE *stream)
 {
 	Handle collection= GetResource('.256', id);
-	
+
 	if (collection)
 	{
 		HLock(collection);

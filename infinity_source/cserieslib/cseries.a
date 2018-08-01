@@ -25,7 +25,7 @@
 		LCLC		&S		; variable used to save PRINT state
 
  IF DEBUG THEN						; do we want debugging info?
-    IF &ModName# ­ '' THEN					; did we get a module name?
+    IF &ModName# â‰  '' THEN					; did we get a module name?
 
 .* Create the new MacsBug naming convention
 * -----------------------------------------------
@@ -45,7 +45,7 @@
 .* Create the DC.B with the debugger name, and include the NULs if new MacsBug option
 * -----------------------------------------------
 	&S: SETC &Setting('STRING')		; preserve STRING status
-	IF &S ­ 'ASIS' THEN			; only change it if not already ASIS
+	IF &S â‰  'ASIS' THEN			; only change it if not already ASIS
 	   STRING    ASIS
 	   DC.B      '&DbgName#'
 		DC.W		&SizeOfLiterals#

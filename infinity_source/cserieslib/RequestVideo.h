@@ -1,7 +1,7 @@
 /*------------------------------------------------------------------------------
 #
 #	MacOS™ Sample Code
-#	
+#
 #	Written by: Eric Anderson
 #	 AppleLink: ERIC3
 #
@@ -34,8 +34,8 @@
 #	multisync displays on built-in, NuBus, and PCI based video. Display Manager 1.0
 #	is built into the Systems included with the first PowerMacs up through System 7.5.
 #	Display Manager 2.0 is included with the release of the new PCI based PowerMacs,
-#	and will be included in post 7.5 System Software releases. 
-#	
+#	and will be included in post 7.5 System Software releases.
+#
 #	It is a good idea to reset the screen(s) to the original setting before exit
 #	since the call to RVSetVideoAsScreenPrefs() may not do the right thing under
 #	Display Manager 1.0 with certain video drivers.
@@ -223,7 +223,7 @@ device will be looked at to match the requested video setting. For example,
 if you pass in the value returned from GetMainDevice, the only the main
 screen will be looked at for a possible match. If the screenDevice is set
 to <nil>, then all active GDevices will be looked at to make the best
-match of the requested video setting. 
+match of the requested video setting.
 Output definition: the screenDevice field is set to the GDevice which is
 capable of best matching the requested video setting.
 
@@ -314,7 +314,7 @@ exagerated by the use of other monitors positioned in odd relative locations to 
 other.
 
 ************************************************************************************************/
- 
+
 #include <QuickDraw.h>
 #include <Video.h>
 

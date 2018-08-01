@@ -1,7 +1,7 @@
 /*
 MACINTOSH_NETWORK.H
 Monday, June 20, 1994 12:22:25 PM
-Wednesday, August 9, 1995 3:34:50 PM- network lookup stuff now takes a version which is 
+Wednesday, August 9, 1995 3:34:50 PM- network lookup stuff now takes a version which is
 	concatenated to the lookup type (ryan)
 */
 
@@ -35,7 +35,7 @@ struct DDPFrame
 {
 	short data_size;
 	byte data[ddpMaxData];
-	
+
 	MPPParamBlock pb;
 
 	WDSElement wds[3];
@@ -46,12 +46,12 @@ typedef struct DDPFrame DDPFrame, *DDPFramePtr;
 struct DDPPacketBuffer
 {
 	short inUse;
-	
+
 	byte protocolType;
 	byte destinationNode;
 	AddrBlock sourceAddress;
 	short hops;
-	
+
 	short datagramSize;
 	byte datagramData[ddpMaxData];
 };
@@ -69,7 +69,7 @@ struct ConnectionEnd
 	Ptr dspRecvQPtr;
 	Ptr dspAttnBufPtr;
 
-#ifdef env68k	
+#ifdef env68k
 	long a5; /* store our current a5 here */
 #endif
 
@@ -103,7 +103,7 @@ OSErr NetUnRegisterName(void);
 
 void NetLookupUpdate(void);
 void NetLookupClose(void);
-OSErr NetLookupOpen(char *name, char *type, char *zone, short version, 
+OSErr NetLookupOpen(char *name, char *type, char *zone, short version,
 	lookupUpdateProcPtr updateProc, lookupFilterProcPtr filterProc);
 void NetLookupRemove(short index);
 void NetLookupInformation(short index, AddrBlock *address, EntityName *entity);

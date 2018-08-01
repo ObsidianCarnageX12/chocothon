@@ -20,7 +20,7 @@ enum /* media types */
 enum /* media flags */
 {
 	_media_sound_obstructed_by_floor, // this media makes no sound when under the floor
-	
+
 	NUMBER_OF_MEDIA_FLAGS /* <= 16 */
 };
 
@@ -48,7 +48,7 @@ enum /* media sounds */
 	_media_snd_ambient_under,
 	_media_snd_platform_entering,
 	_media_snd_platform_leaving,
-	
+
 	NUMBER_OF_MEDIA_SOUNDS
 };
 
@@ -72,16 +72,16 @@ struct media_data /* 32 bytes */
 	/* this is the maximum external velocity due to current; acceleration is 1/32nd of this */
 	angle current_direction;
 	world_distance current_magnitude;
-	
+
 	world_distance low, high;
-	
+
 	world_point2d origin;
 	world_distance height;
 
 	fixed minimum_light_intensity;
 	shape_descriptor texture;
 	short transfer_mode;
-	
+
 	short unused[2];
 };
 

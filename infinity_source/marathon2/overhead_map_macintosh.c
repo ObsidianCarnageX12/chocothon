@@ -14,7 +14,7 @@ struct annotation_definition
 {
 	RGBColor color;
 	short font, face;
-	
+
 	short sizes[OVERHEAD_MAP_MAXIMUM_SCALE-OVERHEAD_MAP_MINIMUM_SCALE+1];
 };
 
@@ -28,7 +28,7 @@ void initialize_overhead_map(
 	void)
 {
 	TextSpec overhead_map_annotation_font;
-	
+
 	// get the overhead map name font index
 	GetNewTextSpec(&overhead_map_name_font, finfMAP, 0);
 	// get the annotation font only
@@ -107,17 +107,17 @@ static void draw_overhead_line(
 
 	assert(color>=0&&color<NUMBER_OF_LINE_DEFINITIONS);
 	definition= line_definitions+color;
-	
+
 	RGBForeColor(&definition->color);
 	PenSize(definition->pen_sizes[scale-OVERHEAD_MAP_MINIMUM_SCALE], definition->pen_sizes[scale-OVERHEAD_MAP_MINIMUM_SCALE]);
 	MoveTo(vertex1->x, vertex1->y);
 	LineTo(vertex2->x, vertex2->y);
-	
+
 #ifdef RENDER_DEBUG
 	if (scale==OVERHEAD_MAP_MAXIMUM_SCALE)
 	{
 		world_point2d location;
-		
+
 		TextFont(monaco);
 		TextFace(normal);
 		TextSize(9);
@@ -128,7 +128,7 @@ static void draw_overhead_line(
 		psprintf(temporary, "%d", line_index);
 		MoveTo(location.x, location.y);
 		DrawString(temporary);
-		
+
 		psprintf(temporary, "%d", line->endpoint_indexes[0]);
 		MoveTo(vertex1->x, vertex1->y);
 		DrawString(temporary);
@@ -232,7 +232,7 @@ static void draw_overhead_player(
 	translate_point2d(triangle+0, definition->front>>(OVERHEAD_MAP_MAXIMUM_SCALE-scale), facing);
 	translate_point2d(triangle+1, definition->rear>>(OVERHEAD_MAP_MAXIMUM_SCALE-scale), normalize_angle(facing+definition->rear_theta));
 	translate_point2d(triangle+2, definition->rear>>(OVERHEAD_MAP_MAXIMUM_SCALE-scale), normalize_angle(facing-definition->rear_theta));
-	
+
 	if (scale < 2)
 	{
 		RGBForeColor(&rgb_color);
@@ -252,8 +252,8 @@ static void draw_overhead_player(
 		RGBForeColor(&rgb_color);
 		FillPoly(polygon, &qd.black);
 		KillPoly(polygon);
-	}	
-	
+	}
+
 	return;
 }
 
@@ -268,7 +268,7 @@ static void draw_overhead_annotation(
 
 	vassert(color>=0&&color<NUMBER_OF_ANNOTATION_DEFINITIONS, csprintf(temporary, "#%d is not a supported annotation type", color));
 	definition= annotation_definitions+color;
-	
+
 	strcpy((char *)pascal_text, text);
 	c2pstr((char *)pascal_text);
 	MoveTo(location->x, location->y);
@@ -277,7 +277,7 @@ static void draw_overhead_annotation(
 	TextSize(definition->sizes[scale-OVERHEAD_MAP_MINIMUM_SCALE]);
 	RGBForeColor(&definition->color);
 	DrawString(pascal_text);
-	
+
 	return;
 }
 
@@ -288,16 +288,16 @@ static void draw_map_name(
 	char *name)
 {
 	Str255 pascal_name;
-	
+
 	strcpy((char *)pascal_name, name);
 	c2pstr((char *)pascal_name);
-	
+
 	TextFont(overhead_map_name_font.font);
 	TextFace(overhead_map_name_font.face);
 	TextSize(overhead_map_name_font.size);
 	RGBForeColor(&map_name_color);
 	MoveTo(data->half_width - (StringWidth(pascal_name)>>1), 25);
 	DrawString(pascal_name);
-	
+
 	return;
 }

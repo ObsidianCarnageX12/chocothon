@@ -36,10 +36,10 @@ enum /* collection types */
 struct collection_definition
 {
 	short version;
-	
+
 	short type; /* used for get_shape_descriptors() */
 	word flags; /* [unused.16] */
-	
+
 	short color_count, clut_count;
 	long color_table_offset; /* an array of clut_count arrays of color_count ColorSpec structures */
 
@@ -53,9 +53,9 @@ struct collection_definition
 	long bitmap_offset_table_offset;
 
 	short pixels_to_world; /* used to shift pixel values into world coordinates */
-	
+
 	long size; /* used to assert offsets */
-	
+
 	short unused[253];
 };
 
@@ -67,17 +67,17 @@ struct high_level_shape_definition
 {
 	short type; /* ==0 */
 	word flags; /* [unused.16] */
-	
+
 	char name[HIGH_LEVEL_SHAPE_NAME_LENGTH+1];
-	
+
 	short number_of_views;
-	
+
 	short frames_per_view, ticks_per_frame;
 	short key_frame;
-	
+
 	short transfer_mode;
 	short transfer_mode_period; /* in ticks */
-	
+
 	short first_frame_sound, key_frame_sound, last_frame_sound;
 
 	short pixels_to_world;
@@ -103,16 +103,16 @@ struct low_level_shape_definition
 	fixed minimum_light_intensity; /* in [0,FIXED_ONE] */
 
 	short bitmap_index;
-	
+
 	/* (x,y) in pixel coordinates of origin */
 	short origin_x, origin_y;
-	
+
 	/* (x,y) in pixel coordinates of key point */
 	short key_x, key_y;
 
 	short world_left, world_right, world_top, world_bottom;
 	short world_x0, world_y0;
-	
+
 	short unused[4];
 };
 
@@ -127,6 +127,6 @@ struct rgb_color_value
 {
 	byte flags;
 	byte value;
-	
+
 	word red, green, blue;
 };

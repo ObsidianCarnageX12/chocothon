@@ -13,7 +13,7 @@ enum /* item types (class) */
 	_item,
 	_weapon_powerup,
 	_ball,
-	
+
 	NUMBER_OF_ITEM_TYPES,
 	_network_statistics= NUMBER_OF_ITEM_TYPES // Used in game_window.c
 };
@@ -56,10 +56,10 @@ enum /* item types */
 	_i_orange_ball,
 	_i_blue_ball, // heh heh
 	_i_green_ball,
-	
+
 	_i_smg,
 	_i_smg_ammo,
-	
+
 	NUMBER_OF_DEFINED_ITEMS
 };
 

@@ -93,7 +93,7 @@ void initialize_player_physics_variables(
 //#ifdef DEBUG
 	memset(variables, 0x80, sizeof(struct physics_variables));
 //#endif
-	
+
 	variables->head_direction= 0;
 	variables->adjusted_yaw= variables->direction= INTEGER_TO_FIXED(object->facing);
 	variables->adjusted_pitch= variables->elevation= 0;
@@ -109,10 +109,10 @@ void initialize_player_physics_variables(
 	variables->external_angular_velocity= 0;
 	variables->external_velocity.i= variables->external_velocity.j= variables->external_velocity.k= 0;
 	variables->actual_height= constants->height;
-	
+
 	variables->step_phase= 0;
 	variables->step_amplitude= 0;
-	
+
 	variables->action= _player_stationary;
 	variables->old_flags= variables->flags= 0; /* not recentering, not above ground, not below ground (i.e., on floor) */
 
@@ -125,7 +125,7 @@ void initialize_player_physics_variables(
 		try and respond appropriately */
 	if (player_index==local_player_index) reset_absolute_positioning_device(variables->direction, 0, 0);
 #endif
-	
+
 #ifdef DIVERGENCE_CHECK
 	if (!saved_point_iterations)
 	{
@@ -147,7 +147,7 @@ void update_player_physics_variables(
 	struct player_data *player= get_player_data(player_index);
 	struct physics_variables *variables= &player->variables;
 	struct physics_constants *constants= get_physics_constants_for_model(static_world->physics_model, action_flags);
-	
+
 	physics_update(constants, variables, player, action_flags);
 	instantiate_physics_variables(constants, variables, player_index, FALSE);
 
@@ -158,7 +158,7 @@ void update_player_physics_variables(
 		world_point3d p= object->location;
 		world_point3d *q= saved_points+saved_point_count;
 		angle *facing= saved_thetas+saved_point_count;
-		
+
 		if (saved_point_iterations==1)
 		{
 			saved_points[saved_point_count]= p;
@@ -173,7 +173,7 @@ void update_player_physics_variables(
 				saved_divergence_warning= TRUE;
 			}
 		}
-		
+
 		saved_point_count+= 1;
 	}
 #endif
@@ -221,10 +221,10 @@ void accelerate_player(
 
 	variables->external_velocity.k+= WORLD_TO_FIXED(vertical_velocity);
 	variables->external_velocity.k= PIN(variables->external_velocity.k, -constants->terminal_velocity, constants->terminal_velocity);
-	
+
 	variables->external_velocity.i+= (cosine_table[direction]*velocity)>>(TRIG_SHIFT+WORLD_FRACTIONAL_BITS-FIXED_FRACTIONAL_BITS);
 	variables->external_velocity.j+= (sine_table[direction]*velocity)>>(TRIG_SHIFT+WORLD_FRACTIONAL_BITS-FIXED_FRACTIONAL_BITS);
-	
+
 	return;
 }
 
@@ -233,10 +233,10 @@ void get_absolute_pitch_range(
 	fixed *maximum)
 {
 	struct physics_constants *constants= get_physics_constants_for_model(static_world->physics_model, 0);
-	
+
 	*minimum= -constants->maximum_elevation;
 	*maximum= constants->maximum_elevation;
-	
+
 	return;
 }
 
@@ -293,46 +293,46 @@ long mask_in_absolute_positioning_information(
 	struct physics_constants *constants= get_physics_constants_for_model(static_world->physics_model, action_flags);
 	short encoded_delta;
 	fixed delta;
-	
+
 	assert(pitch>=-INTEGER_TO_FIXED(QUARTER_CIRCLE)&&pitch<=INTEGER_TO_FIXED(QUARTER_CIRCLE));
 	assert(yaw>=0&&yaw<INTEGER_TO_FIXED(FULL_CIRCLE));
-	
+
 	if (action_flags&_absolute_yaw_mode)
 	{
 		/* find the smallest delta to turn our current yaw into the given absolute yaw */
 		delta= yaw-variables->adjusted_yaw;
 		if (delta<-INTEGER_TO_FIXED(HALF_CIRCLE)) delta+= INTEGER_TO_FIXED(FULL_CIRCLE);
 		if (delta>INTEGER_TO_FIXED(HALF_CIRCLE)) delta-= INTEGER_TO_FIXED(FULL_CIRCLE);
-		
+
 		encoded_delta= FIXED_INTEGERAL_PART(delta)+MAXIMUM_ABSOLUTE_YAW/2;
 		encoded_delta= PIN(encoded_delta, 0, MAXIMUM_ABSOLUTE_YAW-1);
 		action_flags= SET_ABSOLUTE_YAW(action_flags, encoded_delta);
-		
+
 		variables->adjusted_yaw+= INTEGER_TO_FIXED(encoded_delta-MAXIMUM_ABSOLUTE_YAW/2);
 		if (variables->adjusted_yaw<0) variables->adjusted_yaw+= INTEGER_TO_FIXED(FULL_CIRCLE);
 		if (variables->adjusted_yaw>=INTEGER_TO_FIXED(FULL_CIRCLE)) variables->adjusted_yaw-= INTEGER_TO_FIXED(FULL_CIRCLE);
 	}
-	
+
 	if (action_flags&_absolute_pitch_mode)
 	{
 		delta= pitch-variables->adjusted_pitch;
-		
+
 		encoded_delta= FIXED_INTEGERAL_PART(delta)+MAXIMUM_ABSOLUTE_PITCH/2;
 		encoded_delta= PIN(encoded_delta, 0, MAXIMUM_ABSOLUTE_PITCH-1);
 		action_flags= SET_ABSOLUTE_PITCH(action_flags, encoded_delta);
-		
+
 		variables->adjusted_pitch+= INTEGER_TO_FIXED(encoded_delta-MAXIMUM_ABSOLUTE_PITCH/2);
 		variables->adjusted_pitch= PIN(variables->adjusted_pitch, -constants->maximum_elevation, constants->maximum_elevation);
 	}
-	
+
 	if (action_flags&_absolute_position_mode)
 	{
 		delta= PIN(velocity+FIXED_ONE, 0, 2*FIXED_ONE-1);
-		
+
 		encoded_delta= delta>>(FIXED_FRACTIONAL_BITS+1-ABSOLUTE_POSITION_BITS);
 		action_flags= SET_ABSOLUTE_POSITION(action_flags, encoded_delta);
 	}
-	
+
 	return action_flags;
 }
 #endif
@@ -356,7 +356,7 @@ void instantiate_absolute_positioning_information(
 	variables->direction= facing;
 
 	instantiate_physics_variables(constants, variables, player_index, FALSE);
-	
+
 	return;
 }
 
@@ -380,14 +380,14 @@ void get_binocular_vision_origins(
 	right->z= player->camera_location.z;
 	*right_polygon_index= find_new_object_polygon((world_point2d *)&player->camera_location, (world_point2d *)right, player->camera_polygon_index);
 	*right_angle= NORMALIZE_ANGLE(player->facing-1);
-	
+
 	theta= NORMALIZE_ANGLE(player->facing-QUARTER_CIRCLE);
 	left->x= FIXED_TO_WORLD(variables->position.x + ((constants->half_camera_separation*cosine_table[theta])>>TRIG_SHIFT));
 	left->y= FIXED_TO_WORLD(variables->position.y + ((constants->half_camera_separation*sine_table[theta])>>TRIG_SHIFT));
 	left->z= player->camera_location.z;
 	*left_polygon_index= find_new_object_polygon((world_point2d *)&player->camera_location, (world_point2d *)left, player->camera_polygon_index);
 	*left_angle= NORMALIZE_ANGLE(player->facing+1);
-	
+
 	return;
 }
 
@@ -397,10 +397,10 @@ void kill_player_physics_variables(
 	struct player_data *player= get_player_data(player_index);
 	struct physics_variables *variables= &player->variables;
 	struct physics_constants *constants= get_physics_constants_for_model(static_world->physics_model, 0);
-	
+
 //	variables->position.z+= variables->actual_height-constants->dead_height;
 //	variables->actual_height= constants->dead_height;
-	
+
 	return;
 }
 
@@ -425,7 +425,7 @@ static struct physics_constants *get_physics_constants_for_model(
 	long action_flags)
 {
 	struct physics_constants *constants;
-	
+
 	switch (physics_model)
 	{
 		case _editor_model:
@@ -433,7 +433,7 @@ static struct physics_constants *get_physics_constants_for_model(
 		case _low_gravity_model: halt();
 		default: halt();
 	}
-	
+
 	return constants;
 }
 
@@ -476,11 +476,11 @@ static void instantiate_physics_variables(
 	object_floor= SHORT_MIN;
 	{
 		short obstruction_index= legal_player_move(player->monster_index, &new_location, &object_floor);
-		
+
 		if (obstruction_index!=NONE)
 		{
 			struct object_data *object= get_object_data(obstruction_index);
-			
+
 			switch (GET_OBJECT_OWNER(object))
 			{
 				case _object_is_monster:
@@ -489,7 +489,7 @@ static void instantiate_physics_variables(
 					new_location.x= legs->location.x, new_location.y= legs->location.y;
 					clipped= TRUE;
 					break;
-				
+
 				default:
 					halt();
 			}
@@ -510,7 +510,7 @@ static void instantiate_physics_variables(
 		variables->position.y= WORLD_TO_FIXED(new_location.y);
 		variables->position.z= WORLD_TO_FIXED(new_location.z);
 	}
-	
+
 	/* shadow position in player structure, build camera location */
 	step_height= (constants->step_amplitude*sine_table[variables->step_phase>>(FIXED_FRACTIONAL_BITS-ANGULAR_BITS+1)])>>TRIG_SHIFT;
 	step_height= (step_height*variables->step_amplitude)>>FIXED_FRACTIONAL_BITS;
@@ -561,7 +561,7 @@ static void physics_update(
 	if (PLAYER_IS_DEAD(player)) /* dead players immediately loose all bodily control */
 	{
 		long dot_product;
-		
+
 		cosine= cosine_table[FIXED_INTEGERAL_PART(variables->direction)], sine= sine_table[FIXED_INTEGERAL_PART(variables->direction)];
 		dot_product= ((((variables->velocity*cosine)>>TRIG_SHIFT) + variables->external_velocity.i)*cosine +
 			(((variables->velocity*sine)>>TRIG_SHIFT) + variables->external_velocity.j)*sine)>>TRIG_SHIFT;
@@ -574,7 +574,7 @@ static void physics_update(
 			case 0: action_flags= 0; break;
 			default: halt();
 		}
-		
+
 		variables->floor_height-= DROP_DEAD_HEIGHT;
 	}
 	delta_z= variables->position.z-variables->floor_height;
@@ -612,14 +612,14 @@ static void physics_update(
 				delta= variables->angular_velocity<0 ? constants->angular_acceleration+constants->angular_deceleration : constants->angular_acceleration;
 				variables->angular_velocity= CEILING(variables->angular_velocity+delta, constants->maximum_angular_velocity);
 				break;
-			
+
 			default: /* slow down */
 				variables->angular_velocity= (variables->angular_velocity>=0) ?
 					FLOOR(variables->angular_velocity-constants->angular_deceleration, 0) :
 					CEILING(variables->angular_velocity+constants->angular_deceleration, 0);
 				break;
 		}
-		
+
 		/* handling looking left/right */
 		switch (action_flags&_looking)
 		{
@@ -631,7 +631,7 @@ static void physics_update(
 				break;
 			case _looking: /* do nothing if both keys are down */
 				break;
-			
+
 			default: /* recenter head */
 				variables->head_direction= (variables->head_direction>=0) ?
 					FLOOR(variables->head_direction-constants->fast_angular_velocity, 0) :
@@ -653,7 +653,7 @@ static void physics_update(
 			action_flags&= ~_looking_vertically;
 			action_flags|= variables->elevation<0 ? _looking_up : _looking_down;
 		}
-	
+
 		/* handle looking up and down; if we’re moving at our terminal velocity forward or backward,
 			without any side-to-side motion, recenter our head vertically */
 		if (!(action_flags&FLAGS_WHICH_PREVENT_RECENTERING)) /* can’t recenter if any of these are true */
@@ -681,7 +681,7 @@ static void physics_update(
 				delta= variables->vertical_angular_velocity<0 ? constants->angular_acceleration+constants->angular_deceleration : constants->angular_acceleration;
 				variables->vertical_angular_velocity= CEILING(variables->vertical_angular_velocity+delta, PLAYER_IS_DEAD(player) ? (constants->maximum_angular_velocity>>3) : constants->maximum_angular_velocity);
 				break;
-			
+
 			default: /* if no key is being held down, decelerate; if the player is moving try and return to phi==0 */
 				variables->vertical_angular_velocity= (variables->vertical_angular_velocity>=0) ?
 					FLOOR(variables->vertical_angular_velocity-constants->angular_deceleration, 0) :
@@ -697,7 +697,7 @@ static void physics_update(
 		if (action_flags&_absolute_position_mode)
 		{
 			short encoded_delta= GET_ABSOLUTE_POSITION(action_flags)-MAXIMUM_ABSOLUTE_POSITION/2;
-			
+
 			if (encoded_delta<0)
 			{
 				variables->velocity= (encoded_delta*constants->maximum_backward_velocity)>>(ABSOLUTE_POSITION_BITS-1);
@@ -722,7 +722,7 @@ static void physics_update(
 					delta= variables->velocity>0 ? constants->deceleration+constants->acceleration : constants->acceleration;
 					variables->velocity= FLOOR(variables->velocity-delta, -constants->maximum_backward_velocity);
 					break;
-				
+
 				default: /* slow down */
 					variables->velocity= (variables->velocity>=0) ?
 						FLOOR(variables->velocity-constants->deceleration, 0) :
@@ -730,7 +730,7 @@ static void physics_update(
 					break;
 			}
 		}
-		
+
 		/* handle sidestepping left or right; if we’ve exceeded our maximum velocity lock out user actions
 			until we return to a legal range */
 		if (variables->perpendicular_velocity<-constants->maximum_perpendicular_velocity||variables->perpendicular_velocity>constants->maximum_perpendicular_velocity) action_flags&= ~_sidestepping;
@@ -744,7 +744,7 @@ static void physics_update(
 				delta= variables->perpendicular_velocity<0 ? constants->acceleration+constants->deceleration : constants->acceleration;
 				variables->perpendicular_velocity= CEILING(variables->perpendicular_velocity+delta, constants->maximum_perpendicular_velocity);
 				break;
-			
+
 			default: /* slow down */
 				variables->perpendicular_velocity= (variables->perpendicular_velocity>=0) ?
 					FLOOR(variables->perpendicular_velocity-constants->deceleration, 0) :
@@ -752,7 +752,7 @@ static void physics_update(
 				break;
 		}
 	}
-	
+
 	/* change vertical_velocity based on difference between player height and surface height
 		(if we are standing on an object, like a body, take that into account, too: this
 		means a player could actually use bodies as ramps to reach ledges he couldn't
@@ -767,10 +767,10 @@ static void physics_update(
 	{
 		fixed gravity= constants->gravitational_acceleration;
 		fixed terminal_velocity= constants->terminal_velocity;
-		
+
 		if (static_world->environment_flags&_environment_low_gravity) gravity>>= 1;
 		if (variables->flags&_FEET_BELOW_MEDIA_BIT) gravity>>= 1, terminal_velocity>>= 1;
-		
+
 		variables->external_velocity.k= FLOOR(variables->external_velocity.k-gravity, -terminal_velocity);
 	}
 
@@ -797,13 +797,13 @@ static void physics_update(
 	variables->direction+= variables->angular_velocity;
 	if (variables->direction<0) variables->direction+= INTEGER_TO_FIXED(FULL_CIRCLE);
 	if (variables->direction>=INTEGER_TO_FIXED(FULL_CIRCLE)) variables->direction-= INTEGER_TO_FIXED(FULL_CIRCLE);
-	
+
 	/* change the player’s x,y position based on his direction and velocities (parallel and perpendicular)  */
 	new_position= variables->position;
 	cosine= cosine_table[FIXED_INTEGERAL_PART(variables->direction)], sine= sine_table[FIXED_INTEGERAL_PART(variables->direction)];
 	new_position.x+= (variables->velocity*cosine-variables->perpendicular_velocity*sine)>>TRIG_SHIFT;
 	new_position.y+= (variables->velocity*sine+variables->perpendicular_velocity*cosine)>>TRIG_SHIFT;
-	
+
 	/* set above/below floor flags, remember old flags */
 	variables->old_flags= variables->flags;
 	if (new_position.z<variables->floor_height) variables->flags|= _BELOW_GROUND_BIT; else variables->flags&= (word)~_BELOW_GROUND_BIT;
@@ -835,7 +835,7 @@ static void physics_update(
 	new_position.x+= variables->external_velocity.i;
 	new_position.y+= variables->external_velocity.j;
 	new_position.z+= variables->external_velocity.k;
-	
+
 	{
 		short dx= variables->external_velocity.i, dy= variables->external_velocity.j;
 		fixed delta= (delta_z<=0) ? constants->external_deceleration : (constants->external_deceleration>>2);
@@ -871,7 +871,7 @@ static void physics_update(
 		if (variables->velocity||variables->perpendicular_velocity)
 		{
 //			fixed old_step_phase= variables->step_phase;
-			
+
 			if ((variables->step_phase+= constants->step_delta)>=FIXED_ONE)
 			{
 				variables->step_phase-= FIXED_ONE;

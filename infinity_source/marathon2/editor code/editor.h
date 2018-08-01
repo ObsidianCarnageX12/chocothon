@@ -35,7 +35,7 @@ enum {
 	_saved_guard_path_is_random= 0x0001
 };
 
-struct map_index_data 
+struct map_index_data
 {
 	char level_name[LEVEL_NAME_LENGTH];
 	char unused;

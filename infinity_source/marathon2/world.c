@@ -47,7 +47,7 @@ angle normalize_angle(
 {
 	while (theta<0) theta+= NUMBER_OF_ANGLES;
 	while (theta>=NUMBER_OF_ANGLES) theta-= NUMBER_OF_ANGLES;
-	
+
 	return theta;
 }
 
@@ -61,10 +61,10 @@ world_point2d *translate_point2d(
 {
 	assert(theta>=0&&theta<NUMBER_OF_ANGLES);
 	assert(cosine_table[0]==TRIG_MAGNITUDE);
-	
+
 	point->x+= (distance*cosine_table[theta])>>TRIG_SHIFT;
 	point->y+= (distance*sine_table[theta])>>TRIG_SHIFT;
-	
+
 	return point;
 }
 
@@ -76,15 +76,15 @@ world_point3d *translate_point3d(
 	angle phi)
 {
 	world_distance transformed_distance;
-	
+
 	assert(theta>=0&&theta<NUMBER_OF_ANGLES);
 	assert(phi>=0&&theta<NUMBER_OF_ANGLES);
-	
+
 	transformed_distance= (distance*cosine_table[phi])>>TRIG_SHIFT;
 	point->x+= (transformed_distance*cosine_table[theta])>>TRIG_SHIFT;
 	point->y+= (transformed_distance*sine_table[theta])>>TRIG_SHIFT;
 	point->z+= (distance*sine_table[phi])>>TRIG_SHIFT;
-	
+
 	return point;
 }
 
@@ -94,18 +94,18 @@ world_point2d *rotate_point2d(
 	angle theta)
 {
 	world_point2d temp;
-	
+
 	assert(theta>=0&&theta<NUMBER_OF_ANGLES);
 	assert(cosine_table[0]==TRIG_MAGNITUDE);
-	
+
 	temp.x= point->x-origin->x;
 	temp.y= point->y-origin->y;
-	
+
 	point->x= ((temp.x*cosine_table[theta])>>TRIG_SHIFT) + ((temp.y*sine_table[theta])>>TRIG_SHIFT) +
 		origin->x;
 	point->y= ((temp.y*cosine_table[theta])>>TRIG_SHIFT) - ((temp.x*sine_table[theta])>>TRIG_SHIFT) +
 		origin->y;
-	
+
 	return point;
 }
 
@@ -115,16 +115,16 @@ world_point2d *transform_point2d(
 	angle theta)
 {
 	world_point2d temp;
-	
+
 	assert(theta>=0&&theta<NUMBER_OF_ANGLES);
 	assert(cosine_table[0]==TRIG_MAGNITUDE);
-	
+
 	temp.x= point->x-origin->x;
 	temp.y= point->y-origin->y;
-	
+
 	point->x= ((temp.x*cosine_table[theta])>>TRIG_SHIFT) + ((temp.y*sine_table[theta])>>TRIG_SHIFT);
 	point->y= ((temp.y*cosine_table[theta])>>TRIG_SHIFT) - ((temp.x*sine_table[theta])>>TRIG_SHIFT);
-	
+
 	return point;
 }
 
@@ -135,21 +135,21 @@ world_point3d *transform_point3d(
 	angle phi)
 {
 	world_point3d temporary;
-	
+
 	temporary.x= point->x-origin->x;
 	temporary.y= point->y-origin->y;
 	temporary.z= point->z-origin->z;
-	
+
 	/* do theta rotation (in x-y plane) */
 	point->x= ((temporary.x*cosine_table[theta])>>TRIG_SHIFT) + ((temporary.y*sine_table[theta])>>TRIG_SHIFT);
 	point->y= ((temporary.y*cosine_table[theta])>>TRIG_SHIFT) - ((temporary.x*sine_table[theta])>>TRIG_SHIFT);
-	
+
 	/* do phi rotation (in x-z plane) */
 	if (phi)
 	{
 		temporary.x= point->x;
 		/* temporary.z is already set */
-		
+
 		point->x= ((temporary.x*cosine_table[phi])>>TRIG_SHIFT) + ((temporary.z*sine_table[phi])>>TRIG_SHIFT);
 		point->z= ((temporary.z*cosine_table[phi])>>TRIG_SHIFT) - ((temporary.x*sine_table[phi])>>TRIG_SHIFT);
 		/* y-coordinate is unchanged */
@@ -158,7 +158,7 @@ world_point3d *transform_point3d(
 	{
 		point->z= temporary.z;
 	}
-	
+
 	return point;
 }
 
@@ -173,19 +173,19 @@ void build_trig_tables(
 	cosine_table= (short *) malloc(sizeof(short)*NUMBER_OF_ANGLES);
 	tangent_table= (long *) malloc(sizeof(long)*NUMBER_OF_ANGLES);
 	assert(sine_table&&cosine_table&&tangent_table);
-	
+
 	for (i=0;i<NUMBER_OF_ANGLES;++i)
 	{
 		theta= two_pi*(double)i/(double)NUMBER_OF_ANGLES;
-		
+
 		cosine_table[i]= (short) ((double)TRIG_MAGNITUDE*cos(theta)+0.5);
 		sine_table[i]= (short) ((double)TRIG_MAGNITUDE*sin(theta)+0.5);
-		
+
 		if (i==0) sine_table[i]= 0, cosine_table[i]= TRIG_MAGNITUDE;
 		if (i==QUARTER_CIRCLE) sine_table[i]= TRIG_MAGNITUDE, cosine_table[i]= 0;
 		if (i==HALF_CIRCLE) sine_table[i]= 0, cosine_table[i]= -TRIG_MAGNITUDE;
 		if (i==THREE_QUARTER_CIRCLE) sine_table[i]= -TRIG_MAGNITUDE, cosine_table[i]= 0;
-		
+
 		/* what we care about here is NOT accuracy, rather we’re concerned with matching the
 			ratio of the existing sine and cosine tables as exactly as possible */
 		if (cosine_table[i])
@@ -212,21 +212,21 @@ angle arctangent(
 	long tangent;
 	register long last_difference, new_difference;
 	angle search_arc, theta;
-	
+
 	if (x)
 	{
 		tangent= (TRIG_MAGNITUDE*y)/x;
-		
+
 		if (tangent)
 		{
 			theta= (y>0) ? 1 : HALF_CIRCLE+1;
 			if (tangent<0) theta+= QUARTER_CIRCLE;
-			
+
 			last_difference= tangent-tangent_table[theta-1];
 			for (search_arc=QUARTER_CIRCLE-1;search_arc;search_arc--,theta++)
 			{
 				new_difference= tangent-tangent_table[theta];
-				
+
 				if ((last_difference<=0&&new_difference>=0) || (last_difference>=0&&new_difference<=0))
 				{
 					if (ABS(last_difference)<ABS(new_difference))
@@ -238,10 +238,10 @@ angle arctangent(
 						return theta;
 					}
 				}
-				
+
 				last_difference= new_difference;
 			}
-			
+
 			return theta==NUMBER_OF_ANGLES ? 0 : theta;
 		}
 		else
@@ -260,7 +260,7 @@ void set_random_seed(
 	word seed)
 {
 	random_seed= seed ? seed : DEFAULT_RANDOM_SEED;
-	
+
 	return;
 }
 
@@ -274,7 +274,7 @@ word random(
 	void)
 {
 	word seed= random_seed;
-	
+
 	if (seed&1)
 	{
 		seed= (seed>>1)^0xb400;
@@ -291,7 +291,7 @@ word local_random(
 	void)
 {
 	word seed= local_random_seed;
-	
+
 	if (seed&1)
 	{
 		seed= (seed>>1)^0xb400;
@@ -311,11 +311,11 @@ world_distance guess_distance2d(
 	long dx= (long)p0->x - p1->x;
 	long dy= (long)p0->y - p1->y;
 	long distance;
-	
+
 	if (dx<0) dx= -dx;
 	if (dy<0) dy= -dy;
 	distance= GUESS_HYPOTENUSE(dx, dy);
-	
+
 	return distance>SHORT_MAX ? SHORT_MAX : distance;
 }
 
@@ -327,7 +327,7 @@ world_distance distance3d(
 	long dy= (long)p0->y - p1->y;
 	long dz= (long)p0->z - p1->z;
 	long distance= isqrt(dx*dx + dy*dy + dz*dz);
-	
+
 	return distance>SHORT_MAX ? SHORT_MAX : distance;
 }
 
@@ -438,7 +438,7 @@ long isqrt(
 
 	r= 0;
 	m= 0x40000000;
-	
+
 	do
 	{
 		nr= r + m;

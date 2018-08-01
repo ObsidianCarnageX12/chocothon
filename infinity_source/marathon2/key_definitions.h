@@ -48,7 +48,7 @@ static struct key_definition standard_key_definitions[]=
 	{0x57, _moving_backward},
 	{0x56, _turning_left},
 	{0x58, _turning_right},
-	
+
 	/* zx translation */
 	{0x06, _sidestepping_left},
 	{0x07, _sidestepping_right},
@@ -61,26 +61,26 @@ static struct key_definition standard_key_definitions[]=
 	{0x02, _looking_up},
 	{0x08, _looking_down},
 	{0x09, _looking_center},
-	
+
 	/* KP7/KP9 for weapon cycling */
 	{0x59, _cycle_weapons_backward},
 	{0x5c, _cycle_weapons_forward},
-	
+
 	/* space for primary trigger, option for alternate trigger */
 	{0x31, _left_trigger_state},
 	{0x3a, _right_trigger_state},
-	
+
 	/* shift, control and command modifiers */
 	{0x37, _sidestep_dont_turn},
 	{0x3b, _run_dont_walk},
 	{0x38, _look_dont_turn},
-	
+
 	/* tab for action */
 	{0x30, _action_trigger_state},
 
 	/* m for toggle between normal and overhead map view */
 	{0x2e, _toggle_map},
-	
+
 	/* ` for using the microphone */
 	{0x32, _microphone_button}
 };
@@ -93,7 +93,7 @@ static struct key_definition left_handed_key_definitions[]=
 	{0x7d, _moving_backward},
 	{0x7b, _turning_left},
 	{0x7c, _turning_right},
-	
+
 	/* zx translation */
 	{0x06, _sidestepping_left},
 	{0x07, _sidestepping_right},
@@ -106,26 +106,26 @@ static struct key_definition left_handed_key_definitions[]=
 	{0x02, _looking_up},
 	{0x08, _looking_down},
 	{0x09, _looking_center},
-	
+
 	/* ;' for weapon cycling */
 	{0x0c, _cycle_weapons_backward},
 	{0x0d, _cycle_weapons_forward},
-	
+
 	/* space for primary trigger, option for alternate trigger */
 	{0x31, _left_trigger_state},
 	{0x3a, _right_trigger_state},
-	
+
 	/* shift, control and command modifiers */
 	{0x37, _sidestep_dont_turn},
 	{0x3b, _run_dont_walk},
 	{0x38, _look_dont_turn},
-	
+
 	/* tab for action */
 	{0x30, _action_trigger_state},
 
 	/* m for toggle between normal and overhead map view */
 	{0x2e, _toggle_map},
-	
+
 	/* ` for using the microphone */
 	{0x32, _microphone_button}
 };
@@ -138,7 +138,7 @@ static struct key_definition powerbook_key_definitions[]=
 	{0x25, _moving_backward},
 	{0x28, _turning_left},
 	{0x29, _turning_right},
-	
+
 	/* zx translation */
 	{0x06, _sidestepping_left},
 	{0x07, _sidestepping_right},
@@ -151,26 +151,26 @@ static struct key_definition powerbook_key_definitions[]=
 	{0x02, _looking_up},
 	{0x08, _looking_down},
 	{0x09, _looking_center},
-	
+
 	/* ip for weapon cycling */
 	{0x22, _cycle_weapons_backward},
 	{0x23, _cycle_weapons_forward},
-	
+
 	/* space for primary trigger, option for alternate trigger */
 	{0x31, _left_trigger_state},
 	{0x3a, _right_trigger_state},
-	
+
 	/* shift, control and command modifiers */
 	{0x37, _sidestep_dont_turn},
 	{0x3b, _run_dont_walk},
 	{0x38, _look_dont_turn},
-	
+
 	/* tab for action */
 	{0x30, _action_trigger_state},
 
 	/* m for toggle between normal and overhead map view */
 	{0x2e, _toggle_map},
-	
+
 	/* ` for using the microphone */
 	{0x32, _microphone_button}
 };

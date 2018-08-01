@@ -91,12 +91,12 @@ struct effect_data /* 16 bytes */
 {
 	short type;
 	short object_index;
-	
+
 	word flags; /* [slot_used.1] [unused.15] */
 
 	short data; /* used for special effects (effects) */
 	short delay; /* the effect is invisible and inactive for this many ticks */
-	
+
 	short unused[11];
 };
 

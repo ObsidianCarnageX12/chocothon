@@ -67,18 +67,18 @@ static struct revert_game_info revert_game_data;
 /* Borrowed from the old lightsource.h, to allow Marathon II to open/use Marathon I maps */
 struct old_light_data {
 	word flags;
-	
+
 	short type;
 	short mode; /* on, off, etc. */
 	short phase;
-	
+
 	fixed minimum_intensity, maximum_intensity;
 	short period; /* on, in ticks (turning on and off periods are always the same for a given light type,
 		or else are some function of this period) */
-	
+
 	fixed intensity; /* current intensity */
-	
-	short unused[5];	
+
+	short unused[5];
 };
 
 enum /* old light types */
@@ -86,7 +86,7 @@ enum /* old light types */
 	_light_is_normal,
 	_light_is_rheostat,
 	_light_is_flourescent,
-	_light_is_strobe, 
+	_light_is_strobe,
 	_light_flickers,
 	_light_pulsates,
 	_light_is_annoying,
@@ -111,26 +111,26 @@ static serial_number_validity_check(void);
 
 /* ------------------------ Net functions */
 long get_net_map_data_length(
-	void *data) 
+	void *data)
 {
 	return get_flat_data_length(data);
 }
 
 /* Note that this frees it as well */
 boolean process_net_map_data(
-	void *data) 
+	void *data)
 {
 	struct wad_header header;
 	struct wad_data *wad;
 	boolean success= FALSE;
-	
+
 	wad= inflate_flat_data(data, &header);
 	if(wad)
 	{
 		success= process_map_wad(wad, FALSE, header.data_version);
 		free_wad(wad); /* Note that the flat data points into the wad. */
 	}
-	
+
 	return success;
 }
 
@@ -139,7 +139,7 @@ void *get_map_for_net_transfer(
 	struct entry_point *entry)
 {
 	assert(file_is_set);
-	
+
 	/* FALSE means don't use union maps.. */
 	return get_flat_data(&current_map_file, FALSE, entry->level_number);
 }
@@ -153,7 +153,7 @@ void set_map_file(
 	memcpy(&current_map_file, file, sizeof(FileDesc));
 	set_scenario_images_file(file);
 	file_is_set= TRUE;
-	
+
 	return;
 }
 
@@ -162,10 +162,10 @@ void set_to_default_map(
 	void)
 {
 	FileDesc new_map;
-	
+
 	get_default_map_spec(&new_map);
 	set_map_file(&new_map);
-	
+
 	return;
 }
 
@@ -206,7 +206,7 @@ boolean load_level_from_map(
 		} else {
 			index_to_load= level_index;
 		}
-	
+
 //		file_handle= open_union_wad_file_for_reading(&current_map_file);
 //		if(file_handle!=0)
 		file_handle= open_wad_file_for_reading(&current_map_file);
@@ -222,7 +222,7 @@ boolean load_level_from_map(
 					{
 						/* Process everything... */
 						process_map_wad(wad, restoring_game, header.data_version);
-		
+
 						/* Nuke our memory... */
 						free_wad(wad);
 					} else {
@@ -234,7 +234,7 @@ boolean load_level_from_map(
 			} else {
 				// error code has been set...
 			}
-		
+
 			/* Close the file.. */
 			close_wad_file(file_handle);
 		} else {
@@ -274,12 +274,12 @@ void complete_loading_level(
 	}
 
 	scan_and_add_scenery();
-	
+
 	/* Gotta do this after recalculate redundant.. */
 	if(version==MARATHON_ONE_DATA_VERSION)
 	{
 		short loop;
-		
+
 		for(loop= 0; loop<dynamic_world->polygon_count; ++loop)
 		{
 			guess_side_lightsource_indexes(loop);
@@ -290,8 +290,8 @@ void complete_loading_level(
 /* Call with location of NULL to get the number of start locations for a */
 /* given team or player */
 short get_player_starting_location_and_facing(
-	short team, 
-	short index, 
+	short team,
+	short index,
 	struct object_location *location)
 {
 #if 1
@@ -299,7 +299,7 @@ short get_player_starting_location_and_facing(
 	struct map_object *saved_object;
 	short count= 0;
 	boolean done= FALSE;
-	
+
 	saved_object= saved_objects;
 	for(ii=0; !done && ii<dynamic_world->initial_objects_count; ++ii)
 	{
@@ -322,10 +322,10 @@ short get_player_starting_location_and_facing(
 		}
 		++saved_object;
 	}
-	
+
 	/* If they asked for a valid location, make sure that we gave them one */
 	if(location) vassert(done, csprintf(temporary, "Tried to place: %d only %d starting pts.", index, count));
-	
+
 	return count;
 #else
 	location->x= 0x14e9;
@@ -345,19 +345,19 @@ unsigned long get_current_map_checksum(
 
 	assert(file_is_set);
 	file_handle= open_wad_file_for_reading(&current_map_file);
-	assert(file_handle != -1);	
+	assert(file_handle != -1);
 
 	/* Read the file */
 	read_wad_header(file_handle, &header);
-	
+
 	/* Close the file.. */
-	close_wad_file(file_handle);	
-	
+	close_wad_file(file_handle);
+
 	return header.checksum;
 }
 
 boolean new_game(
-	short number_of_players, 
+	short number_of_players,
 	boolean network,
 	struct game_data *game_information,
 	struct player_start_data *player_start_information,
@@ -371,7 +371,7 @@ boolean new_game(
 
 	/* Initialize the global network going flag... */
 	game_is_networked= network;
-	
+
 	/* If we want to save it, this is an untitled map.. */
 	get_application_filedesc(&revert_game_data.saved_game);
 	getpstr((char *)revert_game_data.saved_game.name, strFILENAMES, filenameDEFAULT_SAVE_GAME);
@@ -390,7 +390,7 @@ boolean new_game(
 	 * on this information being setup properly, so we do it here instead. */
 	memcpy(&dynamic_world->game_information, game_information, sizeof(struct game_data));
 
-	/* Load the level */	
+	/* Load the level */
 	assert(file_is_set);
 	success= goto_level(entry_point, TRUE);
 
@@ -418,7 +418,7 @@ boolean new_game(
 		{
 			/* Make sure we can count. */
 			assert(number_of_players==NetGetNumberOfPlayers());
-			
+
 			set_local_player_index(NetGetLocalPlayerIndex());
 			set_current_player_index(NetGetLocalPlayerIndex());
 
@@ -436,15 +436,15 @@ boolean new_game(
 			serial_number_validity_check();
 #endif
 		}
-		
+
 		/* we need to alert the function that reverts the game of the game setup so that
 		 * new game can be called if the user wants to revert later.
 		 */
 		setup_revert_game_info(game_information, player_start_information, entry_point);
-		
+
 		// Reset the player queues (done here and in load_game)
 		reset_player_queues();
-		
+
 		/* Load the collections */
 		/* entering map might fail if NetSync() fails.. */
 		success= entering_map();
@@ -454,15 +454,15 @@ boolean new_game(
 }
 
 boolean get_indexed_entry_point(
-	struct entry_point *entry_point, 
-	short *index, 
+	struct entry_point *entry_point,
+	short *index,
 	long type)
 {
 	short file_handle;
 	struct wad_header header;
 	short actual_index;
 	boolean success= FALSE;
-	
+
 	assert(file_is_set);
 
 	file_handle= open_wad_file_for_reading(&current_map_file);
@@ -479,8 +479,8 @@ boolean get_indexed_entry_point(
 				for(actual_index= *index; actual_index<header.wad_count; ++actual_index)
 				{
 					struct directory_data *directory;
-					
-					directory= (struct directory_data *)get_indexed_directory_data(&header, actual_index, 
+
+					directory= (struct directory_data *)get_indexed_directory_data(&header, actual_index,
 						total_directory_data);
 
 					/* Find the flags that match.. */
@@ -489,7 +489,7 @@ boolean get_indexed_entry_point(
 						/* This one is valid! */
 						entry_point->level_number= actual_index;
 						strcpy(entry_point->level_name, directory->level_name);
-			
+
 						*index= actual_index+1;
 						success= TRUE;
 						break; /* Out of the for loop */
@@ -519,11 +519,11 @@ boolean get_indexed_entry_point(
 							entry_point->level_number= actual_index;
 							assert(strlen(map_info->level_name)<LEVEL_NAME_LENGTH);
 							strcpy(entry_point->level_name, map_info->level_name);
-				
+
 							*index= actual_index+1;
 							success= TRUE;
 						}
-				
+
 						free_wad(wad);
 					}
 				}
@@ -542,7 +542,7 @@ boolean get_indexed_entry_point(
 
 /* Returns a short that is an OSErr... */
 boolean goto_level(
-	struct entry_point *entry, 
+	struct entry_point *entry,
 	boolean new_game)
 {
 	boolean success= TRUE;
@@ -561,8 +561,8 @@ boolean goto_level(
 		/* then calls process_map_wad on it. Non-server receives the map and then */
 		/* calls process_map_wad on it. */
 		success= NetChangeMap(entry);
-	} 
-	else 
+	}
+	else
 	{
 		/* Load it and then rock.. */
 		load_level_from_map(entry->level_number);
@@ -574,7 +574,7 @@ boolean goto_level(
 		if (!new_game)
 		{
 			recreate_players_for_new_level();
-	
+
 			/* Load the collections */
 			dynamic_world->current_level_number= entry->level_number;
 
@@ -590,9 +590,9 @@ boolean goto_level(
 			 * levels (the placement stuff calls point_is_player_visible) and loading the game
 			 * wad munges the monster information (which p_i_p_v() needs) */
 			place_initial_objects();
-	
+
 			initialize_control_panels_for_level(); /* must be called after the players are initialized */
-	
+
 			dynamic_world->current_level_number= entry->level_number;
 		} else {
 //			assert(error_pending());
@@ -606,7 +606,7 @@ boolean goto_level(
 
 /* -------------------- Private or map editor functions */
 void allocate_map_for_counts(
-	short polygon_count, 
+	short polygon_count,
 	short side_count,
 	short endpoint_count,
 	short line_count,
@@ -617,10 +617,10 @@ void allocate_map_for_counts(
 
 	/* Give the map indexes a whole bunch of memory (cause we can't calculate it) */
 	map_index_length= (polygon_count*32+1024)*sizeof(short);
-	
+
 	/* Automap lines. */
 	automap_line_length= (line_count/8+((line_count%8)?1:0))*sizeof(byte);
-	
+
 	/* Automap Polygons */
 	automap_polygon_length= (polygon_count/8+((polygon_count%8)?1:0))*sizeof(byte);
 
@@ -653,11 +653,11 @@ void allocate_map_for_counts(
 }
 
 void load_points(
-	saved_map_pt *points, 
+	saved_map_pt *points,
 	short count)
 {
 	short loop;
-	
+
 	assert(count>=0 && count<MAXIMUM_ENDPOINTS_PER_MAP);
 	for(loop=0; loop<count; ++loop)
 	{
@@ -668,7 +668,7 @@ void load_points(
 }
 
 void load_lines(
-	saved_line *lines, 
+	saved_line *lines,
 	short count)
 {
 	short loop;
@@ -683,12 +683,12 @@ void load_lines(
 }
 
 void load_sides(
-	saved_side *sides, 
+	saved_side *sides,
 	short count,
 	short version)
 {
 	short loop;
-	
+
 	assert(count>=0 && count<MAXIMUM_SIDES_PER_MAP);
 	for(loop=0; loop<count; ++loop)
 	{
@@ -706,7 +706,7 @@ void load_sides(
 }
 
 void load_polygons(
-	saved_poly *polys, 
+	saved_poly *polys,
 	short count,
 	short version)
 {
@@ -731,11 +731,11 @@ void load_polygons(
 				map_polygons[loop].ceiling_origin.x= map_polygons[loop].ceiling_origin.y= 0;
 			}
 			break;
-			
+
 		case MARATHON_TWO_DATA_VERSION:
 		case MARATHON_INFINITY_DATA_VERSION:
 			break;
-			
+
 		default:
 			halt();
 			break;
@@ -743,7 +743,7 @@ void load_polygons(
 }
 
 void load_lights(
-	struct static_light_data *lights, 
+	struct static_light_data *lights,
 	short count,
 	short version)
 {
@@ -751,19 +751,19 @@ void load_lights(
 
 	vassert(count>=0 && count<MAXIMUM_LIGHTS_PER_MAP, csprintf(temporary, "Light count: %d vers: %d",
 		count, version));
-	
+
 	switch(version)
 	{
 		case MARATHON_ONE_DATA_VERSION:
-			{	
+			{
 				struct old_light_data *light= (struct old_light_data *) lights;
-				
+
 				/* As time goes on, we should add functions below to make the lights */
 				/*  behave more like their bacward compatible cousins. */
 				for(loop= 0; loop<count; ++loop)
 				{
 					short new_index;
-					
+
 					/* Do the best we can.. */
 					switch(light->type)
 					{
@@ -774,13 +774,13 @@ void load_lights(
 						case _light_is_flourescent:
 							new_index= new_light(get_defaults_for_light_type(_normal_light));
 							break;
-							
+
 						case _light_is_strobe:
 						case _light_flickers:
 						case _light_pulsates:
 							new_index= new_light(get_defaults_for_light_type(_strobe_light));
 							break;
-							
+
 						default:
 							halt();
 							break;
@@ -790,16 +790,16 @@ void load_lights(
 				}
 			}
 			break;
-			
+
 		case MARATHON_TWO_DATA_VERSION:
 		case MARATHON_INFINITY_DATA_VERSION:
 			{
 				struct static_light_data *light= lights;
-				
+
 				for(loop= 0; loop<count; ++loop)
 				{
 					short new_index;
-					
+
 					new_index= new_light(light);
 					assert(new_index==loop);
 					light++;
@@ -815,32 +815,32 @@ void load_lights(
 }
 
 void load_annotations(
-	saved_annotation *annotations, 
+	saved_annotation *annotations,
 	short count)
 {
 	short ii;
-	
+
 	assert(count>=0 && count<MAXIMUM_ANNOTATIONS_PER_MAP);
-	
+
 	for(ii=0; ii<count; ++ii)
 	{
 		map_annotations[ii]= annotations[ii];
 	}
 	dynamic_world->default_annotation_count= count;
-	
+
 	return;
 }
 
 void load_objects(saved_object *map_objects, short count)
 {
 	short ii;
-	
+
 	assert(count>=0 && count<MAXIMUM_SAVED_OBJECTS);
-	
+
 	for(ii=0; ii<count; ++ii)
 	{
-		saved_objects[ii]= map_objects[ii];	
-	} 
+		saved_objects[ii]= map_objects[ii];
+	}
 	dynamic_world->initial_objects_count= count;
 }
 
@@ -857,16 +857,16 @@ void load_media(
 {
 	struct media_data *media= medias;
 	short ii;
-	
+
 	assert(count>=0 && count<MAXIMUM_MEDIAS_PER_MAP);
 	for(ii= 0; ii<count; ++ii)
 	{
 		short new_index= new_media(media);
-		
+
 		assert(new_index==ii);
 		media++;
 	}
-	
+
 	return;
 }
 
@@ -913,14 +913,14 @@ boolean load_game_from_file(
 
 	/* Use the save game file.. */
 	set_map_file(file);
-	
+
 	/* Load the level from the map */
 	success= load_level_from_map(NONE); /* Save games are ALWAYS index NONE */
 
 	if (success)
 	{
 		unsigned long parent_checksum;
-	
+
 		/* Set the non-saved data.... */
 		set_current_player_index(0);
 		set_local_player_index(0);
@@ -931,31 +931,31 @@ boolean load_game_from_file(
 		{
 			/* Tell the user they’re screwed when they try to leave this level. */
 			alert_user(infoError, strERRORS, cantFindMap, 0);
-		
+
 			/* Set to the default map. */
 			set_to_default_map();
 		}
 
 		/* Set the random seed. */
 		set_random_seed(dynamic_world->random_seed);
-		
-		/* Load the shapes and whatnot.. */		
+
+		/* Load the shapes and whatnot.. */
 		entering_map();
-	} 
+	}
 
 	return success;
 }
 
 void setup_revert_game_info(
-	struct game_data *game_info, 
-	struct player_start_data *start, 
+	struct game_data *game_info,
+	struct player_start_data *start,
 	struct entry_point *entry)
 {
 	revert_game_data.game_is_from_disk = FALSE;
 	memcpy(&revert_game_data.game_information, game_info, sizeof(struct game_data));
 	memcpy(&revert_game_data.player_start, start, sizeof(struct player_start_data));
 	memcpy(&revert_game_data.entry_point, entry, sizeof(struct entry_point));
-	
+
 	return;
 }
 
@@ -963,11 +963,11 @@ boolean revert_game(
 	void)
 {
 	boolean successful;
-	
+
 	assert(dynamic_world->player_count==1);
 
 	leaving_map();
-	
+
 	if (revert_game_data.game_is_from_disk)
 	{
 		/* Reload their last saved game.. */
@@ -979,9 +979,9 @@ boolean revert_game(
 	else
 	{
 		/* This was the totally evil line discussed above. */
-		successful= new_game(1, FALSE, &revert_game_data.game_information, &revert_game_data.player_start, 
+		successful= new_game(1, FALSE, &revert_game_data.game_information, &revert_game_data.player_start,
 			&revert_game_data.entry_point);
-			
+
 		/* And rewind so that the last player is used. */
 		rewind_recording();
 	}
@@ -990,7 +990,7 @@ boolean revert_game(
 	{
 		update_interface(NONE);
 	}
-	
+
 	return successful;
 }
 
@@ -1016,15 +1016,15 @@ boolean save_game_file(
 	dynamic_world->random_seed= get_random_seed();
 
 	/* Setup to revert the game properly */
-	revert_game_data.game_is_from_disk= TRUE; 
+	revert_game_data.game_is_from_disk= TRUE;
 	memcpy(&revert_game_data.saved_game, file, sizeof(FileDesc));
 
 	/* Fill in the default wad header */
 	fill_default_wad_header(file, CURRENT_WADFILE_VERSION, EDITOR_MAP_VERSION, 1, 0, &header);
-		
+
 	/* Assume that we confirmed on save as... */
 	err= create_wadfile(file, SAVE_GAME_TYPE);
-	
+
 	if(!err)
 	{
 		file_ref= open_wad_file_for_writing(file); /* returns -1 on error */
@@ -1034,14 +1034,14 @@ boolean save_game_file(
 			if (write_wad_header(file_ref, &header))
 			{
 				offset= sizeof(struct wad_header);
-		
+
 				wad= build_save_game_wad(&header, &wad_length);
 				if (wad)
 				{
 					/* Set the entry data.. */
-					set_indexed_directory_offset_and_length(&header, 
+					set_indexed_directory_offset_and_length(&header,
 						&entry, 0, offset, wad_length, 0);
-					
+
 					/* Save it.. */
 					if (write_wad(file_ref, &header, wad, offset))
 					{
@@ -1059,7 +1059,7 @@ boolean save_game_file(
 
 							/* We win. */
 							success= TRUE;
-						} 
+						}
 					}
 
 					free_wad(wad);
@@ -1077,7 +1077,7 @@ boolean save_game_file(
 		clear_game_error();
 		success= FALSE;
 	}
-	
+
 	return success;
 }
 
@@ -1090,7 +1090,7 @@ static void scan_and_add_platforms(
 	short loop;
 	struct static_platform_data *static_data;
 	short platform_static_data_index;
-	
+
 	polygon= map_polygons;
 	for(loop=0; loop<dynamic_world->polygon_count; ++loop)
 	{
@@ -1108,13 +1108,13 @@ static void scan_and_add_platforms(
 				}
 				static_data++;
 			}
-			
+
 			/* DIdn't find it- use a standard platform */
 			if(platform_static_data_index==count)
 			{
 				polygon->permutation= 1;
 				new_platform(get_defaults_for_platform_type(polygon->permutation), loop);
-			}	
+			}
 		}
 		++polygon;
 	}
@@ -1123,7 +1123,7 @@ static void scan_and_add_platforms(
 
 /* Load a level from a wad-> mainly used by the net stuff. */
 boolean process_map_wad(
-	struct wad_data *wad, 
+	struct wad_data *wad,
 	boolean restoring_game,
 	short version)
 {
@@ -1134,7 +1134,7 @@ boolean process_map_wad(
 
 	assert(version==MARATHON_INFINITY_DATA_VERSION || version==MARATHON_TWO_DATA_VERSION || version==MARATHON_ONE_DATA_VERSION);
 
-	/* zero everything so no slots are used */	
+	/* zero everything so no slots are used */
 	initialize_map_for_new_level();
 
 	/* Calculate the length (for reallocate map) */
@@ -1175,7 +1175,7 @@ boolean process_map_wad(
 	{
 		/* When you are restoring a game, the actual light structure is set. */
 		data= (byte *)extract_type_from_wad(wad, LIGHTSOURCE_TAG, &data_length);
-		if(version==MARATHON_ONE_DATA_VERSION) 
+		if(version==MARATHON_ONE_DATA_VERSION)
 		{
 			/* We have an old style light */
 			count= data_length/sizeof(struct old_light_data);
@@ -1262,7 +1262,7 @@ boolean process_map_wad(
 		{
 			/* Force precalculation */
 			map_index_data= NULL;
-			map_index_count= 0; 
+			map_index_count= 0;
 		} else {
 			map_index_data= (byte *)extract_type_from_wad(wad, MAP_INDEXES_TAG, &data_length);
 			map_index_count= data_length/sizeof(short);
@@ -1280,7 +1280,7 @@ boolean process_map_wad(
 		assert(platform_structure_count*sizeof(struct platform_data)==data_length);
 
 		complete_loading_level((short *) map_index_data, map_index_count,
-			(struct static_platform_data *) data, count, platform_structures, 
+			(struct static_platform_data *) data, count, platform_structures,
 			platform_structure_count, version);
 	}
 
@@ -1300,7 +1300,7 @@ static void allocate_map_structure_for_map(
 	data= (byte *)extract_type_from_wad(wad, POINT_TAG, &data_length);
 	endpoint_count= data_length/sizeof(saved_map_pt);
 	if(endpoint_count*sizeof(saved_map_pt)!=data_length) alert_user(fatalError, strERRORS, corruptedMap, 'pt');
-	
+
 	if(!endpoint_count)
 	{
 		data= (byte *)extract_type_from_wad(wad, ENDPOINT_DATA_TAG, &data_length);
@@ -1371,7 +1371,7 @@ static void load_redundant_map_data(
 }
 
 void load_terminal_data(
-	byte *data, 
+	byte *data,
 	long length)
 {
 	/* I would really like it if I could get these into computer_interface.c statically */
@@ -1384,28 +1384,28 @@ static void scan_and_add_scenery(
 {
 	short ii;
 	struct map_object *saved_object;
-	
+
 	saved_object= saved_objects;
 	for(ii=0; ii<dynamic_world->initial_objects_count; ++ii)
 	{
 		if (saved_object->type==_saved_object)
 		{
 			struct object_location location;
-			
+
 			location.p= saved_object->location;
 			location.flags= saved_object->flags;
 			location.yaw= saved_object->facing;
 			location.polygon_index= saved_object->polygon_index;
 			new_scenery(&location, saved_object->index);
 		}
-		
+
 		++saved_object;
-	} 
-	
+	}
+
 	return;
 }
 
-struct save_game_data 
+struct save_game_data
 {
 	long tag;
 	short unit_size;
@@ -1451,12 +1451,12 @@ struct save_game_data save_data[]=
 
 /* the sizes are the sizes to save in the file, be aware! */
 void *tag_to_global_array_and_size(
-	long tag, 
+	long tag,
 	long *size)
 {
 	void *array= NULL;
 	short unit_size, index;
-	
+
 	for(index= 0; index<NUMBER_OF_SAVE_ARRAYS; ++index)
 	{
 		if(save_data[index].tag==tag)
@@ -1524,7 +1524,7 @@ void *tag_to_global_array_and_size(
 			break;
 		case AUTOMAP_LINES:
 			array= automap_lines;
-			*size= (dynamic_world->line_count/8+((dynamic_world->line_count%8)?1:0))*sizeof(byte); 
+			*size= (dynamic_world->line_count/8+((dynamic_world->line_count%8)?1:0))*sizeof(byte);
 			break;
 		case AUTOMAP_POLYGONS:
 			array= automap_polygons;
@@ -1585,13 +1585,13 @@ void *tag_to_global_array_and_size(
 			halt();
 			break;
 	}
-	
+
 	return array;
 }
 
 /* Build the wad, with all the crap */
 static struct wad_data *build_save_game_wad(
-	struct wad_header *header, 
+	struct wad_header *header,
 	long *length)
 {
 	struct wad_data *wad= NULL;
@@ -1607,7 +1607,7 @@ static struct wad_data *build_save_game_wad(
 		{
 			/* If there is a conversion function, let it handle it */
 			array_to_slam= (byte *)tag_to_global_array_and_size(save_data[loop].tag, &size);
-	
+
 			/* Add it to the wad.. */
 			if(size)
 			{
@@ -1616,7 +1616,7 @@ static struct wad_data *build_save_game_wad(
 		}
 		if(wad) *length= calculate_wad_length(header, wad);
 	}
-	
+
 	return wad;
 }
 
@@ -1637,7 +1637,7 @@ static void complete_restoring_level(
 		{
 			/* Size is invalid at this point.. */
 			array= tag_to_global_array_and_size(save_data[loop].tag, &size);
-			data= (byte *)extract_type_from_wad(wad, save_data[loop].tag, &data_length);	
+			data= (byte *)extract_type_from_wad(wad, save_data[loop].tag, &data_length);
 			count= data_length/save_data[loop].unit_size;
 			assert(count*save_data[loop].unit_size==data_length);
 
@@ -1654,24 +1654,24 @@ static boolean check_for_duplicate_serial_numbers(
 	void)
 {
 	short i, j;
-	
+
 	for (i= 0; i<dynamic_world->player_count; ++i)
 	{
 		struct player_info *player1= (struct player_info *)NetGetPlayerData(i);
-		
+
 		for (j= i+1; j<dynamic_world->player_count; ++j)
 		{
 			struct player_info *player2= (struct player_info *)NetGetPlayerData(j);
-			
+
 			if (!memcmp(player1->long_serial_number, player2->long_serial_number, 10))
 			{
 				alert_user(fatalError, strERRORS, duplicateSerialNumbers, 0);
-				
+
 				return TRUE;
 			}
 		}
 	}
-	
+
 	return FALSE;
 }
 
@@ -1690,9 +1690,9 @@ static serial_number_validity_check(
 	short i, j;
 	boolean found_duplicate= FALSE;
 	boolean found_illegal= FALSE;
-	
+
 //	dprintf("serial number checking.....................................................;g;");
-	
+
 //	if (preferences->last_time_ran<0xab1747dc || preferences->last_time_ran>0xab553918)
 	{
 		for (i= 0; i<dynamic_world->player_count; ++i)
@@ -1700,14 +1700,14 @@ static serial_number_validity_check(
 			byte *player1_long_serial_number= game_is_networked ? ((struct player_info *)NetGetPlayerData(i))->long_serial_number : serial_preferences->long_serial_number;
 			byte short_serial_number[BYTES_PER_SHORT_SERIAL_NUMBER];
 			byte inferred_pad[BYTES_PER_SHORT_SERIAL_NUMBER];
-			
+
 			if (game_is_networked)
 			{
 				for (j= i+1; j<dynamic_world->player_count; ++j)
 				{
 					struct player_info *player2= NetGetPlayerData(j);
 					short k;
-					
+
 					for (k= 0; k<10 && player1_long_serial_number[k]==player2->long_serial_number[k]; ++k);
 					if (k==10) found_duplicate= TRUE;
 
@@ -1722,7 +1722,7 @@ static serial_number_validity_check(
 			{
 				found_illegal= TRUE;
 			}
-			
+
 
 /*			dprintf("player #%d (%08x%08x%04x) %d %d;g;", i, *(long*)player1_long_serial_number,
 				*(long*)(player1_long_serial_number+4), *(short*)(player1_long_serial_number+8),
@@ -1735,7 +1735,7 @@ static serial_number_validity_check(
 	{
 		alien_projectile_override= _projectile_rocket, human_projectile_override= _projectile_rifle_bullet;
 	}
-	
+
 	return;
 }
 #endif

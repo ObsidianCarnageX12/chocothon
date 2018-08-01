@@ -8,7 +8,7 @@ Wednesday, December 19, 1990 9:15:38 AM
 	Notice that it is pretty much a bad thing if we don't find the
 	resource, because we don't create it (and somebody will be trying
 	to use a NULL handle!).  This is now fixed.
-	
+
 ERRORS.C (minotaur)
 Friday, April 6, 1990 9:06:12 PM
 
@@ -158,10 +158,10 @@ RGBColor system_colors[NUMBER_OF_SYSTEM_COLORS]=
 	{0x0000, 0x0000, 0x0000},
 	{0x0000, 0x0000, 0x0000},
 	{0xCCCC, 0xCCCC, 0xFFFF},
-	
+
 	/* highlight color (will be changed) */
 	{0xB000, 0xB000, 0xFFFF},
-	
+
 	/* grays */
 	{0x2666, 0x2666, 0x2666}, /* 15% */
 	{0x5555, 0x5555, 0x5555}, /* 33% */
@@ -171,7 +171,7 @@ RGBColor system_colors[NUMBER_OF_SYSTEM_COLORS]=
 	{0xBAE0, 0xBAE0, 0xBAE0}, /* 73% */
 	{0xDDDD, 0xDDDD, 0xDDDD}, /* 87% */
 	{0xEEEE, 0xEEEE, 0xEEEE}, /* 93% */
-	
+
 	/* active apple colors */
 	{0, 48059, 0},
 	{65535, 65535, 0},
@@ -181,7 +181,7 @@ RGBColor system_colors[NUMBER_OF_SYSTEM_COLORS]=
 	{0, 0, 56797},  /* was 0,0,56797, changed to 0,30146,52428 to fix apple, now back.  the old
 						color was needed to make the apple stay in color, and is added as
 						‘stupidColor1’ below */
-	
+
 	/* inactive apple colors */
 	{0x6666, 0xCCCC, 0x6666},
 	{0xFFFF, 0xFFFF, 0x6666},
@@ -189,7 +189,7 @@ RGBColor system_colors[NUMBER_OF_SYSTEM_COLORS]=
 	{0xFFFF, 0x6666, 0x6666},
 	{0xFFFF, 0x6666, 0xCCCC},
 	{0x6666, 0x6666, 0xFFFF}, /* changed green from 0xFFFF */
-	
+
 	{0,30146,52428}
 };
 
@@ -230,10 +230,10 @@ void initialize_system_colors(
 				system_colors[windowHighlight]= (*default_wctb)->ctTable[wHighlightColor].rgb;
 			}
 		}
-		
+
 		/* we can’t dispose of this, because other people are using it */
 	}
-	
+
 	/* interpolate to get the two shades between the highlight and lowlight */
 	SetRGBColor(system_colors+window33Percent,
 		(2*(long)system_colors[windowLowlight].red+(long)system_colors[windowHighlight].red)/3,
@@ -254,7 +254,7 @@ void hold_for_visible_delay(
 	void)
 {
 	long start= TickCount();
-	
+
 	while(TickCount()<start+VISIBLE_DELAY);
 }
 
@@ -264,13 +264,13 @@ void get_window_frame(
 {
 	GrafPtr old_port;
 	Point corner;
-	
+
 	GetPort(&old_port);
 	SetPort(window);
 	SetPt(&corner, 0, 0);
 	LocalToGlobal(&corner);
 	SetPort(old_port);
-	
+
 	*frame= window->portRect;
 	OffsetRect(frame, corner.h-frame->left, corner.v-frame->top);
 
@@ -284,7 +284,7 @@ void modify_menu_item(
 	short check)
 {
 	MenuHandle menu_handle;
-	
+
 	menu_handle= GetMHandle(menu);
 	assert(menu_handle);
 
@@ -298,13 +298,13 @@ void modify_menu_item(
 		{
 			DisableItem(menu_handle, item);
 		}
-		
+
 		if (check!=NONE)
 		{
 			CheckItem(menu_handle, item, check);
 		}
 	}
-	
+
 	return;
 }
 
@@ -316,7 +316,7 @@ void _assertion_failure(
 {
 	Str255 buffer;
 
-#ifdef DEBUG	
+#ifdef DEBUG
 	if (debugger_installed)
 	{
 		psprintf((char *)buffer, "%s in %s,#%d: %s", fatal ? "halt" : "pause", file, line,
@@ -327,9 +327,9 @@ void _assertion_failure(
 #endif
 	{
 		Handle fkeyHandle= GetResource('FKEY', 3);
-	
+
 		/* load and call FKEY 3 to get a screen shot before we draw a dialog over everything */
-	
+
 		if (fkeyHandle)
 		{
 			LoadResource(fkeyHandle);
@@ -345,7 +345,7 @@ void _assertion_failure(
 		ParamText(buffer, "\p-1", (StringPtr)"", (StringPtr)"");
 		Alert(fatal ? alrtFATAL_ERROR : alrtNONFATAL_ERROR, (ModalFilterUPP) NULL);
 	}
-	
+
 	if (fatal)
 	{
 		exit(-1);
@@ -363,25 +363,25 @@ void alert_user(
 	short identifier)
 {
 	char buffer[50];
-	
+
 	psprintf(buffer, "%d", identifier);
 	ParamText((StringPtr)getpstr(temporary, resource_number, error_number), (StringPtr)buffer, (StringPtr)"", (StringPtr)"");
-	
+
 	switch(type)
 	{
 		case fatalError:
 			Alert(alrtFATAL_ERROR, (ModalFilterUPP) NULL);
 			ParamText((StringPtr)"", (StringPtr)"", (StringPtr)"", (StringPtr)"");
 			exit(-1);
-		
+
 		case infoError:
 			Alert(alrtNONFATAL_ERROR, (ModalFilterUPP) NULL);
 			break;
-		
+
 		default:
 			halt();
 	}
-	
+
 	ParamText((StringPtr)"", (StringPtr)"", (StringPtr)"", (StringPtr)"");
 	return;
 }
@@ -409,12 +409,12 @@ long whats_on_top(
 	void)
 {
 	WindowPtr window= FrontWindow(); /* FLOATS */
-	
+
 	if (window)
 	{
 		return GetWRefCon(window);
 	}
-	
+
 	return NONE;
 }
 
@@ -430,7 +430,7 @@ OSErr choose_new_file(
 	Point location;
 	SFReply reply;
 	OSErr error;
-	
+
 	SetPt(&location, 40, 60);
 	SFPutFile(location, prompt, file_name, (DlgHookProcPtr) NULL, &reply);
 	if (reply.good)
@@ -440,7 +440,7 @@ OSErr choose_new_file(
 		{
 			strncpy(file_name, reply.fName, *reply.fName+1);
 			*reference_number= reply.vRefNum;
-			
+
 			error= FSOpen(reply.fName, reply.vRefNum, file_handle);
 		}
 	}
@@ -448,7 +448,7 @@ OSErr choose_new_file(
 	{
 		error= userCanceledErr;
 	}
-	
+
 	return error;
 }
 
@@ -475,7 +475,7 @@ OSErr choose_and_open_file(
 			break;
 		}
 	}
-	
+
 	SetPt(&location, 40, 60);
 	SFGetFile(location, (char *) NULL, NULL, count, filetypes, NULL, &reply);
 
@@ -490,7 +490,7 @@ OSErr choose_and_open_file(
 	{
 		error= userCanceledErr;
 	}
-	
+
 	return error;
 }
 #endif
@@ -500,7 +500,7 @@ void mark_for_update(
 	Rect *rectangle)
 {
 	GrafPtr old_port;
-	
+
 	GetPort(&old_port);
 	SetPort(port);
 
@@ -509,7 +509,7 @@ void mark_for_update(
 	InvalRect(rectangle);
 
 	SetPort(old_port);
-	
+
 	return;
 }
 
@@ -522,7 +522,7 @@ RGBColor *SetRGBColor(
 	color->red= red;
 	color->green= green;
 	color->blue= blue;
-	
+
 	return color;
 }
 
@@ -532,10 +532,10 @@ boolean wait_for_mouse_to_move(
 {
 	Point mouse;
 	Rect bounds;
-	
+
 	SetRect(&bounds, -threshold, -threshold, threshold, threshold);
 	OffsetRect(&bounds, origin.h, origin.v);
-	
+
 	do
 	{
 		GetMouse(&mouse);
@@ -545,7 +545,7 @@ boolean wait_for_mouse_to_move(
 		}
 	}
 	while(Button());
-	
+
 	return FALSE;
 }
 
@@ -560,7 +560,7 @@ void stay_awake(
 		last_fake_keyboard_event= TickCount();
 		PostEvent(keyDown, 0);
 	}
-	
+
 	return;
 }
 
@@ -585,17 +585,17 @@ void *realloc(
 	{
 		return NewPtr(size);
 	}
-	
+
 	if (size==0)
 	{
 		if (pointer) DisposePtr((Ptr)pointer);
 		return NULL;
 	}
-	
+
 	if (size==GetPtrSize((Ptr)pointer)) return pointer;
-	
+
 	SetPtrSize((Ptr)pointer, size);
-	
+
 	// SetPtrSize can fail if the pointer couldn't be expanded in place
 	if (MemError())
 	{
@@ -604,12 +604,12 @@ void *realloc(
 
 		// so we make a whole new one if possible
 		if (MemError()) return NULL;
-		
+
 		// and copy the data into it.
 		BlockMoveData(pointer, realloced_pointer, old_size > size ? size : old_size);
-		// and then destroy the old pointer		
+		// and then destroy the old pointer
 		DisposePtr((Ptr)pointer);
-		
+
 		return realloced_pointer;
 	}
 	return pointer;
@@ -631,7 +631,7 @@ void *rlock(
 	handle h)
 {
 	HLock((Handle)h);
-	
+
 	return (void *) *((Handle)h);
 }
 
@@ -639,7 +639,7 @@ void runlock(
 	handle h)
 {
 	HUnlock((Handle)h);
-	
+
 	return;
 }
 
@@ -653,7 +653,7 @@ void draw_popup_frame(
 	MoveTo(bounds->left+3, bounds->bottom);
 	LineTo(bounds->right, bounds->bottom);
 	LineTo(bounds->right, bounds->top+3);
-	
+
 	for (i=0;i<POPUP_ARROW_HEIGHT;++i)
 	{
 		MoveTo(bounds->right-POPUP_ARROW_WIDTH-POPUP_ARROW_OFFSET+i, y+i);
@@ -675,10 +675,10 @@ char *getpstr(
 	{
 		short count;
 		byte *string_address;
-		
+
 		vassert(string_number>=0&&string_number<**((short**)strings),
 			csprintf(temporary, "asked for #%d/#%d in 'STR#' ID#%d", string_number, **((short**)strings), resource_number));
-		
+
 		HLock(strings);
 		count= 0;
 		string_address= ((byte *)*strings)+2;
@@ -693,7 +693,7 @@ char *getpstr(
 	{
 		*buffer= '\0';
 	}
-	
+
 	return buffer;
 }
 
@@ -703,7 +703,7 @@ void pstrcat(
 {
 	memmove(str1 + *str1 + 1, str2+1, *str2);
 	*str1+= *str2;
-	
+
 	return;
 }
 
@@ -719,16 +719,16 @@ OSErr HOpenPath(
 	short path_count= countstr(resource_number);
 	Str255 new_filename;
 	short i;
-	
+
 	for (i= 0; i<path_count && error!=noErr; ++i)
 	{
 		getpstr((char *)new_filename, resource_number, i);
 		pstrcat(new_filename, (unsigned char *) fileName);
-		
+
 		error= HOpen(0, 0, new_filename, permission, refNum);
 		if (error==noErr) pstrcpy((char *) fileName, (const char *)new_filename);
 	}
-	
+
 	return error;
 }
 
@@ -743,15 +743,15 @@ short HOpenResFilePath(
 	short path_count= countstr(resource_number);
 	Str255 new_filename;
 	short i;
-	
+
 	for (i= 0; i<path_count && hndl==NONE; ++i)
 	{
 		getpstr((char *)new_filename, resource_number, i);
 		pstrcat(new_filename, (unsigned char *) fileName);
-		
+
 		hndl= HOpenResFile(0, 0, new_filename, permission);
 	}
-	
+
 	return hndl;
 }
 
@@ -759,7 +759,7 @@ short countstr(
 	short resource_number)
 {
 	Handle strings= GetResource('STR#', resource_number);
-	
+
 	return strings ? **((short**)strings) : 0;
 }
 
@@ -770,7 +770,7 @@ char *getcstr(
 {
 	getpstr(buffer, resource_number, string_number);
 	p2cstr((unsigned char *)buffer);
-	
+
 	return buffer;
 }
 
@@ -786,12 +786,12 @@ char *strupr(
 	char *string)
 {
 	char *p;
-	
+
 	for (p=string;*p;p++)
 	{
 		*p= toupper(*p);
 	}
-	
+
 	return string;
 }
 
@@ -799,12 +799,12 @@ char *strlwr(
 	char *string)
 {
 	char *p;
-	
+
 	for (p=string;*p;p++)
 	{
 		*p= tolower(*p);
 	}
-	
+
 	return string;
 }
 
@@ -825,7 +825,7 @@ void build_zoom_rectangle(
 	Rect zoomed, unzoomed;
 	Rect device_bounds;
 	short bias;
-	
+
 	window_state= (WStateDataHandle) (((CWindowRecord *)window)->dataHandle);
 	zoomed= (*window_state)->stdState;
 	unzoomed= (*window_state)->userState;
@@ -833,13 +833,13 @@ void build_zoom_rectangle(
 	/* official Apple source sends the title bar along with this rectangle, but that isn’t useful */
 	device= MostDevice(&unzoomed);
 	if (!device) device= GetMainDevice();
-	
+
 	bias= unzoomed.top-(*((WindowPeek)window)->strucRgn)->rgnBBox.top-1;
 	if (device==GetMainDevice()) bias+= GetMBarHeight();
 	device_bounds= (*device)->gdRect;
 	InsetRect(&device_bounds, 3, 3);
 	device_bounds.top+= bias;
-	
+
 	zoomed= *bounds;
 	OffsetRect(&zoomed, unzoomed.left-zoomed.left, unzoomed.top-zoomed.top);
 	if (RECTANGLE_HEIGHT(&zoomed)>RECTANGLE_HEIGHT(&device_bounds))
@@ -862,9 +862,9 @@ void build_zoom_rectangle(
 		if (zoomed.right>device_bounds.right) OffsetRect(&zoomed, device_bounds.right-zoomed.right, 0);
 		if (zoomed.left<device_bounds.left) OffsetRect(&zoomed, device_bounds.left-zoomed.left, 0);
 	}
-	
+
 	(*window_state)->stdState= zoomed;
-	
+
 	return;
 }
 
@@ -880,11 +880,11 @@ void ScaleRect(
 	long horizontal_scale, vertical_scale;
 	Rect new_rectangle;
 	short width, height;
-	
+
 	/* the largest value will be the constraint (or, the axis we can peg) */
 	horizontal_scale= (RECTANGLE_WIDTH(source)*LONG_ONE)/RECTANGLE_WIDTH(bounds);
 	vertical_scale= (RECTANGLE_HEIGHT(source)*LONG_ONE)/RECTANGLE_HEIGHT(bounds);
-	
+
 	if (horizontal_scale>vertical_scale)
 	{
 		width= RECTANGLE_WIDTH(bounds);
@@ -895,12 +895,12 @@ void ScaleRect(
 		height= RECTANGLE_HEIGHT(bounds);
 		width= (height*RECTANGLE_WIDTH(source))/RECTANGLE_HEIGHT(source);
 	}
-	
+
 	SetRect(&new_rectangle, 0, 0, width, height);
 	OffsetRect(&new_rectangle, bounds->left + (RECTANGLE_WIDTH(bounds)-width)/2,
 		bounds->top + (RECTANGLE_HEIGHT(bounds)-height)/2);
 	*destination= new_rectangle;
-	
+
 	return;
 }
 
@@ -912,7 +912,7 @@ void AdjustRect(
 	short mode)
 {
 	Rect result;
-	
+
 	result= *source;
 	switch (mode)
 	{
@@ -924,13 +924,13 @@ void AdjustRect(
 			OffsetRect(&result, bounds->left+(RECTANGLE_WIDTH(bounds)-RECTANGLE_WIDTH(source))/2-source->left,
 				bounds->top+(RECTANGLE_HEIGHT(bounds)-RECTANGLE_HEIGHT(source))/3-source->top);
 			break;
-		
+
 		default:
 			halt();
 	}
-	
+
 	*destination= result;
-	
+
 	return;
 }
 
@@ -946,15 +946,15 @@ int prsprintf(
 	va_list arglist;
 	int return_value;
 	short length;
-	
+
 	getcstr(format, resource_number, string_number);
-	
+
 	va_start(arglist, string_number);
 	return_value= vsprintf(buffer+1, format, arglist);
 	va_end(arglist);
-	
+
 	*buffer= ((length= strlen(buffer+1))>255) ? 255 : length;
-	
+
 	return return_value;
 }
 
@@ -969,7 +969,7 @@ int rsprintf(
 	int return_value;
 
 	getcstr(format, resource_number, string_number);
-	
+
 	va_start(arglist, string_number);
 	return_value= vsprintf(buffer, format, arglist);
 	va_end(arglist);
@@ -992,8 +992,8 @@ void initialize_debugger(
 
 	/* make sure the standard c library is loaded */
 	sprintf(temporary, "Segment Loader— you’re fired!");
-	
-	debugger_installed= 
+
+	debugger_installed=
 #ifdef env68k
 	/* 0x120 is non-zero if macsbug is installed on 68k machines */
 	(*((Ptr*)0x120) && GetResource('dbug', 128))
@@ -1014,13 +1014,13 @@ int dprintf(
 	char buffer[257]; /* [length byte] + [255 string bytes] + [null] */
 	va_list arglist;
 	int return_value;
-	
+
 	if (debug_status)
 	{
 		va_start(arglist, format);
 		return_value= vsprintf(buffer+1, format, arglist);
 		va_end(arglist);
-		
+
 		*buffer= strlen(buffer+1);
 #ifdef DEBUG
 		if (debugger_installed)
@@ -1039,7 +1039,7 @@ int dprintf(
 	{
 		return_value= 0;
 	}
-	
+
 	return return_value;
 }
 
@@ -1051,13 +1051,13 @@ int psprintf(
 	va_list arglist;
 	int return_value;
 	short length;
-	
+
 	va_start(arglist, format);
 	return_value= vsprintf(buffer+1, format, arglist);
 	va_end(arglist);
-	
+
 	*buffer= ((length= strlen(buffer+1))>255) ? 255 : length;
-	
+
 	return return_value;
 }
 
@@ -1067,11 +1067,11 @@ char *csprintf(
 	...)
 {
 	va_list arglist;
-	
+
 	va_start(arglist, format);
 	vsprintf(buffer, format, arglist);
 	va_end(arglist);
-	
+
 	return buffer;
 }
 
@@ -1081,12 +1081,12 @@ OSErr FSFlush(
 {
 	ParamBlockRec block;
 	OSErr error;
-	
+
 	memset(&block, 0, sizeof(ParamBlockRec));
 	block.fileParam.ioCompletion= (IOCompletionUPP) NULL;
 	block.fileParam.ioFRefNum= hndl;
 	block.fileParam.ioFVersNum= 0;
-	
+
 	error= PBFlushFile(&block, FALSE);
 	if (error==noErr)
 	{
@@ -1094,24 +1094,24 @@ OSErr FSFlush(
 		block.fileParam.ioVRefNum= VRefNum;
 		error= PBFlushVol(&block, FALSE);
 	}
-	
+
 	return error;
 }
 
 void GetNewTextSpec(
 	TextSpecPtr font_info,
-	short resource_number, 
+	short resource_number,
 	short font_index)
 {
 	Handle resource;
-	
+
 	resource= GetResource('finf', resource_number);
 	assert(resource);
 	if (resource)
 	{
 		/* First short is the count */
 		assert(font_index>=0 && font_index<*((short *) *resource));
-		
+
 		/* Get to the right one.. */
 		*font_info= *((TextSpecPtr)(*resource+sizeof(short))+font_index);
 	}
@@ -1119,7 +1119,7 @@ void GetNewTextSpec(
 	{
 		memset(font_info, 0, sizeof(TextSpecPtr));
 	}
-	
+
 	return;
 }
 
@@ -1129,7 +1129,7 @@ void SetFont(
 	TextFont(font_info->font);
 	TextFace(font_info->face);
 	TextSize(font_info->size);
-	
+
 	return;
 }
 
@@ -1137,12 +1137,12 @@ void GetFont(
 	TextSpecPtr font_info)
 {
 	GrafPtr port;
-	
+
 	GetPort(&port);
 	font_info->font= port->txFont;
 	font_info->face= port->txFace;
 	font_info->size= port->txSize;
-	
+
 	return;
 }
 
@@ -1151,17 +1151,17 @@ short get_our_country_code(
 {
 	short       country_code;
 	Handle      vers_rsrc;
-	
+
 	country_code = 0; // this is the U.S. code. an ok default.
 	vers_rsrc = GetResource('vers', VERS_RESOURCE_ID);
 	if (vers_rsrc)
 	{
 		VersRec  *vers;
-		
+
 		vers = (VersRec *) *vers_rsrc;
 		country_code = vers->countryCode;
 	}
-	
+
 	return country_code;
 }
 
@@ -1187,12 +1187,12 @@ short wait_for_click_or_keypress(
 		case mouseDown:
 			keycode= NONE;
 			break;
-		
+
 		case keyDown:
 		case autoKey:
 			keycode= (event.message & 0x0000ffff) >> 8;
 			break;
-		
+
 		default:
 			halt();
 	}
@@ -1219,7 +1219,7 @@ void kill_screen_saver(
 {
 	long attributes;
 	OSErr error;
-	
+
 	error= Gestalt(gestaltScreenSaverAttr, &attributes);
 	if (error==noErr && (attributes&FLAG(gestaltSaverTurnedOn)))
 	{
@@ -1228,7 +1228,7 @@ void kill_screen_saver(
 		{
 #ifdef env68k
 			error= control_proc(eSaverOff);
-#else	
+#else
 			control_proc_upp= (UniversalProcPtr) NewRoutineDescriptor((ProcPtr)control_proc,
 				uppScreenSaverControlProcInfo, kM68kISA);
 
@@ -1247,7 +1247,7 @@ void kill_screen_saver(
 			}
 		}
 	}
-	
+
 	return;
 }
 
@@ -1255,13 +1255,13 @@ void restore_screen_saver(
 	void)
 {
 	OSErr error;
-	
+
 #ifdef env68k
 	error= control_proc(eSaverOn);
-#else	
+#else
 	error= CallUniversalProc(control_proc_upp, uppScreenSaverControlProcInfo, eSaverOn);
 #endif
-	
+
 	return;
 }
 
@@ -1276,7 +1276,7 @@ static OSErr FSSpecAppendSuffix(
 	Str255 name;
 	OSErr error;
 	short i;
-	
+
 	pstrcpy((char *)name, (const char *)source->name);
 	p2cstr(name);
 	for (i= strlen((const char *)name)-1; i; --i)
@@ -1301,7 +1301,7 @@ OSErr get_file_spec(
 	OSErr err;
 	FSSpec app_spec;
 
-	/* Look for the files in the same directory that we are in.. */	
+	/* Look for the files in the same directory that we are in.. */
 	err= get_my_fsspec(&app_spec);
 	if(!err)
 	{
@@ -1311,12 +1311,12 @@ OSErr get_file_spec(
 
 		/* Get their name.. */
 		getpstr((char *)fileName, string_resource_id, file_name_index);
-		
+
 		/* Check the first path.. */
 		memcpy(new_filepath, fileName, *fileName+1);
 		err= FSMakeFSSpec(app_spec.vRefNum, app_spec.parID, new_filepath, spec);
 
-		/* Didn't get the file- search for the paths... */		
+		/* Didn't get the file- search for the paths... */
 		if(err==fnfErr)
 		{
 			short path_count= countstr(path_resource_id);
@@ -1325,11 +1325,11 @@ OSErr get_file_spec(
 			{
 				getpstr((char *)new_filepath, path_resource_id, ii);
 				pstrcat(new_filepath, fileName);
-				
+
 				/* Hmm... check FSMakeFSSpec... */
 				/* Relative pathname.. */
 				err= FSMakeFSSpec(app_spec.vRefNum, app_spec.parID, new_filepath, spec);
-				
+
 				/* IF we found one... */
 				if(!err) break;
 			}
@@ -1341,7 +1341,7 @@ OSErr get_file_spec(
 			err= ResolveAliasFile(spec, true, &is_folder, &was_alias);
 		}
 	}
-	
+
 	return err;
 }
 

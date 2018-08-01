@@ -63,7 +63,7 @@ struct music_data {
 #define BUILD_STEREO_VOLUME(l, r) ((((long)(r))<<16)|(l))
 
 #ifdef DEBUG
-struct song_definition *get_song_definition(	
+struct song_definition *get_song_definition(
 	short index)
 {
 	assert(index>=0 && index<NUMBER_OF_SONGS);
@@ -93,7 +93,7 @@ boolean initialize_music_handler(
 
 	assert(music_state==NULL);
 	assert(NUMBER_OF_SONGS==sizeof(songs)/sizeof(struct song_definition));
-		
+
 	/* Does the file exist? */
 	error= FSpOpenDF((FSSpec *) song_file, fsRdPerm, &song_file_refnum);
 	if(!error && song_file_refnum>0)
@@ -114,7 +114,7 @@ boolean initialize_music_handler(
 			/* Allocate our buffer */
 			music_state->sound_buffer_size= kDefaultSoundBufferSize;
 			music_state->sound_buffer= NULL;
-			
+
 //			music_state->sound_buffer= malloc(music_state->sound_buffer_size);
 //			assert(music_state->sound_buffer);
 
@@ -124,7 +124,7 @@ boolean initialize_music_handler(
 			atexit(shutdown_music_handler);
 		}
 	}
-	
+
 	return (music_state!=NULL);
 }
 
@@ -134,7 +134,7 @@ void free_music_channel(
 	if (music_state && music_state->initialized && music_state->channel)
 	{
 		OSErr error;
-		
+
 		error= SndDisposeChannel(music_state->channel, TRUE);
 		vwarn(error==noErr, csprintf(temporary, "SndDisposeChannel returned %d;g", error));
 		music_state->channel= NULL;
@@ -147,10 +147,10 @@ void queue_song(
 	if (music_state && music_state->initialized && get_sound_volume())
 	{
 		if (!music_state->channel)
-		{	
+		{
 			allocate_music_channel();
 		}
-	
+
 		if (music_state->channel)
 		{
 			if (music_playing())
@@ -163,7 +163,7 @@ void queue_song(
 			else
 			{
 				assert(music_state->state==_no_song_playing);
-		
+
 				/* Must be done everytime in case Jason killed it in sound.c */
 				music_state->channel->userInfo= (long) music_state;
 				music_state->song_index= song_index;
@@ -211,8 +211,8 @@ void music_idle_proc(
 					music_state->sound_buffer= (Ptr)malloc(music_state->sound_buffer_size);
 					if (music_state->sound_buffer)
 					{
-						assert(music_state->channel);					
-	
+						assert(music_state->channel);
+
 						error= SndStartFilePlay(music_state->channel, // channel
 							music_state->song_file_refnum, // Not from an AIFF file.
 							0, // our resource id.
@@ -222,7 +222,7 @@ void music_idle_proc(
 							music_state->completion_proc, // Completion proc
 							TRUE); // Async.
 						vwarn(error==noErr, csprintf(temporary, "SndStartFilePlay returned %d;g", error));
-						if (!error) 
+						if (!error)
 						{
 							music_state->state= _playing_introduction;
 						}
@@ -253,10 +253,10 @@ void music_idle_proc(
 							short new_volume;
 							SndCommand command;
 							OSErr error;
-							
+
 							/* Only do this a few times.. */
 							music_state->fade_interval_ticks= music_state->fade_interval_duration;
-	
+
 							/* Set the sound volume */
 							new_volume= (0x100*music_state->phase)/music_state->fade_duration;
 
@@ -270,13 +270,13 @@ void music_idle_proc(
 					}
 				}
 				break;
-			
+
 			default:
 				/* Don't change states until song_completed flag is set. */
 				if(music_state->flags & _song_completed)
 				{
 					struct song_definition *song= get_song_definition(music_state->song_index);
-					
+
 					if(song->flags & _song_automatically_loops)
 					{
 						music_state->state= _delaying_for_loop;
@@ -300,11 +300,11 @@ void stop_music(
 	if (music_state && music_state->initialized && music_state->state != _no_song_playing)
 	{
 		OSErr error;
-		
+
 		error= SndStopFilePlay(music_state->channel, TRUE);
 		vwarn(error==noErr, csprintf(temporary, "StopFilePlay returned %d;g", error));
 		music_state->state= _no_song_playing;
-		
+
 		free(music_state->sound_buffer);
 		music_state->sound_buffer= NULL;
 	}
@@ -337,7 +337,7 @@ void pause_music(
 		if(pause_it)
 		{
 			OSErr error;
-			
+
 			error= SndPauseFilePlay(music_state->channel);
 			vwarn(error==noErr, csprintf(temporary, "Pause error: %d;g", error));
 		}
@@ -348,7 +348,7 @@ boolean music_playing(
 	void)
 {
 	boolean playing= FALSE;
-	
+
 	if(music_state && music_state->initialized && music_state->state != _no_song_playing)
 	{
 		assert(music_state->channel);
@@ -387,8 +387,8 @@ static void allocate_music_channel(
 		OSErr error;
 
 		assert(!music_state->channel);
-		
-		error= SndNewChannel(&music_state->channel, sampledSynth, initStereo, 
+
+		error= SndNewChannel(&music_state->channel, sampledSynth, initStereo,
 			NULL);
 //		vwarn(error==noErr, csprintf(temporary, "SndNewChannel returned %d;g", error));
 //		warn(music_state->channel);

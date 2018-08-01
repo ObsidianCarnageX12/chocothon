@@ -18,11 +18,11 @@ struct find_file_pb {
 	short version;			/* Version Control (Set to 0)		<-  */
 	short flags;			/* Search flags 					<-  */
 	short search_type;		/* Search type						<-  */
-	
+
 	short vRefNum;			/* Search start 					<-  */
 	long directory_id;		/* directory start 					<-  */
 	OSType type_to_find;	/* OSType to find					<-  */
-	
+
 	FSSpec *buffer; 		/* Destination						<-> */
 	short max;				/* Maximum matches to return		<-  */
 	short count;			/* Count of matches found 			->  */

@@ -99,7 +99,7 @@ enum /* The various default key setups a user can select. for vbl.c and it's cal
 	_left_handed_keyboard_setup,
 	_powerbook_keyboard_setup,
 	NUMBER_OF_KEY_SETUPS,
-	
+
 	_custom_keyboard_setup = NONE
 };
 
@@ -130,17 +130,17 @@ struct shape_information_data
 struct shape_animation_data
 {
 	short number_of_views; /* must be 1, 2, 5 or 8 */
-	
+
 	short frames_per_view, ticks_per_frame;
 	short key_frame;
-	
+
 	short transfer_mode;
 	short transfer_mode_period; /* in ticks */
-	
+
 	short first_frame_sound, key_frame_sound, last_frame_sound;
 
 	short pixels_to_world;
-	
+
 	short loop_frame;
 
 	short unused[14];

@@ -118,7 +118,7 @@ typedef struct SSpVirtualSourceData {
 /*	siSSpLocalization = '3dif'													*/
 typedef struct SSpLocalizationData {
 	UInt32				cpuLoad;		/* CPU load vs. quality -- 0 is best	*/
-	
+
 	UInt32				medium;			/* Medium for sound propagation			*/
 	float				humidity;		/* Humidity when medium is air			*/
 	float				roomSize;		/* Reverb model -- distance bet. walls	*/
@@ -405,30 +405,30 @@ OSStatus GetSSpFilterVersion(
 	ComponentDescription	description;
 	Component				componentRef;
 	UInt32					vers;
-	
+
 	// Set up the component description
     description.componentType			= kSoundEffectsType;
     description.componentSubType		= kSSpLocalizationSubType;
     description.componentManufacturer	= inManufacturer;
-    description.componentFlags			= 0;        
-    description.componentFlagsMask		= 0;    
-	
+    description.componentFlags			= 0;
+    description.componentFlagsMask		= 0;
+
 	// Find a component matching the description
 	componentRef = FindNextComponent(nil, &description);
 	if (componentRef == nil)  return couldntGetRequiredComponent;
-	
+
 	// Get the component description (for the manufacturer code)
 	err = GetComponentInfo(componentRef, &description, nil, nil, nil);
 	if (err != noErr)  return err;
-	
+
 	// Get the version composite
 	vers = (UInt32) GetComponentVersion((ComponentInstance) componentRef);
-	
+
 	// Return the results
 	*outManufacturer = description.componentManufacturer;
 	*outMajorVersion = HiWord(vers);
 	*outMinorVersion = LoWord(vers);
-	
+
 	return noErr;
 }
 *******************************************************************************/

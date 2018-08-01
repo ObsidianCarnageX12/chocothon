@@ -23,7 +23,7 @@ enum /* platform types */
 	_platform_is_pfhor_door,
 	_platform_is_heavy_spht_platform,
 	_platform_is_pfhor_platform,
-	
+
 	NUMBER_OF_PLATFORM_TYPES
 };
 
@@ -56,7 +56,7 @@ enum /* static platform flags */
 	_platform_comes_from_floor, /* platform rises from floor */
 	_platform_comes_from_ceiling, /* platform lowers from ceiling */
 	_platform_causes_damage, /* when obstructed by monsters, this platform causes damage */
-	_platform_does_not_activate_parent, /* does not reactive itÕs parent (i.e., that platform which activated it) */
+	_platform_does_not_activate_parent, /* does not reactive itâ€™s parent (i.e., that platform which activated it) */
 	_platform_activates_only_once, /* cannot be activated a second time */
 	_platform_activates_light, /* activates floor and ceiling lightsources while activating */
 	_platform_deactivates_light, /* deactivates floor and ceiling lightsources while deactivating */
@@ -190,11 +190,11 @@ struct static_platform_data
 	world_distance maximum_height, minimum_height; /* if NONE then calculated in some reasonable way */
 
 	unsigned long static_flags;
-	
+
 	short polygon_index;
-	
+
 	short tag;
-	
+
 	short unused[7];
 };
 
@@ -205,18 +205,18 @@ struct platform_data /* 128 bytes */
 	short speed, delay;
 	world_distance minimum_floor_height, maximum_floor_height;
 	world_distance minimum_ceiling_height, maximum_ceiling_height;
-	
+
 	short polygon_index;
 	word dynamic_flags;
 	world_distance floor_height, ceiling_height;
-	short ticks_until_restart; /* if weÕre not moving but are active, this is our delay until we move again */
+	short ticks_until_restart; /* if weâ€™re not moving but are active, this is our delay until we move again */
 
 	struct endpoint_owner_data endpoint_owners[MAXIMUM_VERTICES_PER_POLYGON];
 
 	short parent_platform_index; /* the platform_index which activated us, if any */
-	
+
 	short tag;
-	
+
 	short unused[22];
 };
 
@@ -242,7 +242,7 @@ enum /* return values from monster_can_enter_platform() and monster_can_leave_pl
 	_platform_will_be_accessable,
 	_platform_might_be_accessable,
 	_platform_is_accessable,
-	
+
 	_exit_will_never_be_accessable,
 	_exit_will_be_accessable,
 	_exit_might_be_accessable,
