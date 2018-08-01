@@ -9,7 +9,7 @@ while [ "${1}" != "" ]; do
 	mac2unix "${1}"
 	# convert Mac OS Roman to UTF-8
 	iconv -f mac -t utf-8 < "${1}" > "${1}.bak"
-	sed -i 's#[[:space:]]*$##' "${1}.bak"
+	#sed -i 's#[[:space:]]*$##' "${1}.bak"
 	sed -i '$a\' "${1}.bak"
 	mv "${1}.bak" "${1}"
 	shift # move to the next argument

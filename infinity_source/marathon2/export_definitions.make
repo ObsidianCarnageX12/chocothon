@@ -1,1 +1,34 @@
-#   File:       patchtest.make#   Target:     patchtest#   Sources:    patch.c#               test.c#   Created:    Tuesday, October 25, 1994 10:34:03 PMCOptions= -i {CSeriesInterfaces} -opt full -b2 -r -mbg on -d DEBUG -d PREPROCESSING_CODE -d TERMINAL_EDITOR -mc68020 -k {CSeriesLibraries}OBJECTS = ¶		export_definitions.c.o		export_definitions ÄÄ export_definitions.make  {OBJECTS}	Link ¶		-t 'MPST' ¶		-c 'MPS ' ¶		{OBJECTS} ¶		{CSeriesLibraries}cseries.debug.lib ¶#		"{Libraries}"Stubs.o ¶		"{Libraries}MacRuntime.o" ¶		"{Libraries}"Interface.o ¶		"{CLibraries}"StdCLib.o ¶#		"{CLibraries}"CSANELib.o ¶		"{Libraries}IntEnv.o" ¶#		"{CLibraries}"Math.o ¶#		"{Libraries}"ToolLibs.o ¶		"{Libraries}MathLib.o" ¶		":Objects:Game:68k:Final:wad.lib" ¶		-o export_definitions	delete export_definitions.c.o		export_definitions.c.o Ä export_definitions.make extensions.h ¶	weapon_definitions.h projectile_definitions.h monster_definitions.h ¶	effect_definitions.h physics_models.h ":Objects:Game:68k:Final:wad.lib"
+#   File:       patchtest.make
+#   Target:     patchtest
+#   Sources:    patch.c
+#               test.c
+#   Created:    Tuesday, October 25, 1994 10:34:03 PM
+
+
+COptions= -i {CSeriesInterfaces} -opt full -b2 -r -mbg on -d DEBUG -d PREPROCESSING_CODE -d TERMINAL_EDITOR -mc68020 -k {CSeriesLibraries}
+
+OBJECTS = âˆ‚
+		export_definitions.c.o
+		
+export_definitions Æ’Æ’ export_definitions.make  {OBJECTS}
+	Link âˆ‚
+		-t 'MPST' âˆ‚
+		-c 'MPS ' âˆ‚
+		{OBJECTS} âˆ‚
+		{CSeriesLibraries}cseries.debug.lib âˆ‚
+#		"{Libraries}"Stubs.o âˆ‚
+		"{Libraries}MacRuntime.o" âˆ‚
+		"{Libraries}"Interface.o âˆ‚
+		"{CLibraries}"StdCLib.o âˆ‚
+#		"{CLibraries}"CSANELib.o âˆ‚
+		"{Libraries}IntEnv.o" âˆ‚
+#		"{CLibraries}"Math.o âˆ‚
+#		"{Libraries}"ToolLibs.o âˆ‚
+		"{Libraries}MathLib.o" âˆ‚
+		":Objects:Game:68k:Final:wad.lib" âˆ‚
+		-o export_definitions
+	delete export_definitions.c.o
+		
+export_definitions.c.o Æ’ export_definitions.make extensions.h âˆ‚
+	weapon_definitions.h projectile_definitions.h monster_definitions.h âˆ‚
+	effect_definitions.h physics_models.h ":Objects:Game:68k:Final:wad.lib"
