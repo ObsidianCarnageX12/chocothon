@@ -2,21 +2,30 @@
 #define __CHOCOTHON_TYPES_H
 
 /*
- * chocothon_types.h: Stubs of various types that the code expects to have
+ * chocothon_types.h: Defines various types the code expects in order to
+ * compile
  */
 
 #include <stdint.h>
 #include <stdbool.h>
 
 typedef short OSErr;
-typedef struct s_RGBColor {
+
+struct RGBColor {
 	uint16_t red, green, blue;
-} RGBColor;
+};
+typedef struct RGBColor RGBColor;
+
+struct Rect {
+	uint16_t top, left;
+	uint16_t bottom, right;
+};
+typedef struct Rect Rect;
 
 /* TODO: these are dummy typedefs to appease the compiler */
+typedef void* Ptr;
 typedef void* WindowPtr;
 typedef struct{} EventRecord;
-typedef struct{} Rect;
 typedef void* GrafPtr;
 typedef struct{} Point;
 typedef struct{} ConstStr255Param;
@@ -32,7 +41,6 @@ typedef void* dialog_header_proc_ptr;
 typedef void* update_any_window_proc_ptr;
 typedef void* suspend_resume_proc_ptr;
 typedef void* MenuHandle;
-typedef struct{} PixMapHandle;
 typedef void* GWorldPtr;
 typedef void* RgnHandle;
 

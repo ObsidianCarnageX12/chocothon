@@ -16,6 +16,7 @@
 #include "interface.h"
 #include "shell.h"
 #include "screen_drawing.h"
+#include "screen_chocothon.h"
 #include "fades.h"
 #include "screen.h"
 
@@ -119,10 +120,10 @@ void _draw_screen_shape(
 	Rect actual_source;
 
 	/* Avoid unwanted coloring.. */
-	//GetForeColor(&old_fore);
-	//GetBackColor(&old_back);
-	//RGBForeColor(&rgb_black);
-	//RGBBackColor(&rgb_white);
+	GetForeColor(&old_fore);
+	GetBackColor(&old_back);
+	RGBForeColor(&rgb_black);
+	RGBBackColor(&rgb_white);
 
 	/* Draw the panels... */
 	pixmap= get_shape_pixmap(shape_id, FALSE);
@@ -150,8 +151,8 @@ void _draw_screen_shape(
 	}
 
 	assert(destination_graphics_port);
-	//CopyBits((BitMapPtr) *pixmap, &destination_graphics_port->portBits,
-	//	&actual_source, (Rect *) destination, srcCopy, (RgnHandle) nil);
+	CopyBits((BitMapPtr) *pixmap, &destination_graphics_port->portBits,
+		&actual_source, (Rect *) destination, srcCopy, (RgnHandle) nil);
 
 	/* Restore the colors.. */
 	RGBForeColor(&old_fore);
