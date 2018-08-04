@@ -62,6 +62,9 @@ Saturday, March 20, 1993 8:34:14 PM
 
 #include "cseries.h"
 
+/* forward declarations */
+struct color_table;
+
 /* ---------- constants */
 
 #define OSEvt app4Evt
@@ -162,9 +165,9 @@ enum /* modes for AdjustRect */
 
 /* --------- types */
 
-typedef void (*dialog_header_proc_ptr)(DialogPtr dialog, Rect *frame);
-typedef void (*update_any_window_proc_ptr)(WindowPtr window);
-typedef void (*suspend_resume_proc_ptr)(boolean resume);
+//typedef void (*dialog_header_proc_ptr)(DialogPtr dialog, Rect *frame);
+//typedef void (*update_any_window_proc_ptr)(WindowPtr window);
+//typedef void (*suspend_resume_proc_ptr)(boolean resume);
 
 /* --------- structures */
 
@@ -204,16 +207,16 @@ extern RGBColor system_colors[];
 
 #define IS_KEYPAD(virtual) ((virtual)>=0x52&&(virtual)<=0x5c)
 
-#ifdef env68k
-#pragma parameter __D0 get_a5
-long get_a5(void)= {0x200d};
-#pragma parameter __D0 set_a5(__D1)
-long set_a5(long a5)= {0x200d, 0x2a41};
-#pragma parameter __D0 get_a0
-long get_a0(void)= {0x2008};
-#pragma parameter __D0 get_a1
-long get_a1(void)= {0x2009};
-#endif
+//#ifdef env68k
+//#pragma parameter __D0 get_a5
+//long get_a5(void)= {0x200d};
+//#pragma parameter __D0 set_a5(__D1)
+//long set_a5(long a5)= {0x200d, 0x2a41};
+//#pragma parameter __D0 get_a0
+//long get_a0(void)= {0x2008};
+//#pragma parameter __D0 get_a1
+//long get_a1(void)= {0x2009};
+//#endif
 
 #define AbsRandom() (Random()&0x7fff)
 
@@ -343,7 +346,7 @@ void set_suspend_resume_proc(suspend_resume_proc_ptr proc);
 void set_dialog_cursor_tracking(boolean status);
 
 ModalFilterUPP get_general_filter_upp(void);
-pascal Boolean general_filter_proc(DialogPtr dialog, EventRecord *event, short *itemhit);
+Boolean general_filter_proc(DialogPtr dialog, EventRecord *event, short *itemhit);
 
 void modify_control(DialogPtr dialog, short control, short status, short value);
 void modify_radio_button_family(DialogPtr dialog, short start, short end, short current);

@@ -3,6 +3,9 @@ GAME_SOUND.H
 Friday, August 19, 1994 8:47:32 PM
 */
 
+/* forward declarations */
+struct ambient_sound_data;
+
 /* ---------- constants */
 
 enum

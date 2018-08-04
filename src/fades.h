@@ -3,6 +3,9 @@ FADES.H
 Tuesday, April 4, 1995 11:48:29 AM  (Jason')
 */
 
+/* forward declarations */
+struct color_table;
+
 /* ---------- constants */
 
 enum

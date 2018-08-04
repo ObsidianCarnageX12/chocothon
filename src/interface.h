@@ -6,6 +6,9 @@ INTERFACE.H
 Monday, August 23, 1993 4:35:53 PM
 */
 
+/* forward declarations */
+struct bitmap_definition;
+
 /* ---------- constants */
 
 #define strFILENAMES 129

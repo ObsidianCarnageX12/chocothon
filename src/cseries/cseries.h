@@ -30,6 +30,7 @@ Sunday, February 6, 1994 11:07:52 AM
 
 #include <stdio.h>
 #include <stdlib.h>
+#include "chocothon_types.h"
 
 #ifdef powerc
 	#define envppc
@@ -162,10 +163,10 @@ char *strlwr(char *string);
 
 void _assertion_failure(char *assertion, char *file, int line, boolean fatal);
 
-#define malloc(size) new_pointer(size)
-#define free(ptr) dispose_pointer(ptr)
-void *new_pointer(long size);
-void dispose_pointer(void *pointer);
+//#define malloc(size) new_pointer(size)
+//#define free(ptr) dispose_pointer(ptr)
+//void *new_pointer(long size);
+//void dispose_pointer(void *pointer);
 
 #if 0
 handle rmalloc(size);
