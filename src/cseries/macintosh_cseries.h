@@ -61,6 +61,7 @@ Saturday, March 20, 1993 8:34:14 PM
 #endif
 
 #include "cseries.h"
+#include "chocothon_types.h"
 
 /* forward declarations */
 struct color_table;

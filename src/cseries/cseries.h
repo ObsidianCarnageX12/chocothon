@@ -30,7 +30,6 @@ Sunday, February 6, 1994 11:07:52 AM
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "chocothon_types.h"
 
 #ifdef powerc
 	#define envppc

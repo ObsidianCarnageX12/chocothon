@@ -78,8 +78,8 @@ void _set_port_to_screen_window(
 	_set_port_to_gworld();
 #else
 	assert(!old_graphics_port && !old_graphics_device && !destination_graphics_port);
-	GetGWorld(&old_graphics_port, &old_graphics_device);
-	SetGWorld((GWorldPtr) screen_window, NULL);
+	//GetGWorld(&old_graphics_port, &old_graphics_device);
+	//SetGWorld((GWorldPtr) screen_window, NULL);
 	destination_graphics_port= (GrafPtr) screen_window;
 #endif
 }
@@ -88,8 +88,8 @@ void _set_port_to_gworld(
 	void)
 {
 	assert(!old_graphics_port && !old_graphics_device && !destination_graphics_port);
-	GetGWorld(&old_graphics_port, &old_graphics_device);
-	SetGWorld((GWorldPtr) world_pixels, NULL);
+	//GetGWorld(&old_graphics_port, &old_graphics_device);
+	//SetGWorld((GWorldPtr) world_pixels, NULL);
 	destination_graphics_port= (GrafPtr) world_pixels;
 }
 
@@ -97,7 +97,7 @@ void _restore_port(
 	void)
 {
 	assert(old_graphics_port && old_graphics_device && destination_graphics_port);
-	SetGWorld(old_graphics_port, old_graphics_device);
+	//SetGWorld(old_graphics_port, old_graphics_device);
 	old_graphics_port= NULL;
 	old_graphics_device= NULL;
 	destination_graphics_port= NULL;
@@ -119,10 +119,10 @@ void _draw_screen_shape(
 	Rect actual_source;
 
 	/* Avoid unwanted coloring.. */
-	GetForeColor(&old_fore);
-	GetBackColor(&old_back);
-	RGBForeColor(&rgb_black);
-	RGBBackColor(&rgb_white);
+	//GetForeColor(&old_fore);
+	//GetBackColor(&old_back);
+	//RGBForeColor(&rgb_black);
+	//RGBBackColor(&rgb_white);
 
 	/* Draw the panels... */
 	pixmap= get_shape_pixmap(shape_id, FALSE);
@@ -150,8 +150,8 @@ void _draw_screen_shape(
 	}
 
 	assert(destination_graphics_port);
-	CopyBits((BitMapPtr) *pixmap, &destination_graphics_port->portBits,
-		&actual_source, (Rect *) destination, srcCopy, (RgnHandle) nil);
+	//CopyBits((BitMapPtr) *pixmap, &destination_graphics_port->portBits,
+	//	&actual_source, (Rect *) destination, srcCopy, (RgnHandle) nil);
 
 	/* Restore the colors.. */
 	RGBForeColor(&old_fore);
@@ -192,9 +192,9 @@ void _scroll_window(
 	_get_interface_color(background_color_index, &new_color);
 	RGBBackColor(&new_color);
 
-	updateRgn= NewRgn();
-	ScrollRect(destination, 0, dy, updateRgn);
-	DisposeRgn(updateRgn);
+	//updateRgn= NewRgn();
+	//ScrollRect(destination, 0, dy, updateRgn);
+	//DisposeRgn(updateRgn);
 
 	RGBBackColor(&old_color);
 }
@@ -208,7 +208,7 @@ void _fill_screen_rectangle(
 	GetForeColor(&old_color);
 	_get_interface_color(color_index, &new_color);
 	RGBForeColor(&new_color);
-	PaintRect((Rect *) rectangle);
+	//PaintRect((Rect *) rectangle);
 	RGBForeColor(&old_color);
 }
 

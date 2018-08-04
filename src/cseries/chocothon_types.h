@@ -31,5 +31,9 @@ typedef void* DialogPtr;
 typedef void* dialog_header_proc_ptr;
 typedef void* update_any_window_proc_ptr;
 typedef void* suspend_resume_proc_ptr;
+typedef void* MenuHandle;
+typedef struct{} PixMapHandle;
+typedef void* GWorldPtr;
+typedef void* RgnHandle;
 
 #endif // __CHOCOTHON_TYPES_H
