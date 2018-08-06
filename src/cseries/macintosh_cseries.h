@@ -208,17 +208,6 @@ extern RGBColor system_colors[];
 
 #define IS_KEYPAD(virtual) ((virtual)>=0x52&&(virtual)<=0x5c)
 
-//#ifdef env68k
-//#pragma parameter __D0 get_a5
-//long get_a5(void)= {0x200d};
-//#pragma parameter __D0 set_a5(__D1)
-//long set_a5(long a5)= {0x200d, 0x2a41};
-//#pragma parameter __D0 get_a0
-//long get_a0(void)= {0x2008};
-//#pragma parameter __D0 get_a1
-//long get_a1(void)= {0x2009};
-//#endif
-
 #define AbsRandom() (Random()&0x7fff)
 
 /* ---------- external calls (yuck) and their callers */

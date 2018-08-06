@@ -12,11 +12,11 @@
 
 #include "macintosh_cseries.h"
 
+#include "screen_chocothon.h"
 #include "map.h"
 #include "interface.h"
 #include "shell.h"
 #include "screen_drawing.h"
-#include "screen_chocothon.h"
 #include "fades.h"
 #include "screen.h"
 
@@ -34,6 +34,7 @@ struct interface_font_info
 	short line_spacing[NUMBER_OF_INTERFACE_FONTS];
 };
 
+// TODO: change this to an SDL_Surface?
 extern GWorldPtr world_pixels;
 
 /* --------- Globals. */
@@ -79,8 +80,8 @@ void _set_port_to_screen_window(
 	_set_port_to_gworld();
 #else
 	assert(!old_graphics_port && !old_graphics_device && !destination_graphics_port);
-	//GetGWorld(&old_graphics_port, &old_graphics_device);
-	//SetGWorld((GWorldPtr) screen_window, NULL);
+	GetGWorld(&old_graphics_port, &old_graphics_device);
+	SetGWorld((GWorldPtr) screen_window, NULL);
 	destination_graphics_port= (GrafPtr) screen_window;
 #endif
 }
@@ -89,8 +90,8 @@ void _set_port_to_gworld(
 	void)
 {
 	assert(!old_graphics_port && !old_graphics_device && !destination_graphics_port);
-	//GetGWorld(&old_graphics_port, &old_graphics_device);
-	//SetGWorld((GWorldPtr) world_pixels, NULL);
+	GetGWorld(&old_graphics_port, &old_graphics_device);
+	SetGWorld((GWorldPtr) world_pixels, NULL);
 	destination_graphics_port= (GrafPtr) world_pixels;
 }
 
@@ -98,7 +99,7 @@ void _restore_port(
 	void)
 {
 	assert(old_graphics_port && old_graphics_device && destination_graphics_port);
-	//SetGWorld(old_graphics_port, old_graphics_device);
+	SetGWorld(old_graphics_port, old_graphics_device);
 	old_graphics_port= NULL;
 	old_graphics_device= NULL;
 	destination_graphics_port= NULL;
