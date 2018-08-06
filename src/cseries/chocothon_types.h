@@ -4,8 +4,8 @@
 /*
  * chocothon_types.h: Copies of various definitions from the Mac headers that
  * the code originally linked against so we can get it to compile. Some of the
- * actual definitions are changed to suit our needs (e.g. int16_t instead of
- * Apple's SInt16 or 'unsigned short').
+ * actual definitions are changed for modernization reasons (e.g. int16_t
+ * instead of Apple's SInt16 or 'unsigned short').
  */
 
 #include <stdint.h>
@@ -13,11 +13,28 @@
 
 /* Generally useful types */
 typedef char* Ptr;
-typedef Ptr* Handle;
+typedef Ptr* Handle; // TODO: remove me and all other 'Handle' types
 
 typedef int16_t OSErr;
 
-typedef int32_t Fixed;
+/*******************************************************************************
+
+    Base fixed point types 
+    
+        Fixed           16-bit signed integer plus 16-bit fraction
+        UnsignedFixed   16-bit unsigned integer plus 16-bit fraction
+        Fract           2-bit signed integer plus 30-bit fraction
+        ShortFixed      8-bit signed integer plus 8-bit fraction
+        
+*******************************************************************************/
+typedef int32_t                         Fixed;
+typedef Fixed *                         FixedPtr;
+typedef int32_t                         Fract;
+typedef Fract *                         FractPtr;
+typedef uint32_t                        UnsignedFixed;
+typedef UnsignedFixed *                 UnsignedFixedPtr;
+typedef int16_t                         ShortFixed;
+typedef ShortFixed *                    ShortFixedPtr;
 
 typedef bool Boolean;
 
@@ -38,6 +55,35 @@ struct Rect {
 typedef struct Rect Rect;
 typedef Rect* RectPtr;
 
+struct FixedPoint {
+	Fixed               x;
+	Fixed               y;
+};
+typedef struct FixedPoint FixedPoint;
+struct FixedRect {
+	Fixed               left;
+	Fixed               top;
+	Fixed               right;
+	Fixed               bottom;
+};
+typedef struct FixedRect FixedRect;
+
+typedef short CharParameter;
+enum {
+	normal                        = 0,
+	bold                          = 1,
+	italic                        = 2,
+	underline                     = 4,
+	outline                       = 8,
+	shadow                        = 0x10,
+	condense                      = 0x20,
+	extend                        = 0x40
+};
+
+typedef unsigned char                   Style;
+typedef short                           StyleParameter;
+typedef Style                           StyleField;
+
 struct RGBColor {
 	uint16_t red;
 	uint16_t green;
@@ -45,6 +91,45 @@ struct RGBColor {
 };
 typedef struct RGBColor RGBColor;
 typedef RGBColor* RGBColorPtr;
+
+struct ColorSpec {
+	short               value;
+	RGBColor            rgb;
+};
+typedef struct ColorSpec ColorSpec;
+typedef ColorSpec* ColorSpecPtr;
+typedef ColorSpec CSpecArray[1];
+
+struct ColorTable {
+	int32_t             ctSeed;
+	short               ctFlags;
+	short               ctSize;
+	CSpecArray          ctTable;
+};
+typedef struct ColorTable ColorTable;
+typedef ColorTable* CTabPtr;
+typedef CTabPtr* CTabHandle;
+
+struct PixMap {
+	Ptr baseAddr;
+	short rowBytes;
+	Rect bounds;
+	short pmVersion;
+	short packType;
+	long packSize;
+	Fixed hRes;
+	Fixed vRes;
+	short pixelType;
+	short pixelSize;
+	short cmpCount;
+	short cmpSize;
+	long planeBytes;
+	CTabHandle pmTable;
+	long pmReserved;
+};
+typedef struct PixMap PixMap;
+typedef PixMap* PixMapPtr;
+typedef PixMapPtr* PixMapHandle;
 
 struct BitMap {
 	Ptr baseAddr;
@@ -60,6 +145,19 @@ struct Pattern {
 typedef struct Pattern Pattern;
 typedef Pattern* PatPtr;
 typedef PatPtr* PatHandle;
+
+struct PixPat {
+	short               patType;
+	PixMapHandle        patMap;
+	Handle              patData;
+	Handle              patXData;
+	short               patXValid;
+	Handle              patXMap;
+	Pattern             pat1Data;
+};
+typedef struct PixPat PixPat;
+typedef PixPat* PixPatPtr;
+typedef PixPatPtr* PixPatHandle;
 
 typedef struct OpaqueRgnHandle* RgnHandle;
 
@@ -88,7 +186,7 @@ struct GrafPort {
 	Handle        picSave;
 	Handle        rgnSave;
 	Handle        polySave;
-	QDProcsPtr    grafProcs;
+//	QDProcsPtr    grafProcs;
 };
 typedef struct GrafPort GrafPort;
 typedef GrafPort * GrafPtr;
@@ -124,41 +222,13 @@ struct CGrafPort {
 	Handle          picSave;
 	Handle          rgnSave;
 	Handle          polySave;
-	CQDProcsPtr     grafProcs;
+//	CQDProcsPtr     grafProcs;
 };
 
-struct ColorTable {
-	int32_t             ctSeed;
-	short               ctFlags;
-	short               ctSize;
-	CSpecArray          ctTable;
-};
-typedef struct ColorTable               ColorTable;
-typedef ColorTable *                    CTabPtr;
-typedef CTabPtr *                       CTabHandle;
-
-struct PixMap {
-	Ptr baseAddr;
-	short rowBytes;
-	Rect bounds;
-	short pmVersion;
-	short packType;
-	long packSize;
-	Fixed hRes;
-	Fixed vRes;
-	short pixelType;
-	short pixelSize;
-	short cmpCount;
-	short cmpSize;
-	long planeBytes;
-	CTabHandle pmTable;
-	long pmReserved;
-};
-typedef struct PixMap PixMap;
-typedef PixMap * PixMapPtr;
-typedef PixMapPtr * PixMapHandle;
-
+typedef GrafPtr CGrafPtr;
 typedef CGrafPtr GWorldPtr;
+typedef short QDErr;
+typedef unsigned long GWorldFlags;
 
 // TODO: these are dummy typedefs to appease the compiler
 typedef void* WindowPtr;
@@ -167,13 +237,11 @@ typedef struct{} ConstStr255Param;
 typedef struct{} FSSpec;
 typedef void* GDHandle;
 typedef void* VDSwitchInfoPtr;
-typedef struct{} CSpecArray;
 typedef struct{} ModalFilterUPP;
 typedef void* DialogPtr;
 typedef void* dialog_header_proc_ptr;
 typedef void* update_any_window_proc_ptr;
 typedef void* suspend_resume_proc_ptr;
 typedef void* MenuHandle;
-typedef void* RgnHandle;
 
 #endif // __CHOCOTHON_TYPES_H
