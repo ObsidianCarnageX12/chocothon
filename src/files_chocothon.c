@@ -3,6 +3,10 @@
 	macintosh_files.c
 	Tuesday, August 29, 1995 3:18:54 PM- rdm created.
 
+	files_chocothon.c
+	a copy of the functions from files_macintosh.c but replaced with our
+	file i/o code.
+
 */
 
 #include "macintosh_cseries.h"
