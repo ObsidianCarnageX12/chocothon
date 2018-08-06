@@ -10,6 +10,18 @@ void GetBackColor(RGBColor *color);
 void RGBBackColor(const RGBColor *color);
 void RGBForeColor(const RGBColor *color);
 
+// For CopyBits mode parameter
+enum {
+	srcCopy,
+	srcOr,
+	srcXor,
+	srcBic,
+	notSrcCopy,
+	notSrcOr,
+	notSrcXor,
+	notSrcBic
+};
+
 void CopyBits (
    const BitMap *srcBits,
    const BitMap *dstBits,

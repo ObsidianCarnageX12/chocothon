@@ -153,7 +153,7 @@ void _draw_screen_shape(
 
 	assert(destination_graphics_port);
 	CopyBits((BitMapPtr) *pixmap, &destination_graphics_port->portBits,
-		&actual_source, (Rect *) destination, srcCopy, (RgnHandle) nil);
+		&actual_source, (Rect *) destination, srcCopy, (RgnHandle) NULL);
 
 	/* Restore the colors.. */
 	RGBForeColor(&old_fore);
@@ -239,7 +239,7 @@ void _draw_screen_shape_at_x_y(
 	/* Slam the puppy...  */
 	assert(destination_graphics_port);
 	CopyBits((BitMapPtr) *pixmap, &destination_graphics_port->portBits, //&screen_window->portBits,
-		&(*pixmap)->bounds, &destination, srcCopy, (RgnHandle) nil);
+		&(*pixmap)->bounds, &destination, srcCopy, (RgnHandle) NULL);
 
 	/* Restore the colors.. */
 	RGBForeColor(&old_fore);
@@ -290,7 +290,7 @@ return;
 	/* Slam the puppy...  */
 	assert(destination_graphics_port);
 	CopyBits((BitMapPtr) *pixmap, &destination_graphics_port->portBits, // &screen_window->portBits,
-		&source, &destination, srcCopy, (RgnHandle) nil);
+		&source, &destination, srcCopy, (RgnHandle) NULL);
 
 	/* Restore the colors.. */
 	RGBForeColor(&old_fore);
