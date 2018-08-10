@@ -14,6 +14,7 @@
 /* Generally useful types */
 typedef char* Ptr;
 typedef Ptr* Handle; // TODO: remove me and all other 'Handle' types
+typedef long Size;
 
 typedef int16_t OSErr;
 
