@@ -334,8 +334,8 @@ void initialize_screen(
 		assert(backdrop_window);
 		backdrop_window= GetNewCWindow(windBACKDROP_WINDOW, (Ptr) backdrop_window, (WindowPtr) -1);
 		assert(backdrop_window);
-		//MoveWindow(backdrop_window, (**gray_region).rgnBBox.left, (**gray_region).rgnBBox.top, FALSE);
-		//SizeWindow(backdrop_window, RECTANGLE_WIDTH(&(**gray_region).rgnBBox), RECTANGLE_HEIGHT(&(**gray_region).rgnBBox), TRUE);
+		MoveWindow(backdrop_window, (**gray_region).rgnBBox.left, (**gray_region).rgnBBox.top, FALSE);
+		SizeWindow(backdrop_window, RECTANGLE_WIDTH(&(**gray_region).rgnBBox), RECTANGLE_HEIGHT(&(**gray_region).rgnBBox), TRUE);
 		ShowWindow(backdrop_window);
 
 		screen_window= (WindowPtr) NewPtr(sizeof(CWindowRecord));
@@ -372,12 +372,12 @@ void initialize_screen(
 		}
 #endif
 		/* allocate the bitmap_definition structure for our GWorld (it is reinitialized every frame */
-		world_pixels_structure= (struct bitmap_definition *) NewPtr(sizeof(struct bitmap_definition)+sizeof(pixel8 *)*MAXIMUM_WORLD_HEIGHT);
+		world_pixels_structure= (struct bitmap_definition *) malloc(sizeof(struct bitmap_definition)+sizeof(pixel8 *)*MAXIMUM_WORLD_HEIGHT);
 		assert(world_pixels_structure);
 
 		/* allocate and initialize our view_data structure; we don’t call initialize_view_data
 			anymore (change_screen_mode does that) */
-		world_view= (struct view_data *) NewPtr(sizeof(struct view_data));
+		world_view= (struct view_data *) malloc(sizeof(struct view_data));
 		assert(world_view);
 		world_view->field_of_view= NORMAL_FIELD_OF_VIEW; /* degrees (was 74 for a long, long time) */
 		world_view->overhead_map_scale= DEFAULT_OVERHEAD_MAP_SCALE;
@@ -546,8 +546,8 @@ void exit_screen(
 	if (did_switch_the_resolution_on_last_enter_screen)
 	{
 		SetResolutionGDSpec(&resolution_restore_spec, NULL);
-//		DMSuspendConfigure(display_manager_state, 0);
-//		DMEndConfigureDisplays(display_manager_state);
+		DMSuspendConfigure(display_manager_state, 0);
+		DMEndConfigureDisplays(display_manager_state);
 		did_switch_the_resolution_on_last_enter_screen= FALSE;
 	}
 	assert_world_color_table(interface_color_table, world_color_table);
