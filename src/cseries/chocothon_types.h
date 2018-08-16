@@ -421,6 +421,8 @@ typedef struct CWindowRecord CWindowRecord;
 typedef CWindowRecord* WindowPtr;
 typedef WindowPtr CWindowPtr;
 
+typedef struct GDevice GDevice;
+typedef GDevice *GDPtr, **GDHandle;
 struct GDevice {
    short          gdRefNum;      /* reference number of screen driver */
    short          gdID;          /* reserved; set to 0 */
@@ -434,7 +436,7 @@ struct GDevice {
    PixMapHandle   gdPMap;        /* handle to PixMap record for displayed
                                     image */
    long           gdRefCon;      /* reference value */
-//   GDHandle       gdNextGD;      /* handle to next graphics device */
+   GDHandle       gdNextGD;      /* handle to next graphics device */
    Rect           gdRect;        /* graphics device's boundary in global
                                     coordinates */
    long           gdMode;        /* graphics device's current mode */
@@ -444,8 +446,6 @@ struct GDevice {
    Handle         gdCCXMask;     /* handle to cursor's expanded mask */
    long           gdReserved;    /* reserved for future use; must be 0 */
 };
-typedef struct GDevice GDevice;
-typedef GDevice *GDPtr, **GDHandle;
 
 typedef struct VDSwitchInfoRec {
 	unsigned short csMode;
@@ -547,5 +547,7 @@ typedef struct EventRecord EventRecord;
 */
 
 typedef void* ModalFilterUPP;
+typedef void* DialogPtr;
+typedef void* MenuHandle;
 
 #endif // __CHOCOTHON_TYPES_H

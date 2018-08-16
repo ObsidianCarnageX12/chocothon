@@ -166,9 +166,9 @@ enum /* modes for AdjustRect */
 
 /* --------- types */
 
-//typedef void (*dialog_header_proc_ptr)(DialogPtr dialog, Rect *frame);
-//typedef void (*update_any_window_proc_ptr)(WindowPtr window);
-//typedef void (*suspend_resume_proc_ptr)(boolean resume);
+typedef void (*dialog_header_proc_ptr)(DialogPtr dialog, Rect *frame);
+typedef void (*update_any_window_proc_ptr)(WindowPtr window);
+typedef void (*suspend_resume_proc_ptr)(boolean resume);
 
 /* --------- structures */
 
@@ -312,8 +312,8 @@ void SetResolutionGDSpec(GDSpecPtr device_spec, VDSwitchInfoPtr switchInfo);
 short GetSlotFromGDevice(GDHandle device);
 OSErr GetNameFromGDevice(GDHandle device, char *name);
 
-void HideMenuBar(GDHandle device);
-void ShowMenuBar(void);
+//void HideMenuBar(GDHandle device);
+//void ShowMenuBar(void);
 
 void LowLevelSetEntries(short start, short count, CSpecArray aTable);
 
