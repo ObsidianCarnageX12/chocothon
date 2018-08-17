@@ -69,7 +69,7 @@ set(C_FILES
 #	sound_macintosh.c
 #	textures.c
 #	valkyrie.c
-	vbl.c
+#	vbl.c
 #	vbl_macintosh.c
 	wad.c
 #	wad_macintosh.c
@@ -79,7 +79,10 @@ set(C_FILES
 	world.c
 )
 
+set(CMAKE_C_FLAGS "-Wall -Wpedantic")
+
 # Set SUPPORT_DRAW_SPROCKET so the DrawSprocket code gets used instead of the older codepath
+# TODO: remove this when the old codepaths are pruned, and the new ones rewritten.
 add_compile_definitions(SUPPORT_DRAW_SPROCKET)
 
 add_executable(main "${C_FILES}")

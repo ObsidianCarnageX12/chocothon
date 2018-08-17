@@ -416,6 +416,7 @@ static void record_action_flags(
 void save_recording_queue_chunk(
 	short player_index)
 {
+	// TODO: refactor this function to use stdint.h types
 	long *location;
 	long last_flag, count, flag = 0;
 	short i, run_count, num_flags_saved, max_flags;

@@ -32,12 +32,15 @@ Sunday, February 6, 1994 11:07:52 AM
 #include <stdlib.h>
 #include <stdint.h>
 
+// TODO remove me
+#if 0
 #ifdef powerc
 	#define envppc
 	#define mpwppc
 #else
 	#define env68k
 	#define mpwc
+#endif
 #endif
 
 /* ---------- constants */
@@ -130,7 +133,7 @@ typedef void *handle; // relocatable malloc
 
 enum
 {
-	UNSIGNED_LONG_MAX= 4294967295,
+	//UNSIGNED_LONG_MAX= 4294967295,
 	//LONG_MAX= 2147483647L,
 	//LONG_MIN= (-2147483648L),
 	LONG_BITS= 32,
