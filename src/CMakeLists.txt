@@ -1,4 +1,8 @@
-file(GLOB C_FILES "*.c")
+#file(GLOB C_FILES "*.c")
+
+set(C_FILES
+	crc.c
+	main.c)
 
 # Set SUPPORT_DRAW_SPROCKET so the DrawSprocket code gets used instead of the older codepath
 add_compile_definitions(SUPPORT_DRAW_SPROCKET)

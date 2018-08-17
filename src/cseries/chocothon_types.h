@@ -79,7 +79,7 @@ typedef ShortFixed *                    ShortFixedPtr;
         true            Now defined in stdbool.h
 
 *********************************************************************************/
-typedef unsigned char                   Boolean;
+typedef uint8_t Boolean;
 
 /********************************************************************************
 
