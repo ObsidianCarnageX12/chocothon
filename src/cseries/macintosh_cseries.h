@@ -32,7 +32,7 @@ Saturday, March 20, 1993 8:34:14 PM
 	cursor position to the EOF’.  glad i had a backup ...
 */
 
-#define mac
+//#define mac
 
 #ifdef __MWERKS__
 	#ifndef POWERPLANT

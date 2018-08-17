@@ -61,13 +61,13 @@ typedef int32_t OSStatus;
         
 *******************************************************************************/
 typedef int32_t                         Fixed;
-typedef Fixed *                         FixedPtr;
+typedef Fixed*                          FixedPtr;
 typedef int32_t                         Fract;
-typedef Fract *                         FractPtr;
+typedef Fract*                          FractPtr;
 typedef uint32_t                        UnsignedFixed;
-typedef UnsignedFixed *                 UnsignedFixedPtr;
+typedef UnsignedFixed*                  UnsignedFixedPtr;
 typedef int16_t                         ShortFixed;
-typedef ShortFixed *                    ShortFixedPtr;
+typedef ShortFixed*                     ShortFixedPtr;
 
 /********************************************************************************
 
@@ -147,9 +147,9 @@ typedef UInt32                          UTF32Char;
 typedef UInt16                          UniChar;
 typedef UInt16                          UTF16Char;
 typedef UInt8                           UTF8Char;
-typedef UniChar *                       UniCharPtr;
+typedef UniChar*                        UniCharPtr;
 typedef unsigned long                   UniCharCount;
-typedef UniCharCount *                  UniCharCountPtr;
+typedef UniCharCount*                   UniCharCountPtr;
 typedef unsigned char                   Str255[256];
 typedef unsigned char                   Str63[64];
 typedef unsigned char                   Str32[33];
@@ -175,15 +175,15 @@ typedef unsigned char                   Str32Field[34];
     contain long file names.
 */
 typedef Str63                           StrFileName;
-typedef unsigned char *                 StringPtr;
-typedef StringPtr *                     StringHandle;
-typedef const unsigned char *           ConstStringPtr;
-typedef const unsigned char *           ConstStr255Param;
-typedef const unsigned char *           ConstStr63Param;
-typedef const unsigned char *           ConstStr32Param;
-typedef const unsigned char *           ConstStr31Param;
-typedef const unsigned char *           ConstStr27Param;
-typedef const unsigned char *           ConstStr15Param;
+typedef unsigned char*                  StringPtr;
+typedef StringPtr*                      StringHandle;
+typedef const unsigned char*            ConstStringPtr;
+typedef const unsigned char*            ConstStr255Param;
+typedef const unsigned char*            ConstStr63Param;
+typedef const unsigned char*            ConstStr32Param;
+typedef const unsigned char*            ConstStr31Param;
+typedef const unsigned char*            ConstStr27Param;
+typedef const unsigned char*            ConstStr15Param;
 typedef ConstStr63Param                 ConstStrFileNameParam;
 
 /********************************************************************************
@@ -197,7 +197,7 @@ struct FSSpec {
    StrFileName name;
 };
 typedef struct FSSpec FSSpec;
-typedef FSSpec * FSSpecPtr;
+typedef FSSpec* FSSpecPtr;
 
 /********************************************************************************
 
@@ -546,6 +546,7 @@ typedef struct EventRecord EventRecord;
 
 */
 
+typedef uint16_t DisplayIDType;
 typedef void* ModalFilterUPP;
 typedef void* DialogPtr;
 typedef void* MenuHandle;

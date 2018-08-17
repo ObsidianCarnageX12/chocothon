@@ -30,6 +30,7 @@ Sunday, February 6, 1994 11:07:52 AM
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 
 #ifdef powerc
 	#define envppc
@@ -41,19 +42,15 @@ Sunday, February 6, 1994 11:07:52 AM
 
 /* ---------- constants */
 
-#ifndef TRUE /* For compatibility with PowerPlant's headers, we need the ifndef */
-	#define TRUE 1
-#endif
-#ifndef FALSE
-	#define FALSE 0
-#endif
-
+#define TRUE 1
+#define FALSE 0
 #define NONE -1
 
 #define KILO 1024
 #define MEG (KILO*KILO)
 #define GIG (KILO*MEG)
 
+// TODO change to 1000 (SDL ticks are in milliseconds)
 #define MACHINE_TICKS_PER_SECOND 60
 
 /* ---------- macros */
@@ -123,8 +120,8 @@ typedef long fixed;
 
 /* ---------- types */
 
-typedef unsigned short word;
-typedef unsigned char byte;
+typedef uint16_t word;
+typedef uint8_t byte;
 typedef byte boolean;
 
 typedef void *handle; // relocatable malloc
