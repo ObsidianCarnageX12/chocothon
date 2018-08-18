@@ -82,7 +82,7 @@ set(C_FILES
 set(CMAKE_C_FLAGS "-Wall -Wpedantic")
 
 # Set SUPPORT_DRAW_SPROCKET so the DrawSprocket code gets used instead of the older codepath
-# TODO: remove this when the old codepaths are pruned, and the new ones rewritten.
+# TODO(zea): remove this when the old codepaths are pruned, and the new ones rewritten.
 add_compile_definitions(SUPPORT_DRAW_SPROCKET)
 
 add_executable(main "${C_FILES}")
