@@ -8,9 +8,9 @@ Saturday, August 20, 1994 12:08:34 PM
 
 /* ---------- pixels */
 
-typedef unsigned char pixel8;
-typedef unsigned short pixel16;
-typedef unsigned long pixel32;
+typedef uint8_t pixel8;
+typedef uint16_t pixel16;
+typedef uint32_t pixel32;
 
 #define PIXEL8_MAXIMUM_COLORS 256
 #define PIXEL16_MAXIMUM_COLORS 32768
@@ -44,7 +44,7 @@ struct rgb_color
 
 struct color_table
 {
-	short color_count;
+	int16_t color_count;
 
 	struct rgb_color colors[256];
 };
@@ -59,13 +59,13 @@ enum /* bitmap flags */
 
 struct bitmap_definition
 {
-	short width, height; /* in pixels */
-	short bytes_per_row; /* if ==NONE this is a transparent RLE shape */
+	int16_t width, height; /* in pixels */
+	int16_t bytes_per_row; /* if ==NONE this is a transparent RLE shape */
 
-	short flags; /* [column_order.1] [unused.15] */
-	short bit_depth; /* should always be ==8 */
+	int16_t flags; /* [column_order.1] [unused.15] */
+	int16_t bit_depth; /* should always be ==8 */
 
-	short unused[8];
+	int16_t unused[8];
 
 	pixel8 *row_addresses[1];
 };
