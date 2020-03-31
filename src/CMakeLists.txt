@@ -1,5 +1,5 @@
 set(C_FILES
-#	computer_interface.c
+	computer_interface.c
 	crc.c
 	devices.c
 	effects.c
@@ -11,13 +11,13 @@ set(C_FILES
 #	flood_map.c
 #	game_dialogs.c
 #	game_errors.c
-#	game_sound.c
+	game_sound.c
 #	game_wad.c
-#	game_window.c
+	game_window.c
 #	game_window_macintosh.c
 #	images.c
 #	import_definitions.c
-#	interface.c
+	interface.c
 #	interface_macintosh.c
 	items.c
 #	keyboard_dialog.c
@@ -27,9 +27,9 @@ set(C_FILES
 	map.c
 	map_accessors.c
 #	map_constructors.c
-#	marathon2.c
+	marathon2.c
 	media.c
-#	monsters.c
+	monsters.c
 	motion_sensor.c
 #	mouse.c
 #	music.c

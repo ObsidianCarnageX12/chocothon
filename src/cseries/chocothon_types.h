@@ -305,7 +305,7 @@ struct BitMap {
 	Rect bounds;
 };
 typedef struct BitMap BitMap;
-typedef BitMap * BitMapPtr;
+typedef BitMap* BitMapPtr;
 
 struct Pattern {
 	uint8_t pat[8];
@@ -357,7 +357,7 @@ struct GrafPort {
 //	QDProcsPtr    grafProcs;
 };
 typedef struct GrafPort GrafPort;
-typedef GrafPort * GrafPtr;
+typedef GrafPort* GrafPtr;
 
 struct CGrafPort {
 	short           device;
@@ -540,6 +540,34 @@ struct EventRecord {
 };
 typedef struct EventRecord EventRecord;
 
+/********************************************************************************
+
+    Sound Manager types
+
+*********************************************************************************/
+
+struct SndCommand {
+  unsigned short      cmd;
+  short               param1;
+  long                param2;
+};
+typedef struct SndCommand SndCommand;
+typedef struct SndChannel SndChannel;
+
+typedef SndChannel* SndChannelPtr;
+
+struct SndListResource {
+	short         format;
+	short         numModifiers;
+	//ModRef        modifierPart[1];
+	short         numCommands;
+	//SndCommand    commandPart[1];
+	UInt8         dataPart[1];
+};
+typedef struct SndListResource SndListResource;
+typedef SndListResource* SndListPtr;
+typedef SndListPtr* SndListHandle;
+
 /*
 
     TODO: Remove these miscellaneous bogus typedefs
@@ -550,5 +578,6 @@ typedef uint16_t DisplayIDType;
 typedef void* ModalFilterUPP;
 typedef void* DialogPtr;
 typedef void* MenuHandle;
+typedef void* SndCallBackUPP;
 
 #endif // __CHOCOTHON_TYPES_H
