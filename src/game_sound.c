@@ -76,8 +76,8 @@ shortening radii on low-volume ambient sound sorces would be a good idea
 #ifdef SUPPORT_SOUND_SPROCKET
 #include <SoundComponents.h>
 #include "SoundSprocket.h"
-#endif
-#endif
+#endif // SUPPORT_SOUND_SPROCKET
+#endif // mac
 
 #include "shell.h"
 
@@ -137,7 +137,6 @@ struct sound_variables
 	short left_volume, right_volume;
 	short volume;
 	short priority;
-
 };
 
 struct channel_data
@@ -153,10 +152,10 @@ struct channel_data
 
 	unsigned long start_tick;
 
-#ifdef mac
+//#ifdef mac NOTE: seems like it's assumed this was always true
 	SndChannelPtr channel;
 	short callback_count;
-#endif
+//#endif
 
 #ifdef SUPPORT_SOUND_SPROCKET
 	SSpSourceReference sspSource;

@@ -137,7 +137,7 @@ static boolean translate_monster(short monster_index, world_distance distance);
 static boolean try_monster_attack(short monster_index);
 
 static long monster_pathfinding_cost_function(short source_polygon_index, short line_index,
-	short destination_polygon_index, void *data);
+	short destination_polygon_index, struct monster_pathfinding_data *data);
 
 static void set_monster_action(short monster_index, short action);
 static void set_monster_mode(short monster_index, short new_mode, short target_index);
@@ -151,7 +151,7 @@ static void update_monster_vertical_physics_model(short monster_index);
 static void update_monster_physics_model(short monster_index);
 
 static long monster_activation_flood_proc(short source_polygon_index, short line_index,
-	short destination_polygon_index, void *flags);
+	short destination_polygon_index, long *flags);
 
 static boolean attempt_evasive_manouvers(short monster_index);
 
