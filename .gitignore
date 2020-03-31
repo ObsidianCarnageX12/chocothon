@@ -1,5 +1,11 @@
 build/
 
+# CMake output
+CMakeCache.txt
+CMakeFiles
+Makefile
+*.cmake
+
 # Compile output
 *.o
 *.d
@@ -40,6 +46,7 @@ Thumbs.db
 *.cbp
 *.layout
 .vs
+.vscode
 .project
 tags
 [._]*.s[a-v][a-z]
