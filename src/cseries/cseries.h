@@ -30,7 +30,10 @@ Sunday, February 6, 1994 11:07:52 AM
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 
+// TODO remove me
+#if 0
 #ifdef powerc
 	#define envppc
 	#define mpwppc
@@ -38,22 +41,19 @@ Sunday, February 6, 1994 11:07:52 AM
 	#define env68k
 	#define mpwc
 #endif
+#endif
 
 /* ---------- constants */
 
-#ifndef TRUE /* For compatibility with PowerPlant's headers, we need the ifndef */
-	#define TRUE 1
-#endif
-#ifndef FALSE
-	#define FALSE 0
-#endif
-
+#define TRUE 1
+#define FALSE 0
 #define NONE -1
 
 #define KILO 1024
 #define MEG (KILO*KILO)
 #define GIG (KILO*MEG)
 
+// TODO change to 1000 (SDL ticks are in milliseconds)
 #define MACHINE_TICKS_PER_SECOND 60
 
 /* ---------- macros */
@@ -123,8 +123,8 @@ typedef long fixed;
 
 /* ---------- types */
 
-typedef unsigned short word;
-typedef unsigned char byte;
+typedef uint16_t word;
+typedef uint8_t byte;
 typedef byte boolean;
 
 typedef void *handle; // relocatable malloc
@@ -133,19 +133,11 @@ typedef void *handle; // relocatable malloc
 
 enum
 {
-	UNSIGNED_LONG_MAX= 4294967295,
-	//LONG_MAX= 2147483647L,
-	//LONG_MIN= (-2147483648L),
-	LONG_BITS= 32,
-
-	UNSIGNED_SHORT_MAX= 65535,
 	SHORT_MAX= 32767,
 	SHORT_MIN= (-32768),
 	SHORT_BITS= 16,
 
 	UNSIGNED_CHAR_MAX= 255,
-	//CHAR_MAX= 127,
-	//CHAR_MIN= (-128),
 	CHAR_BITS= 8
 };
 
